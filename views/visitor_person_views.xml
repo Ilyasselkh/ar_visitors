@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ar_visitor_person_search" model="ir.ui.view">
+        <field name="name">ar.visitor.person.search</field>
+        <field name="model">ar.visitor.person</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="cin"/>
+                <field name="company_name"/>
+                <filter name="valid" string="Quiz valide" domain="[('recent_visit', '=', True)]"/>
+                <filter name="expired" string="Quiz expiré" domain="[('recent_visit', '=', False)]"/>
+                <filter name="blocked" string="Bloqués" domain="[('status', '=', 'blocked')]"/>
+                <group><filter name="group_status" string="Statut" context="{'group_by': 'status'}"/></group>
+            </search>
+        </field>
+    </record>
+    <record id="view_ar_visitor_person_list" model="ir.ui.view">
+        <field name="name">ar.visitor.person.list</field>
+        <field name="model">ar.visitor.person</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'blocked'" decoration-muted="status == 'inactive'">
+                <field name="image_1920" widget="image" options="{'size': [40, 40]}"/>
+                <field name="name"/>
+                <field name="cin"/>
+                <field name="company_name"/>
+                <field name="last_visit_at"/><field name="last_quiz_at"/>
+                <field name="visit_valid_until"/>
+                <field name="recent_visit" widget="boolean_toggle"/>
+                <field name="status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ar_visitor_person_form" model="ir.ui.view">
+        <field name="name">ar.visitor.person.form</field>
+        <field name="model">ar.visitor.person</field>
+        <field name="arch" type="xml">
+            <form string="Personne">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_visits" type="object" class="oe_stat_button" icon="fa-calendar">
+                            <field name="visit_count" widget="statinfo" string="Visites"/>
+                        </button>
+                    </div>
+                    <field name="image_1920" widget="image" class="oe_avatar"/>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Identité">
+                            <field name="first_name"/>
+                            <field name="last_name"/>
+                            <field name="cin"/>
+                            <field name="status"/>
+                            <field name="blocked_reason" invisible="status != 'blocked'" required="status == 'blocked'"/>
+                        </group>
+                        <group string="Coordonnées">
+                            <field name="company_name"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                            <field name="preferred_language"/>
+                            <field name="facial_reference"/>
+                        </group>
+                    </group>
+                    <group string="Dernière visite et consentement">
+                        <group><field name="last_visit_at"/><field name="last_quiz_at"/><field name="visit_valid_until"/><field name="recent_visit"/></group>
+                        <group><field name="consent"/><field name="consent_at" invisible="not consent"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Photos et historique des visites">
+                            <field name="visit_ids" readonly="1">
+                                <list create="0" delete="0">
+                                    <field name="photo" widget="image" options="{'size': [64, 64]}"/>
+                                    <field name="name"/>
+                                    <field name="check_in_at"/>
+                                    <field name="check_out_at"/>
+                                    <field name="host_employee_id"/>
+                                    <field name="language"/>
+                                    <field name="quiz_completed_at"/>
+                                    <field name="quiz_score"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <chatter/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_ar_visitor_person" model="ir.actions.act_window">
+        <field name="name">Personnes</field><field name="res_model">ar.visitor.person</field>
+        <field name="view_mode">list,form</field><field name="search_view_id" ref="view_ar_visitor_person_search"/>
+    </record>
+</odoo>

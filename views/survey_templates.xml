@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="visitor_survey_done" inherit_id="survey.survey_fill_form_done">
+        <xpath expr="//div[hasclass('o_survey_finished')]" position="inside">
+            <t t-set="visitor_url" t-value="answer._visitor_return_url()"/>
+            <t t-if="visitor_url">
+                <a class="btn btn-primary" data-visitor-return="1" t-att-href="visitor_url">Continuer la visite / Continue / Continuar</a>
+                <script>if (window.parent !== window) {
+                    window.parent.postMessage('ar-visitors-quiz-completed', window.location.origin);
+                } else {
+                    window.location.replace(document.querySelector("a[data-visitor-return]").href);
+                }</script>
+            </t>
+        </xpath>
+    </template>
+</odoo>

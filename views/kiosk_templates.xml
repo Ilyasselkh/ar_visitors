@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+
+    <template id="kiosk_page" name="AR Visitors - Borne">
+
+        <html>
+
+            <head>
+
+                <meta charset="utf-8"/>
+
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+                <title>AR - Visitors</title>
+
+                <t t-call-assets="web.assets_frontend"/>
+
+            </head>
+
+            <body class="ar-visitors-kiosk">
+
+                <main class="ar-kiosk-card">
+
+                    <header><span class="ar-brand">AR</span><h1>Visitors</h1><span class="ar-reference" t-out="visit.name"/></header>
+
+                    <div t-if="error" class="ar-alert ar-alert-danger" t-out="error"/>
+
+                    <div class="ar-person-summary">
+
+                        <img t-if="visit.photo" t-att-src="'/ar-visitors/kiosk/%s/photo' % visit.kiosk_token" alt="Photo"/>
+
+                        <div><strong><t t-out="visit.first_name"/> <t t-out="visit.last_name"/></strong><small>CIN ••••<t t-out="(visit.cin or '')[-4:]"/></small></div>
+
+                    </div>
+
+
+
+                    <section t-if="visit.state == 'identity_input'" class="ar-step">
+
+                        <h2>Compléter l'identité / Complete identity / Completar identidad</h2>
+
+                        <p>La photo capturée a été conservée. Renseignez les informations de la pièce d'identité.</p>
+
+                        <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/identity' % visit.kiosk_token" method="post">
+
+                            <label>Prénom / First name / Nombre</label>
+
+                            <input type="text" name="first_name" required="required" maxlength="100" t-att-value="visit.first_name or ''"/>
+
+                            <label>Nom / Last name / Apellido</label>
+
+                            <input type="text" name="last_name" required="required" maxlength="100" t-att-value="visit.last_name or ''"/>
+
+                            <label>CIN</label>
+
+                            <input type="text" name="cin" required="required" maxlength="30" t-att-value="visit.cin or ''"/>
+
+                            <button class="ar-primary" type="submit">Continuer</button>
+
+                        </form>
+
+                    </section>
+
+
+
+                    <section t-if="visit.state == 'identity_check'" class="ar-step">
+                        <dialog id="ar-language-dialog" open="open" aria-labelledby="ar-language-title">
+                        <h2 id="ar-language-title">Choisissez votre langue · Select your language · Elija su idioma</h2>
+                        <form t-att-action="'/ar-visitors/kiosk/%s/language' % visit.kiosk_token" method="post" class="ar-language-grid">
+
+                            <button name="language" value="fr" type="submit">Français</button>
+
+                            <button name="language" value="en" type="submit">English</button>
+
+                            <button name="language" value="es" type="submit">Español</button>
+
+                        </form>
+                        </dialog>
+                    </section>
+
+
+
+
+
+
+                    <section t-if="visit.state == 'quiz_pending'" class="ar-step ar-center">
+
+                        <h2 t-if="visit.language == 'fr'">Quiz de sécurité</h2><h2 t-if="visit.language == 'en'">Safety quiz</h2><h2 t-if="visit.language == 'es'">Cuestionario de seguridad</h2>
+
+                        <p>Le quiz s’ouvre dans cette page. / Complete the quiz here. / Complete el cuestionario aquí.</p>
+
+                        <button id="ar-open-quiz" type="button" class="ar-primary" t-att-data-quiz-url="'/ar-visitors/kiosk/%s/quiz' % visit.kiosk_token">
+
+                            <t t-if="visit.language == 'fr'">Ouvrir le quiz</t><t t-elif="visit.language == 'en'">Open quiz</t><t t-else="">Abrir cuestionario</t>
+
+                        </button>
+
+                        <dialog id="ar-quiz-dialog" aria-labelledby="ar-quiz-title" t-att-data-status-url="'/ar-visitors/kiosk/%s/quiz-status' % visit.kiosk_token">
+
+                            <header><h2 id="ar-quiz-title">Quiz</h2><button id="ar-close-quiz" type="button" aria-label="Fermer / Close / Cerrar">×</button></header>
+
+                            <iframe title="Quiz visiteur / Visitor quiz"/>
+
+                        </dialog>
+
+                    </section>
+
+
+
+                    <section t-if="visit.state == 'host_pending'" class="ar-step">
+
+                        <h2 t-if="visit.language == 'fr'">Votre visite</h2><h2 t-if="visit.language == 'en'">Your visit</h2><h2 t-if="visit.language == 'es'">Su visita</h2>
+
+                        <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/details' % visit.kiosk_token" method="post">
+
+                            <label>Personne à visiter / Host / Persona a visitar</label>
+
+                            <select name="host_employee_id" required="required"><option value="">—</option><option t-foreach="employees" t-as="employee" t-att-value="employee.id" t-out="employee.name"/></select>
+
+                            <label>Motif / Purpose / Motivo</label><input type="text" name="purpose" maxlength="200"/>
+
+                            <button class="ar-primary" type="submit">Enregistrer et notifier</button>
+
+                        </form>
+
+                    </section>
+
+
+
+                    <section t-if="visit.state == 'approval_pending'" class="ar-step ar-center">
+
+                        <h2>Contrôle de l'accueil requis</h2><p>Veuillez contacter l'agent d'accueil. / Please contact reception. / Contacte con recepción.</p>
+
+                    </section>
+
+                    <section t-if="visit.state == 'refused'" class="ar-step ar-center"><h2>Accès non autorisé</h2><p>Veuillez contacter l'accueil.</p></section>
+
+                </main>
+
+                <script src="/ar_visitors/static/src/js/kiosk_quiz.js?v=19.0.1.3.1" defer="defer"/>
+            </body>
+
+        </html>
+
+    </template>
+
+
+
+    <template id="kiosk_success" name="AR Visitors - Confirmation">
+
+        <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>AR - Visitors</title><t t-call-assets="web.assets_frontend"/></head>
+
+        <body class="ar-visitors-kiosk"><main class="ar-kiosk-card ar-success"><div class="ar-success-icon">✓</div><h1>Visite enregistrée</h1><p t-if="visit.notification_state == 'sent'">Votre contact a été informé. / Your host has been notified. / Su contacto ha sido informado.</p><p t-else="">La visite est enregistrée. Veuillez contacter l'accueil. / The visit is registered. Please contact reception.</p><strong t-out="visit.name"/></main></body></html>
+
+    </template>
+
+</odoo>
+

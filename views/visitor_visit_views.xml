@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ar_visitor_visit_search" model="ir.ui.view">
+        <field name="name">ar.visitor.visit.search</field><field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml"><search>
+            <field name="name"/><field name="cin"/><field name="person_id"/><field name="host_employee_id"/>
+            <filter name="present" string="Présents" domain="[('state','=','checked_in')]"/>
+            <filter name="waiting" string="En attente" domain="[('state','in',['identity_input','identity_check','quiz_pending','host_pending','signature_pending','approval_pending'])]"/>
+            <filter name="today" string="Aujourd'hui" domain="[('check_in_at','&gt;=',context_today().strftime('%Y-%m-%d'))]"/>
+            <group><filter name="group_state" string="État" context="{'group_by':'state'}"/><filter name="group_host" string="Personne visitée" context="{'group_by':'host_employee_id'}"/><filter name="group_day" string="Jour" context="{'group_by':'check_in_at:day'}"/></group>
+        </search></field>
+    </record>
+    <record id="view_ar_visitor_visit_list" model="ir.ui.view">
+        <field name="name">ar.visitor.visit.list</field><field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml"><list decoration-success="state == 'checked_in'" decoration-muted="state in ('checked_out','cancelled')" decoration-danger="state == 'refused'">
+            <field name="name"/><field name="check_in_at"/><field name="person_id"/><field name="first_name"/><field name="last_name"/><field name="cin"/>
+            <field name="host_employee_id"/><field name="department_id" optional="hide"/><field name="check_out_at"/><field name="duration_hours" widget="float_time"/><field name="notification_state" widget="badge"/><field name="state" widget="badge"/>
+        </list></field>
+    </record>
+    <record id="view_ar_visitor_visit_form" model="ir.ui.view">
+        <field name="name">ar.visitor.visit.form</field><field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml"><form string="Visite">
+            <header>
+                <button name="action_open_kiosk" type="object" string="Ouvrir le parcours visiteur" class="btn-primary" invisible="state not in ('draft','identity_input','identity_check','quiz_pending','host_pending')"/>
+                <button name="action_start_manual" type="object" string="Démarrer le parcours" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_confirm_identity" type="object" string="Valider l'identité" class="btn-primary" invisible="state != 'identity_input'"/>
+                <button name="action_select_language" type="object" string="Charger le quiz" class="btn-primary" invisible="state != 'identity_check'"/>
+                <button name="action_open_quiz" type="object" string="Ouvrir le quiz" class="btn-primary" invisible="state != 'quiz_pending'"/>
+                <button name="action_check_quiz" type="object" string="Vérifier le quiz" class="btn-success" invisible="state != 'quiz_pending'"/>
+                <button name="action_check_in" type="object" string="Enregistrer et notifier" class="btn-success" invisible="state != 'host_pending'"/>
+                <button name="action_check_out" type="object" string="Marquer la sortie et signer" class="btn-primary" invisible="state not in ('checked_in','signature_pending')"/>
+                <button name="action_approve" type="object" string="Valider le contrôle" groups="ar_visitors.group_ar_visitors_manager" invisible="state != 'approval_pending'"/>
+                <button name="action_refuse" type="object" string="Refuser" groups="ar_visitors.group_ar_visitors_manager" invisible="state in ('checked_in','checked_out','refused','cancelled')"/>
+                <button name="action_cancel" type="object" string="Annuler" invisible="state in ('checked_in','checked_out','refused','cancelled')"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,identity_input,identity_check,quiz_pending,host_pending,checked_in,signature_pending,checked_out"/>
+            </header>
+            <sheet>
+                <div class="oe_title"><label for="name"/><h1><field name="name" readonly="1"/></h1></div>
+                <group>
+                    <group string="Identité"><field name="photo" widget="image"/><field name="person_id"/><field name="first_name" required="state != 'draft'"/><field name="last_name" required="state != 'draft'"/><field name="cin" required="state != 'draft'"/><field name="visitor_company"/></group>
+                    <group string="Visite"><field name="host_employee_id" options="{'no_create': True}"/><field name="department_id"/><field name="purpose"/><field name="check_in_at"/><field name="check_out_at"/><field name="duration_hours" widget="float_time"/><field name="company_id" groups="base.group_multi_company"/></group>
+                </group>
+                <notebook>
+                    <page string="Contrôle facial"><group><group><field name="terminal_id"/><field name="facial_event_id"/><field name="facial_reference"/></group><group><field name="facial_result"/><field name="validation_was_valid" string="Quiz encore valide"/></group></group></page>
+                    <page string="Quiz"><group><group><field name="language"/></group><group><field name="survey_id"/><field name="survey_user_input_id"/><field name="quiz_completed"/><field name="quiz_score"/><field name="quiz_completed_at"/></group></group></page>
+                    <page string="Signature de sortie"><field name="signature" widget="image" readonly="1"/><field name="signature_at" readonly="1"/></page>
+                    <page string="Notification"><group><field name="notification_state"/><field name="notification_at"/><field name="notification_error"/></group><button name="action_retry_notification" type="object" string="Renvoyer" class="btn-primary" invisible="notification_state != 'failed'"/></page>
+                    <page string="Incidents"><field name="incident_ids" readonly="1"><list><field name="create_date"/><field name="incident_type"/><field name="details"/><field name="resolved"/></list></field></page>
+                </notebook>
+                <chatter/>
+            </sheet>
+        </form></field>
+    </record>
+    <record id="action_ar_visitor_visit" model="ir.actions.act_window"><field name="name">Toutes les visites</field><field name="res_model">ar.visitor.visit</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_ar_visitor_visit_search"/></record>
+    <record id="action_ar_visitor_present" model="ir.actions.act_window"><field name="name">Visiteurs présents</field><field name="res_model">ar.visitor.visit</field><field name="view_mode">list,form</field><field name="domain">[('state','=','checked_in')]</field></record>
+    <record id="action_ar_visitor_waiting" model="ir.actions.act_window"><field name="name">Visites en attente</field><field name="res_model">ar.visitor.visit</field><field name="view_mode">list,form</field><field name="domain">[('state','in',['identity_input','identity_check','quiz_pending','host_pending','signature_pending','approval_pending'])]</field></record>
+    <record id="action_ar_visitor_completed" model="ir.actions.act_window"><field name="name">Visites terminées</field><field name="res_model">ar.visitor.visit</field><field name="view_mode">list,form</field><field name="domain">[('state','=','checked_out')]</field></record>
+    <record id="action_ar_visitor_analysis" model="ir.actions.act_window"><field name="name">Analyse des visites</field><field name="res_model">ar.visitor.visit</field><field name="view_mode">pivot,graph,list</field></record>
+</odoo>

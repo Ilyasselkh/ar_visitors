@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="mail_template_visitor_arrival" model="mail.template">
+        <field name="name">AR - Visitors : arrivée d'un visiteur</field>
+        <field name="model_id" ref="model_ar_visitor_visit"/>
+        <field name="subject">[Accueil] {{ object.first_name }} {{ object.last_name }} est arrivé(e)</field>
+        <field name="email_from">{{ (object.company_id.email_formatted or user.email_formatted) }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Bonjour <t t-out="object.host_employee_id.name or ''"/>,</p>
+                <p><t t-out="object.first_name"/> <t t-out="object.last_name"/> est arrivé(e) à l'accueil pour vous rencontrer.</p>
+                <ul>
+                    <li t-if="object.visitor_company"><strong>Société :</strong> <t t-out="object.visitor_company"/></li>
+                    <li t-if="object.purpose"><strong>Motif :</strong> <t t-out="object.purpose"/></li>
+                    <li><strong>Arrivée :</strong> <span t-field="object.check_in_at"/></li>
+                    <li><strong>Référence :</strong> <t t-out="object.name"/></li>
+                </ul>
+                <p>Merci de bien vouloir l'accueillir.</p>
+            </div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>
+

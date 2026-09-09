@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_ar_visitors" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.ar.visitors</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="AR - Visitors" name="ar_visitors" groups="ar_visitors.group_ar_visitors_admin">
+                    <block title="Parcours de sécurité">
+                        <setting string="Durée du parcours rapide" help="Nombre de mois pendant lesquels le dernier quiz terminé permet d'éviter de refaire le quiz."><field name="ar_visitors_validity_months"/></setting>
+                    </block>
+                    <block title="API et stockage">
+                        <setting string="Reconnaissance faciale externe"><div class="text-muted">Adaptateur en attente de la documentation de votre API. Le parcours manuel reste disponible.</div></setting>
+                        <setting string="Stockage des visiteurs"><div class="text-muted">Identités et historiques dans la base Odoo ; photos et signatures dans les pièces jointes Odoo. Sauvegarder la base et son filestore ensemble.</div></setting>
+                        <setting string="Mise à jour automatique" help="Autoriser la mise à jour du nom, de la photo et de la référence faciale d'une personne existante."><field name="ar_visitors_update_person_from_facial"/></setting>
+                        <setting string="Expiration de la session borne"><field name="ar_visitors_kiosk_token_minutes"/></setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+    <record id="action_ar_visitors_settings" model="ir.actions.act_window"><field name="name">Paramètres</field><field name="res_model">res.config.settings</field><field name="view_mode">form</field><field name="target">current</field><field name="context">{'module': 'ar_visitors'}</field></record>
+</odoo>

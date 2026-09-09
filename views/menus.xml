@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ar_visitors_root" name="AR - Visitors" sequence="13" groups="ar_visitors.group_ar_visitors_user"/>
+    <menuitem id="menu_ar_visitors_reception" name="Accueil" parent="menu_ar_visitors_root" sequence="10"/>
+    <menuitem id="menu_ar_visitors_present" name="Visiteurs présents" parent="menu_ar_visitors_reception" action="action_ar_visitor_present" sequence="10"/>
+    <menuitem id="menu_ar_visitors_waiting" name="Visites en attente" parent="menu_ar_visitors_reception" action="action_ar_visitor_waiting" sequence="20"/>
+    <menuitem id="menu_ar_visitors_visits" name="Visites" parent="menu_ar_visitors_root" sequence="20"/>
+    <menuitem id="menu_ar_visitors_all_visits" name="Toutes les visites" parent="menu_ar_visitors_visits" action="action_ar_visitor_visit" sequence="10"/>
+    <menuitem id="menu_ar_visitors_completed" name="Visites terminées" parent="menu_ar_visitors_visits" action="action_ar_visitor_completed" sequence="20"/>
+    <menuitem id="menu_ar_visitors_people" name="Personnes" parent="menu_ar_visitors_root" action="action_ar_visitor_person" sequence="30"/>
+    <menuitem id="menu_ar_visitors_control" name="Contrôle et conformité" parent="menu_ar_visitors_root" sequence="40" groups="ar_visitors.group_ar_visitors_manager"/>
+    <menuitem id="menu_ar_visitors_incidents" name="Incidents" parent="menu_ar_visitors_control" action="action_ar_visitor_incident" sequence="10"/>
+    <menuitem id="menu_ar_visitors_reports" name="Résultats des quiz" parent="menu_ar_visitors_root" sequence="50" action="action_ar_visitor_quiz_results" groups="ar_visitors.group_ar_visitors_manager"/>
+    <record id="menu_ar_visitors_analysis" model="ir.ui.menu"><field name="name">Analyse des visites</field><field name="parent_id" ref="menu_ar_visitors_reports"/><field name="active" eval="False"/></record>
+    <menuitem id="menu_ar_visitors_configuration" name="Configuration" parent="menu_ar_visitors_root" sequence="90" groups="ar_visitors.group_ar_visitors_admin"/>
+    <menuitem id="menu_ar_visitors_documents" name="Quiz par langue" parent="menu_ar_visitors_configuration" action="action_ar_visitor_document" sequence="10"/>
+    <menuitem id="menu_ar_visitors_terminals" name="Terminaux faciaux" parent="menu_ar_visitors_configuration" action="action_ar_visitor_terminal" sequence="20" groups="ar_visitors.group_ar_visitors_api_admin"/>
+    <menuitem id="menu_ar_visitors_settings" name="Paramètres" parent="menu_ar_visitors_configuration" action="action_ar_visitors_settings" sequence="90"/>
+</odoo>

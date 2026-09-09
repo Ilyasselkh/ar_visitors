@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ar_visitor_terminal_list" model="ir.ui.view"><field name="name">ar.visitor.facial.terminal.list</field><field name="model">ar.visitor.facial.terminal</field><field name="arch" type="xml"><list><field name="name"/><field name="code"/><field name="location"/><field name="last_seen_at"/><field name="active"/></list></field></record>
+    <record id="view_ar_visitor_terminal_form" model="ir.ui.view"><field name="name">ar.visitor.facial.terminal.form</field><field name="model">ar.visitor.facial.terminal</field><field name="arch" type="xml"><form string="Terminal facial"><header><button name="action_generate_secret" type="object" string="Générer un nouveau secret" class="btn-primary"/></header><sheet><group><group><field name="name"/><field name="code"/><field name="location"/><field name="company_id" groups="base.group_multi_company"/><field name="active"/></group><group><field name="last_seen_at"/><field name="last_error"/><field name="secret_hash" invisible="1"/></group></group><chatter/></sheet></form></field></record>
+    <record id="action_ar_visitor_terminal" model="ir.actions.act_window"><field name="name">Terminaux faciaux</field><field name="res_model">ar.visitor.facial.terminal</field><field name="view_mode">list,form</field></record>
+</odoo>
+

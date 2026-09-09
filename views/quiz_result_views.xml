@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ar_quiz_result_search" model="ir.ui.view">
+        <field name="name">ar.visitor.quiz.result.search</field>
+        <field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml">
+            <search string="Résultats des quiz">
+                <field name="person_id"/><field name="cin"/><field name="survey_id"/>
+                <field name="language"/>
+                <filter name="quiz_date" string="Date du quiz" date="quiz_completed_at"/>
+                <group>
+                    <filter name="person" string="Personne" context="{'group_by':'person_id'}"/>
+                    <filter name="quiz" string="Quiz" context="{'group_by':'survey_id'}"/>
+                    <filter name="language" string="Langue" context="{'group_by':'language'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_ar_quiz_result_list" model="ir.ui.view">
+        <field name="name">ar.visitor.quiz.result.list</field>
+        <field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml">
+            <list string="Résultats des quiz" create="0" edit="0" delete="0" default_order="quiz_completed_at desc">
+                <field name="person_id"/><field name="cin"/>
+                <field name="survey_id"/><field name="language"/>
+                <field name="quiz_completed_at" string="Date de passation"/>
+                <field name="quiz_score" string="Score (%)"/>
+                <field name="name" string="Visite"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ar_quiz_result_form" model="ir.ui.view">
+        <field name="name">ar.visitor.quiz.result.form</field>
+        <field name="model">ar.visitor.visit</field>
+        <field name="arch" type="xml">
+            <form string="Résultat du quiz" create="0" edit="0" delete="0">
+                <sheet>
+                    <group>
+                        <group string="Visiteur"><field name="person_id"/><field name="first_name"/><field name="last_name"/><field name="cin"/><field name="name" string="Visite"/></group>
+                        <group string="Quiz terminé"><field name="survey_id"/><field name="language"/><field name="quiz_completed_at" string="Date de passation"/><field name="quiz_score" string="Score (%)"/></group>
+                    </group>
+                    <p>Le score sert uniquement à l’analyse et ne conditionne pas l’entrée du visiteur.</p>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_ar_visitor_quiz_results" model="ir.actions.act_window">
+        <field name="name">Résultats des quiz</field>
+        <field name="res_model">ar.visitor.visit</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('quiz_completed','=',True),('survey_user_input_id','!=',False)]</field>
+        <field name="search_view_id" ref="view_ar_quiz_result_search"/>
+        <field name="context">{'search_default_person':1,'create':False}</field>
+        <field name="help" type="html"><p>Aucun quiz terminé pour le moment.</p><p>Chaque passation apparaît ici avec le visiteur, la langue, la date et le score.</p></field>
+    </record>
+    <record id="action_ar_quiz_results_list" model="ir.actions.act_window.view">
+        <field name="sequence">1</field><field name="view_mode">list</field>
+        <field name="view_id" ref="view_ar_quiz_result_list"/><field name="act_window_id" ref="action_ar_visitor_quiz_results"/>
+    </record>
+    <record id="action_ar_quiz_results_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field><field name="view_mode">form</field>
+        <field name="view_id" ref="view_ar_quiz_result_form"/><field name="act_window_id" ref="action_ar_visitor_quiz_results"/>
+    </record>
+</odoo>
