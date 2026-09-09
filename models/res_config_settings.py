@@ -23,3 +23,32 @@ class ResConfigSettings(models.TransientModel):
         string="Durée d'une session borne (minutes)", default=15,
         config_parameter="ar_visitors.kiosk_token_minutes",
     )
+
+
+class VisitorSettings(models.TransientModel):
+    _name = 'ar.visitor.settings'
+    _description = 'Paramètres visiteurs'
+
+    validity_months = fields.Integer(string='Validité du quiz (mois)', required=True)
+    kiosk_minutes = fields.Integer(string='Durée de session (minutes)', required=True)
+    update_person = fields.Boolean(string='Mettre à jour les fiches existantes')
+
+    @api.model
+    def default_get(self, names):
+        values = super().default_get(names)
+        params = self.env['ir.config_parameter'].sudo()
+        defaults = {'validity_months': int(params.get_param('ar_visitors.validity_months', 3)),
+                    'kiosk_minutes': int(params.get_param('ar_visitors.kiosk_token_minutes', 15)),
+                    'update_person': params.get_param('ar_visitors.update_person_from_facial') == 'True'}
+        values.update({key: val for key, val in defaults.items() if key in names})
+        return values
+
+    def action_save(self):
+        self.ensure_one()
+        self.check_access('write')
+        if self.validity_months < 1 or self.kiosk_minutes < 1:
+            raise ValidationError(_('Les durées doivent être positives.'))
+        params = self.env['ir.config_parameter'].sudo()
+        for key, value in [('validity_months', self.validity_months), ('kiosk_token_minutes', self.kiosk_minutes), ('update_person_from_facial', self.update_person)]:
+            params.set_param('ar_visitors.' + key, value)
+        return {'type': 'ir.actions.act_window_close'}

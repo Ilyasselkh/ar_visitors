@@ -5,10 +5,54 @@ from dateutil.relativedelta import relativedelta
 
 from odoo import fields
 from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError
 from odoo.tests.common import TransactionCase
 
 
 class TestArVisitors(TransactionCase):
+
+    def _access_user(self, suffix, group):
+        return self.env['res.users'].create({
+            'name': suffix, 'login': 'visitor_test_' + suffix,
+            'group_ids': [(6, 0, [self.env.ref('base.group_user').id, self.env.ref('ar_visitors.' + group).id])],
+        })
+
+    def test_independent_access_rights(self):
+        cases = [
+            ('module', 'group_ar_visitors_user', False, False, False),
+            ('config', 'group_ar_visitors_admin', True, False, False),
+            ('results', 'group_ar_visitors_manager', False, True, False),
+            ('people', 'group_ar_visitors_api_admin', False, False, True),
+        ]
+        for suffix, group, config, results, people in cases:
+            user = self._access_user(suffix, group)
+            for model, permitted in [('ar.visitor.person', people), ('ar.visitor.quiz.result', results), ('ar.visitor.settings', config), ('ar.visitor.facial.terminal', config)]:
+                if permitted:
+                    self.env[model].with_user(user).check_access('read')
+                else:
+                    with self.assertRaises(AccessError):
+                        self.env[model].with_user(user).search([])
+            visible = self.env['ir.ui.menu'].with_user(user)._visible_menu_ids()
+            for menu, permitted in [('menu_ar_visitors_configuration', config), ('menu_ar_visitors_reports', results), ('menu_ar_visitors_people', people)]:
+                self.assertEqual(self.env.ref('ar_visitors.' + menu).id in visible, permitted)
+            visit = self.env['ar.visitor.visit'].with_user(user).create({})
+            visit.action_open_kiosk()
+
+    def test_result_contains_response_and_escapes_html(self):
+        survey = self.language_surveys['fr']
+        question = self.env['survey.question'].create({'survey_id': survey.id, 'title': 'Votre service ?', 'question_type': 'char_box'})
+        visit = self.env['ar.visitor.visit'].create({'first_name': 'Quiz', 'last_name': 'Result', 'cin': 'RESULT01'})
+        visit.action_select_language()
+        answer = visit.survey_user_input_id
+        self.env['survey.user_input.line'].create({'user_input_id': answer.id, 'question_id': question.id, 'answer_type': 'char_box', 'value_char_box': '<script>test</script>'})
+        answer._mark_done()
+        self.env.flush_all()
+        result = self.env['ar.visitor.quiz.result'].browse(visit.id)
+        self.assertIn('Votre service ?', result.answers_html)
+        self.assertIn('&lt;script&gt;', result.answers_html)
+        self.assertNotIn('<script>', result.answers_html)
+        user = self._access_user('answer_reader', 'group_ar_visitors_manager')
+        self.assertIn('Votre service ?', result.with_user(user).answers_html)
 
     @classmethod
     def setUpClass(cls):

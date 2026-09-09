@@ -64,10 +64,10 @@ class ArVisitorVisit(models.Model):
     )
     validation_was_valid = fields.Boolean(string="Quiz encore valide", readonly=True, copy=False)
     survey_id = fields.Many2one("survey.survey", string="Quiz", readonly=True, copy=False)
-    survey_user_input_id = fields.Many2one("survey.user_input", string="Participation", readonly=True, copy=False)
+    survey_user_input_id = fields.Many2one("survey.user_input", string="Participation", readonly=True, copy=False, groups="ar_visitors.group_ar_visitors_manager")
     quiz_completed = fields.Boolean(string="Quiz terminé", readonly=True, copy=False)
     quiz_completed_at = fields.Datetime(readonly=True, copy=False)
-    quiz_score = fields.Float(string="Score du quiz (%)", related="survey_user_input_id.scoring_percentage", store=True)
+    quiz_score = fields.Float(string="Score du quiz (%)", related="survey_user_input_id.scoring_percentage", store=True, groups="ar_visitors.group_ar_visitors_manager")
     signature = fields.Binary(string="Signature", attachment=True, copy=False)
     signature_at = fields.Datetime(string="Date de signature", readonly=True, copy=False)
     notification_state = fields.Selection(
@@ -76,7 +76,7 @@ class ArVisitorVisit(models.Model):
     )
     notification_at = fields.Datetime(readonly=True, copy=False)
     notification_error = fields.Text(readonly=True, copy=False)
-    kiosk_token = fields.Char(default=lambda self: uuid.uuid4().hex, readonly=True, copy=False, index=True, groups="ar_visitors.group_ar_visitors_manager")
+    kiosk_token = fields.Char(default=lambda self: uuid.uuid4().hex, readonly=True, copy=False, index=True, groups="ar_visitors.group_ar_visitors_user")
     kiosk_token_expires_at = fields.Datetime(readonly=True, copy=False)
     incident_ids = fields.One2many("ar.visitor.incident", "visit_id")
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
@@ -133,7 +133,7 @@ class ArVisitorVisit(models.Model):
             if record.state not in ('draft', 'identity_check'):
                 raise UserError(_("Le choix de langue n'est pas disponible à cette étape."))
             record._validate_identity_values()
-            configuration = self.env["ar.visitor.document"].get_current_document(record.language, record.company_id)
+            configuration = self.env["ar.visitor.document"].sudo().get_current_document(record.language, record.company_id)
             if not configuration:
                 raise UserError(_("Aucun quiz actif n'est configuré pour cette langue."))
             record.write({"survey_id": configuration.survey_id.id, "state": "quiz_pending"})
@@ -149,7 +149,7 @@ class ArVisitorVisit(models.Model):
             if not record.cin:
                 record.write({"facial_result": "manual", "state": "identity_input"})
                 continue
-            person = self.env["ar.visitor.person"].search([("cin", "=", record.cin)], limit=1)
+            person = self.env["ar.visitor.person"].sudo().search([("cin", "=", record.cin)], limit=1)
             if person:
                 if person.status != "active":
                     record.write({"person_id": person.id, "facial_result": "manual", "state": "refused"})
@@ -221,6 +221,8 @@ class ArVisitorVisit(models.Model):
 
     def _ensure_survey_answer(self):
         self.ensure_one()
+        self.check_access('write')
+        self = self.sudo()
         if self.survey_user_input_id:
             return self.survey_user_input_id
         if not self.survey_id:
@@ -248,7 +250,7 @@ class ArVisitorVisit(models.Model):
                 continue
             if record.state != 'quiz_pending':
                 raise UserError(_("Cette visite n'attend pas de quiz."))
-            answer = record.survey_user_input_id.sudo()
+            answer = record.sudo().survey_user_input_id
             if not answer or answer.state != "done":
                 raise UserError(_("Le quiz n'est pas encore terminé."))
             record.write({
@@ -289,7 +291,7 @@ class ArVisitorVisit(models.Model):
                 raise UserError(_("Cette visite n'est pas prête pour l'entrée."))
             if not record.host_employee_id:
                 raise UserError(_("La personne à visiter est obligatoire."))
-            if record.state == "approval_pending" and not self.env.user.has_group("ar_visitors.group_ar_visitors_manager"):
+            if record.state == "approval_pending" and not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
                 raise UserError(_("Une validation du responsable est nécessaire."))
             if not record.person_id:
                 record._create_or_update_person()
@@ -360,7 +362,7 @@ class ArVisitorVisit(models.Model):
             })
 
     def action_approve(self):
-        if not self.env.user.has_group("ar_visitors.group_ar_visitors_manager"):
+        if not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
             raise UserError(_("Seul un responsable peut accorder une dérogation."))
         for record in self:
             if record.person_id:

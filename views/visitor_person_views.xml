@@ -75,7 +75,7 @@
                                     <field name="host_employee_id"/>
                                     <field name="language"/>
                                     <field name="quiz_completed_at"/>
-                                    <field name="quiz_score"/>
+                                    <field name="quiz_score" groups="ar_visitors.group_ar_visitors_manager"/>
                                     <field name="state"/>
                                 </list>
                             </field>

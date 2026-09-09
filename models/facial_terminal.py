@@ -15,7 +15,7 @@ class ArVisitorFacialTerminal(models.Model):
     active = fields.Boolean(default=True, tracking=True)
     location = fields.Char(string="Emplacement")
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
-    secret_hash = fields.Char(copy=False, groups="ar_visitors.group_ar_visitors_api_admin")
+    secret_hash = fields.Char(copy=False, groups="ar_visitors.group_ar_visitors_admin")
     last_seen_at = fields.Datetime(string="Dernier appel", readonly=True)
     last_error = fields.Text(string="Dernière erreur", readonly=True)
     minimum_confidence = fields.Float(string="Confiance minimale", default=0.80)

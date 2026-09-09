@@ -20,5 +20,9 @@
             </xpath>
         </field>
     </record>
-    <record id="action_ar_visitors_settings" model="ir.actions.act_window"><field name="name">Paramètres</field><field name="res_model">res.config.settings</field><field name="view_mode">form</field><field name="target">current</field><field name="context">{'module': 'ar_visitors'}</field></record>
+    <record id="view_visitor_settings" model="ir.ui.view">
+        <field name="name">ar.visitor.settings.form</field><field name="model">ar.visitor.settings</field>
+        <field name="arch" type="xml"><form string="Paramètres visiteurs"><group><field name="validity_months"/><field name="kiosk_minutes"/><field name="update_person"/></group><p>API externe en attente de raccordement. Les identités sont stockées dans la base Odoo, les photos et signatures dans ses pièces jointes.</p><footer><button name="action_save" type="object" string="Enregistrer" class="btn-primary"/><button special="cancel" string="Annuler"/></footer></form></field>
+    </record>
+    <record id="action_ar_visitors_settings" model="ir.actions.act_window"><field name="name">Paramètres</field><field name="res_model">ar.visitor.settings</field><field name="view_mode">form</field><field name="view_id" ref="view_visitor_settings"/><field name="target">new</field><field name="context">{}</field></record>
 </odoo>

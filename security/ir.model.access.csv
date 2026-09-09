@@ -1,11 +1,14 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_ar_visitor_person_user,ar.visitor.person user,model_ar_visitor_person,group_ar_visitors_user,1,1,1,0
-access_ar_visitor_person_manager,ar.visitor.person manager,model_ar_visitor_person,group_ar_visitors_manager,1,1,1,1
+access_ar_visitor_person_user,ar.visitor.person user,model_ar_visitor_person,group_ar_visitors_api_admin,1,1,1,0
+access_ar_visitor_person_manager,ar.visitor.person manager,model_ar_visitor_person,group_ar_visitors_api_admin,1,1,1,1
 access_ar_visitor_visit_user,ar.visitor.visit user,model_ar_visitor_visit,group_ar_visitors_user,1,1,1,0
-access_ar_visitor_visit_manager,ar.visitor.visit manager,model_ar_visitor_visit,group_ar_visitors_manager,1,1,1,1
-access_ar_visitor_document_user,ar.visitor.document user,model_ar_visitor_document,group_ar_visitors_user,1,0,0,0
+access_ar_visitor_visit_manager,ar.visitor.visit manager,model_ar_visitor_visit,group_ar_visitors_user,1,1,1,0
+access_ar_visitor_document_user,ar.visitor.document user,model_ar_visitor_document,group_ar_visitors_admin,1,0,0,0
 access_ar_visitor_document_admin,ar.visitor.document admin,model_ar_visitor_document,group_ar_visitors_admin,1,1,1,1
-access_ar_visitor_terminal_admin,ar.visitor.facial.terminal admin,model_ar_visitor_facial_terminal,group_ar_visitors_api_admin,1,1,1,1
+access_ar_visitor_terminal_admin,ar.visitor.facial.terminal admin,model_ar_visitor_facial_terminal,group_ar_visitors_admin,1,1,1,1
 access_ar_visitor_incident_user,ar.visitor.incident user,model_ar_visitor_incident,group_ar_visitors_user,1,0,0,0
-access_ar_visitor_incident_manager,ar.visitor.incident manager,model_ar_visitor_incident,group_ar_visitors_manager,1,1,1,0
+access_ar_visitor_incident_manager,ar.visitor.incident manager,model_ar_visitor_incident,group_ar_visitors_user,1,1,1,0
 access_ar_visitor_checkout_wizard,ar.visitor.checkout.wizard,model_ar_visitor_checkout_wizard,group_ar_visitors_user,1,1,1,1
+access_ar_quiz_result,Quiz results,model_ar_visitor_quiz_result,group_ar_visitors_manager,1,0,0,0
+access_ar_visitor_settings,Visitor settings,model_ar_visitor_settings,group_ar_visitors_admin,1,1,1,1
+access_ar_survey_config_read,Visitor quiz selection,survey.model_survey_survey,group_ar_visitors_admin,1,0,0,0

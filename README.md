@@ -69,3 +69,17 @@ Exécuter sur une base isolée avec `--test-enable --test-tags /ar_visitors`.
 Le nettoyage retire les scripts de démonstration, l’ancien générateur de guide,
 le moteur facial local, son Dockerfile et ses dépendances. Les bibliothèques déjà
 installées dans le serveur ne sont pas désinstallées par cette opération.
+
+## Accès indépendants et résultats
+
+Les quatre droits sont : Accès au module, Accès Configuration, Accès Résultats
+ des quiz et Accès Personnes. Les trois droits spécialisés incluent uniquement
+l’accès au module, sans s’inclure mutuellement. Leurs menus sont masqués sans le
+droit correspondant et les modèles sont protégés côté serveur. L’accueil peut
+continuer les visites par saisie de CIN sans consulter le répertoire Personnes.
+Les paramètres visiteurs n’exigent pas l’administration générale d’Odoo.
+
+Résultats des quiz : ouvrir une passation pour voir chaque question, la réponse
+saisie ou choisie et les points. Les résultats sont en lecture seule et limités
+aux sociétés autorisées. Les droits natifs de l’application Sondages, si attribués
+séparément à un utilisateur, restent gérés par Odoo.
