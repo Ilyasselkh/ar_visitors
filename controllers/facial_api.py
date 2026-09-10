@@ -36,12 +36,6 @@ class ArVisitorsFacialApi(http.Controller):
         except Exception as exc:
             _logger.exception("Facial API error for terminal %s", terminal.code)
             terminal.last_error = str(exc)[:1000]
-            request.env["ar.visitor.incident"].sudo().create({
-                "name": _("Erreur API - %s") % terminal.name,
-                "incident_type": "api_error",
-                "terminal_id": terminal.id,
-                "details": str(exc)[:2000],
-            })
             return self._response({"success": False, "error": "processing_error"}, 500)
 
     def _process_event(self, payload, terminal):
@@ -81,10 +75,6 @@ class ArVisitorsFacialApi(http.Controller):
             "language": person.preferred_language if person else "fr",
             "state": state,
         })
-        if state == "refused":
-            visit._create_incident("blocked", person.blocked_reason or _("Personne bloquée."))
-        elif not cin:
-            visit._create_incident("missing_cin", _("La CIN doit être saisie manuellement."))
         return self._visit_response(visit)
 
     def _visit_response(self, visit):

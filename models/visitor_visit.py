@@ -39,9 +39,9 @@ class ArVisitorVisit(models.Model):
             ("identity_check", "Identité à vérifier"),
             ("quiz_pending", "Quiz à effectuer"),
             ("host_pending", "Personne à visiter"),
-            ("signature_pending", "Signature en attente"),
             ("approval_pending", "Validation manuelle"),
             ("checked_in", "Visiteur entré"),
+            ("signature_pending", "Signature en attente"),
             ("checked_out", "Visiteur sorti"),
             ("refused", "Refusé"),
             ("cancelled", "Annulé"),
@@ -78,7 +78,6 @@ class ArVisitorVisit(models.Model):
     notification_error = fields.Text(readonly=True, copy=False)
     kiosk_token = fields.Char(default=lambda self: uuid.uuid4().hex, readonly=True, copy=False, index=True, groups="ar_visitors.group_ar_visitors_user")
     kiosk_token_expires_at = fields.Datetime(readonly=True, copy=False)
-    incident_ids = fields.One2many("ar.visitor.incident", "visit_id")
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
 
     _event_unique = models.Constraint(
@@ -117,17 +116,6 @@ class ArVisitorVisit(models.Model):
             if record.check_in_at and record.check_out_at and record.check_out_at < record.check_in_at:
                 raise ValidationError(_("La sortie ne peut pas précéder l'entrée."))
 
-    def _create_incident(self, incident_type, details):
-        self.ensure_one()
-        return self.env["ar.visitor.incident"].sudo().create({
-            "name": _("Incident %s") % self.name,
-            "incident_type": incident_type,
-            "visit_id": self.id,
-            "person_id": self.person_id.id,
-            "terminal_id": self.terminal_id.id,
-            "details": details,
-        })
-
     def action_select_language(self):
         for record in self:
             if record.state not in ('draft', 'identity_check'):
@@ -153,7 +141,6 @@ class ArVisitorVisit(models.Model):
             if person:
                 if person.status != "active":
                     record.write({"person_id": person.id, "facial_result": "manual", "state": "refused"})
-                    record._create_incident("blocked", person.blocked_reason or _("Personne bloquée."))
                     continue
                 record.write({
                     "person_id": person.id,
@@ -199,11 +186,9 @@ class ArVisitorVisit(models.Model):
             if person:
                 if person.status != "active" or not person.active:
                     record.write({"person_id": person.id, "state": "refused"})
-                    record._create_incident("blocked", person.blocked_reason or _("Personne bloquée."))
                     continue
                 if record.facial_result == 'unknown':
                     record.write({'person_id': person.id, 'state': 'approval_pending'})
-                    record._create_incident('identity_mismatch', _('Cette CIN existe mais le visage ne correspond pas.'))
                     continue
                 record.write({
                     "person_id": person.id,
@@ -318,7 +303,6 @@ class ArVisitorVisit(models.Model):
             if not template or not email_to:
                 message = _("La personne à visiter ne possède pas d'adresse e-mail.")
                 record.write({"notification_state": "failed", "notification_error": message})
-                record._create_incident("email_failed", message)
                 continue
             try:
                 template.sudo().send_mail(record.id, force_send=True, raise_exception=True, email_values={"email_to": email_to})
@@ -328,7 +312,6 @@ class ArVisitorVisit(models.Model):
                 _logger.exception("Visitor host notification failed for visit %s", record.id)
                 message = str(exc)[:1000]
                 record.write({"notification_state": "failed", "notification_error": message})
-                record._create_incident("email_failed", message)
 
     def action_retry_notification(self):
         self.write({"notification_state": "pending", "notification_error": False})

@@ -1,6 +1,6 @@
 {
     "name": "AR - Visitors",
-    "version": "19.0.1.6.1",
+    "version": "19.0.1.7.2",
     "summary": "Gestion sécurisée des visiteurs et intégration faciale",
     "description": """
 AR - Visitors
@@ -22,9 +22,8 @@ Le module expose également une API sécurisée pour un système facial externe.
         "views/visitor_person_views.xml",
         "views/visitor_visit_views.xml",
         "views/quiz_result_views.xml",
-        "views/visitor_document_views.xml",
+        "views/visitor_quiz_config_views.xml",
         "views/facial_terminal_views.xml",
-        "views/visitor_incident_views.xml",
         "views/res_config_settings_views.xml",
         "wizard/visitor_checkout_wizard_views.xml",
         "views/kiosk_templates.xml",
@@ -32,7 +31,7 @@ Le module expose également une API sécurisée pour un système facial externe.
         "views/menus.xml",
     ],
     "assets": {
-        "web.assets_backend": ["ar_visitors/static/src/js/kiosk_dialog.js"],
+        "web.assets_backend": ["ar_visitors/static/src/js/kiosk_dialog.js", "ar_visitors/static/src/scss/visitor_form.scss"],
         "web.assets_frontend": ["ar_visitors/static/src/scss/kiosk.scss"],
     },
     "application": True,
