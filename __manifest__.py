@@ -1,6 +1,6 @@
 {
     "name": "AR - Visitors",
-    "version": "19.0.1.7.2",
+    "version": "19.0.1.7.3",
     "summary": "Gestion sécurisée des visiteurs et intégration faciale",
     "description": """
 AR - Visitors

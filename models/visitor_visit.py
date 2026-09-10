@@ -51,6 +51,7 @@ class ArVisitorVisit(models.Model):
         index=True,
         tracking=True,
     )
+
     language = fields.Selection(
         [("fr", "Français"), ("en", "English"), ("es", "Español")], default="fr", required=True
     )
@@ -83,6 +84,36 @@ class ArVisitorVisit(models.Model):
     _event_unique = models.Constraint(
         "unique(facial_event_id)", "Cet événement facial a déjà été traité."
     )
+
+    def init(self):
+        self.env.cr.execute(
+            """
+            UPDATE ir_sequence
+               SET prefix = 'VIS - ',
+                   padding = 4
+             WHERE code = 'ar.visitor.visit'
+               AND (prefix IS DISTINCT FROM 'VIS - ' OR padding IS DISTINCT FROM 4)
+            """
+        )
+        self.env.cr.execute(
+            """
+            WITH visits_to_update AS (
+                SELECT id,
+                       substring(name from '^VIS/[0-9]{4}/([0-9]+)$')::integer AS sequence_number
+                  FROM ar_visitor_visit
+                 WHERE name ~ '^VIS/[0-9]{4}/[0-9]+$'
+            )
+            UPDATE ar_visitor_visit AS visit
+               SET name = 'VIS - ' ||
+                   CASE
+                       WHEN length(visits_to_update.sequence_number::text) < 4
+                       THEN lpad(visits_to_update.sequence_number::text, 4, '0')
+                       ELSE visits_to_update.sequence_number::text
+                   END
+              FROM visits_to_update
+             WHERE visit.id = visits_to_update.id
+            """
+        )
 
     @api.depends("check_in_at", "check_out_at")
     def _compute_duration(self):
