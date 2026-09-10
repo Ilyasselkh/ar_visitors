@@ -32,6 +32,7 @@ class VisitorIdentifyWizard(models.TransientModel):
                     "person_id": person.id, "first_name": person.first_name,
                     "last_name": person.last_name, "photo": person.image_1920,
                     "visitor_company": person.company_name,
+                    "nationality_id": person.nationality_id.id,
                     "language": person.preferred_language or "fr",
                     "validation_was_valid": valid,
                     "check_in_at": fields.Datetime.now() if valid else False,

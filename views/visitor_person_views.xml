@@ -7,6 +7,7 @@
             <search>
                 <field name="name"/>
                 <field name="cin"/>
+                <field name="nationality_id" options="{'no_create': True, 'no_open': True}"/>
                 <field name="company_name"/>
                 <filter name="valid" string="Quiz valide" domain="[('recent_visit', '=', True)]"/>
                 <filter name="expired" string="Quiz expiré" domain="[('recent_visit', '=', False)]"/>
@@ -23,6 +24,7 @@
                 <field name="image_1920" widget="image" options="{'size': [40, 40]}"/>
                 <field name="name"/>
                 <field name="cin"/>
+                <field name="nationality_id" options="{'no_create': True, 'no_open': True}"/>
                 <field name="company_name"/>
                 <field name="last_visit_at"/><field name="last_quiz_at"/>
                 <field name="visit_valid_until"/>
@@ -49,6 +51,7 @@
                             <field name="first_name"/>
                             <field name="last_name"/>
                             <field name="cin"/>
+                <field name="nationality_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="status"/>
                             <field name="blocked_reason" invisible="status != 'blocked'" required="status == 'blocked'"/>
                         </group>

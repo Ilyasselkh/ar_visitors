@@ -51,6 +51,7 @@
                             <field name="first_name" required="state != 'draft'"/>
                             <field name="last_name" required="state != 'draft'"/>
                             <field name="cin" required="state != 'draft'"/>
+                            <field name="nationality_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="visitor_company"/>
                         </group>
                     </div>

@@ -14,6 +14,7 @@ class ArVisitorPerson(models.Model):
 
     name = fields.Char(compute="_compute_name", store=True)
     active = fields.Boolean(default=True, tracking=True)
+    nationality_id = fields.Many2one("res.country", string="Nationalité", tracking=True)
     first_name = fields.Char(string="Prénom", required=True, tracking=True)
     last_name = fields.Char(string="Nom", required=True, tracking=True)
     cin = fields.Char(string="CIN", required=True, index=True, tracking=True, copy=False)

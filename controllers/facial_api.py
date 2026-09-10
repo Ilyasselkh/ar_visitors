@@ -61,6 +61,7 @@ class ArVisitorsFacialApi(http.Controller):
 
         visit = request.env["ar.visitor.visit"].sudo().create({
             "person_id": person.id if person else False,
+            "nationality_id": person.nationality_id.id if person else False,
             "first_name": person.first_name if person else first_name,
             "last_name": person.last_name if person else last_name,
             "cin": cin,

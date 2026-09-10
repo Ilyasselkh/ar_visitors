@@ -18,6 +18,7 @@ class ArVisitorVisit(models.Model):
     name = fields.Char(string="Référence", default="Nouveau", readonly=True, copy=False, index=True)
     active = fields.Boolean(default=True)
     person_id = fields.Many2one("ar.visitor.person", string="Visiteur", ondelete="restrict", tracking=True)
+    nationality_id = fields.Many2one("res.country", string="Nationalité", tracking=True)
     first_name = fields.Char(string="Prénom", tracking=True)
     last_name = fields.Char(string="Nom", tracking=True)
     cin = fields.Char(string="CIN", index=True, tracking=True)
@@ -175,6 +176,7 @@ class ArVisitorVisit(models.Model):
                     continue
                 record.write({
                     "person_id": person.id,
+                    "nationality_id": record.nationality_id.id or person.nationality_id.id,
                     "first_name": person.first_name,
                     "last_name": person.last_name,
                     "photo": person.image_1920,
@@ -223,6 +225,7 @@ class ArVisitorVisit(models.Model):
                     continue
                 record.write({
                     "person_id": person.id,
+                    "nationality_id": record.nationality_id.id or person.nationality_id.id,
                     "first_name": person.first_name,
                     "last_name": person.last_name,
                     "photo": record.photo or person.image_1920,
@@ -285,6 +288,7 @@ class ArVisitorVisit(models.Model):
         Person = self.env["ar.visitor.person"].sudo()
         person = self.person_id or Person.search([("cin", "=", self.cin)], limit=1)
         vals = {
+            "nationality_id": self.nationality_id.id,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "cin": self.cin,
