@@ -1,0 +1,40 @@
+<odoo>
+    <record id="view_ar_visitor_identify_wizard" model="ir.ui.view">
+        <field name="name">ar.visitor.identify.wizard.form</field>
+        <field name="model">ar.visitor.identify.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Identifier le visiteur" class="ar_identify_form">
+                <div class="ar_identify_banner">
+                    <div class="ar_identify_icon"><i class="fa fa-id-card-o" aria-hidden="true"/></div>
+                    <div>
+                        <span class="ar_identify_eyebrow">NOUVELLE VISITE</span>
+                        <h2>Accueillir un visiteur</h2>
+                        <p>Retrouvez son identité et préparez son parcours en quelques instants.</p>
+                    </div>
+                </div>
+                <div class="ar_identify_body">
+                    <label for="cin" string="Numéro de CIN"/>
+                    <div class="ar_identify_input">
+                        <i class="fa fa-search" aria-hidden="true"/>
+                        <field name="cin" placeholder="Saisissez la CIN du visiteur" default_focus="1"/>
+                    </div>
+                    <p class="ar_identify_help">La CIN permet de retrouver le visiteur et de vérifier la validité de son dernier quiz.</p>
+                    <div class="ar_identify_note">
+                        <i class="fa fa-info-circle" aria-hidden="true"/>
+                        <span>Première visite ? Vous pourrez compléter son identité à l’étape suivante.</span>
+                    </div>
+                </div>
+                <footer>
+                    <button name="action_continue" type="object" string="Continuer" class="btn-primary ar_identify_continue"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary ar_identify_cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+    <record id="action_ar_visitor_identify" model="ir.actions.act_window">
+        <field name="name">Identifier le visiteur</field>
+        <field name="res_model">ar.visitor.identify.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

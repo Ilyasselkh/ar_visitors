@@ -10,3 +10,5 @@ access_ar_visitor_checkout_wizard,ar.visitor.checkout.wizard,model_ar_visitor_ch
 access_ar_quiz_result,Quiz results,model_ar_visitor_quiz_result,group_ar_visitors_manager,1,0,0,0
 access_ar_visitor_settings,Visitor settings,model_ar_visitor_settings,group_ar_visitors_admin,1,1,1,1
 access_ar_survey_config_read,Visitor quiz selection,survey.model_survey_survey,group_ar_visitors_admin,1,0,0,0
+
+access_ar_visitor_identify_wizard,Visitor identification,model_ar_visitor_identify_wizard,group_ar_visitors_user,1,1,1,1
