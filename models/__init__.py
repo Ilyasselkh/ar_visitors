@@ -6,3 +6,5 @@ from . import res_config_settings
 from . import recognition_provider
 from . import survey_user_input
 from . import quiz_result
+
+from . import visitor_person_photo

@@ -28,11 +28,11 @@
                 <button name="action_open_quiz" type="object" string="Ouvrir le quiz" class="btn-primary" invisible="state != 'quiz_pending'"/>
                 <button name="action_check_quiz" type="object" string="Vérifier le quiz" class="btn-success" invisible="state != 'quiz_pending'"/>
                 <button name="action_check_in" type="object" string="Enregistrer et notifier" class="btn-success" invisible="state != 'host_pending'"/>
-                <button name="action_check_out" type="object" string="Marquer la sortie et signer" class="btn-primary" invisible="state not in ('checked_in','signature_pending')"/>
+                <button name="action_check_out" type="object" string="Enregistrer la sortie" class="btn-primary" invisible="state not in ('checked_in','signature_pending')"/>
                 <button name="action_approve" type="object" string="Valider le contrôle" groups="ar_visitors.group_ar_visitors_user" invisible="state != 'approval_pending'"/>
                 <button name="action_refuse" type="object" string="Refuser" groups="ar_visitors.group_ar_visitors_user" invisible="state in ('checked_in','checked_out','refused','cancelled')"/>
                 <button name="action_cancel" type="object" string="Annuler" invisible="state in ('checked_in','checked_out','refused','cancelled')"/>
-                <field name="state" widget="statusbar" statusbar_visible="draft,identity_input,identity_check,quiz_pending,host_pending,checked_in,signature_pending,checked_out"/>
+                <field name="state" widget="statusbar" statusbar_visible="draft,identity_input,identity_check,quiz_pending,host_pending,checked_in,checked_out"/>
             </header>
             <sheet>
                 <div class="ar_visit_hero">
@@ -48,8 +48,8 @@
                         <h3>Identité du visiteur</h3>
                         <group>
                             <field name="person_id" groups="ar_visitors.group_ar_visitors_api_admin"/>
-                            <field name="first_name" required="state != 'draft'"/>
-                            <field name="last_name" required="state != 'draft'"/>
+                            <field name="first_name"/>
+                            <field name="last_name"/>
                             <field name="cin" required="state != 'draft'"/>
                             <field name="nationality_id" options="{'no_create': True, 'no_open': True}"/>
                             <field name="visitor_company"/>
@@ -61,6 +61,8 @@
                             <field name="host_employee_id" options="{'no_create': True}"/>
                             <field name="department_id"/>
                             <field name="purpose"/>
+                            <field name="entry_signature" widget="signature" readonly="state != 'host_pending'"/>
+                            <field name="entry_signature_at" invisible="not entry_signature_at"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                     </div>
@@ -72,7 +74,13 @@
                 </div>
                 <notebook>
                     <page string="Quiz"><group><group><field name="language"/></group><group><field name="survey_id"/><field name="survey_user_input_id"/><field name="quiz_completed"/><field name="quiz_score" groups="ar_visitors.group_ar_visitors_manager"/><field name="quiz_completed_at"/></group></group></page>
-                    <page string="Signature de sortie"><field name="signature" widget="image" readonly="1"/><field name="signature_at" readonly="1"/></page>
+                    <page string="Signature du visiteur">
+                        <field name="entry_signature" widget="image" readonly="1"/>
+                        <field name="entry_signature_at" readonly="1"/>
+                        <group string="Ancienne signature de sortie" invisible="not signature">
+                            <field name="signature" widget="image" readonly="1"/><field name="signature_at" readonly="1"/>
+                        </group>
+                    </page>
                 </notebook>
                 <chatter/>
             </sheet>

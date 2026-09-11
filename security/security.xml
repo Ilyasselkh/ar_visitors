@@ -65,5 +65,10 @@
         <field name="name">Résultats par société</field><field name="model_id" ref="model_ar_visitor_quiz_result"/>
         <field name="domain_force">[('company_id','in',company_ids)]</field>
     </record>
+    <record id="rule_ar_visitor_person_photo_company" model="ir.rule">
+        <field name="name">Photos secondaires multi-sociétés</field>
+        <field name="model_id" ref="model_ar_visitor_person_photo"/>
+        <field name="domain_force">['|', ('person_id.visit_ids.company_id', 'in', company_ids), ('person_id.visit_ids', '=', False)]</field>
+    </record>
 </odoo>
 

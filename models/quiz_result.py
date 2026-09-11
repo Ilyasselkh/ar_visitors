@@ -9,8 +9,17 @@ class VisitorQuizResult(models.Model):
     _rec_name = 'person_name'
     _order = 'quiz_completed_at desc'
 
+    first_name = fields.Char(string="Prénom", readonly=True)
+    last_name = fields.Char(string="Nom", readonly=True)
+    host_name = fields.Char(string="Personne visitée", readonly=True)
+    host_email = fields.Char(string="E-mail", readonly=True)
+    answer_created_at = fields.Datetime(string="Créé le", readonly=True)
+    points = fields.Float(string="Points", readonly=True)
+    passed = fields.Boolean(string="Réussi", readonly=True)
+    scored = fields.Boolean(readonly=True)
+    result_state = fields.Selection([("done", "Effectué")], string="État", readonly=True)
     person_name = fields.Char(readonly=True)
-    cin = fields.Char(readonly=True)
+    cin = fields.Char(string='CIN / passeport', readonly=True)
     quiz_name = fields.Char(readonly=True)
     language = fields.Selection([('fr', 'Français'), ('en', 'English'), ('es', 'Español')], readonly=True)
     quiz_completed_at = fields.Datetime(readonly=True)
@@ -24,8 +33,14 @@ class VisitorQuizResult(models.Model):
         self.env.cr.execute('''CREATE VIEW ar_visitor_quiz_result AS
             SELECT v.id, concat_ws(' ',v.first_name,v.last_name) AS person_name,
                    v.cin, COALESCE(s.title->>'fr_FR',s.title->>'en_US',s.title::text) AS quiz_name,
-                   v.language,v.quiz_completed_at,v.quiz_score,v.name,v.company_id
+                   v.language,v.quiz_completed_at,v.quiz_score,v.name,v.company_id,
+                   v.first_name, v.last_name, h.name AS host_name, h.work_email AS host_email,
+                   a.create_date AS answer_created_at, a.scoring_total AS points,
+                   a.scoring_success AS passed, (s.scoring_type != 'no_scoring') AS scored,
+                   'done' AS result_state
             FROM ar_visitor_visit v JOIN survey_survey s ON s.id=v.survey_id
+            JOIN survey_user_input a ON a.id=v.survey_user_input_id
+            LEFT JOIN hr_employee h ON h.id=v.host_employee_id
             WHERE v.quiz_completed AND v.survey_user_input_id IS NOT NULL''')
 
     def _compute_answers(self):
@@ -44,6 +59,23 @@ class VisitorQuizResult(models.Model):
                     field = 'value_' + (line.answer_type or '')
                     if field in line._fields:
                         values = [str(line[field]) if line[field] is not False else '']
-                rows.append(Markup('<tr><td>{}</td><td>{}</td><td>{}</td></tr>').format(
-                    escape(line.question_id.title), escape(' / '.join(values)), escape(str(line.answer_score))))
-            result.answers_html = Markup('<table class="table table-bordered"><thead><tr><th>Question</th><th>Réponse du visiteur</th><th>Points</th></tr></thead><tbody>{}</tbody></table>').format(Markup('').join(rows))
+                rows.append(Markup('<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td class="text-end">{}</td></tr>').format(
+                    escape(line.question_id.title), '✓' if line.skipped else '—', escape(' / '.join(values)), '✓' if line.answer_is_correct else '—', escape('%.2f' % line.answer_score)))
+            result.answers_html = Markup('<table class="table table-bordered"><thead><tr><th>Question</th><th>Ignoré</th><th>Réponse</th><th>Correct</th><th class="text-end">Note</th></tr></thead><tbody>{}</tbody></table>').format(Markup('').join(rows))
+
+    def action_open_visit(self):
+        self.ensure_one()
+        self.check_access("read")
+        visit = self.env["ar.visitor.visit"].browse(self.id)
+        visit.check_access("read")
+        return {"type": "ir.actions.act_window", "name": "Demande",
+                "res_model": "ar.visitor.visit", "res_id": visit.id,
+                "views": [(False, "form")], "target": "current"}
+
+    def action_open_answers(self):
+        self.ensure_one()
+        self.check_access("read")
+        return {"type": "ir.actions.act_window", "name": "Réponses",
+                "res_model": self._name, "res_id": self.id,
+                "views": [(self.env.ref("ar_visitors.view_ar_quiz_result_form").id, "form")],
+                "target": "current"}

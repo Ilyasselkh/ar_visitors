@@ -17,7 +17,8 @@ class ArVisitorPerson(models.Model):
     nationality_id = fields.Many2one("res.country", string="Nationalité", tracking=True)
     first_name = fields.Char(string="Prénom", required=True, tracking=True)
     last_name = fields.Char(string="Nom", required=True, tracking=True)
-    cin = fields.Char(string="CIN", required=True, index=True, tracking=True, copy=False)
+    cin = fields.Char(string="CIN / passeport", required=True, index=True, tracking=True, copy=False)
+    secondary_photo_ids = fields.One2many("ar.visitor.person.photo", "person_id", string="Photos secondaires", groups="ar_visitors.group_ar_visitors_api_admin")
     image_1920 = fields.Image(string="Photo", max_width=1920, max_height=1920, attachment=True)
     last_quiz_at = fields.Datetime(string="Dernier quiz terminé", compute="_compute_last_quiz_at", store=True)
 
@@ -49,7 +50,7 @@ class ArVisitorPerson(models.Model):
     visit_ids = fields.One2many("ar.visitor.visit", "person_id", string="Visites")
     visit_count = fields.Integer(compute="_compute_visit_count")
 
-    _cin_unique = models.Constraint("unique(cin)", "La CIN doit être unique.")
+    _cin_unique = models.Constraint("unique(cin)", "La CIN / passeport doit être unique.")
 
     @api.depends("first_name", "last_name")
     def _compute_name(self):
@@ -123,7 +124,7 @@ class ArVisitorPerson(models.Model):
     def _check_cin(self):
         for record in self:
             if not record.cin or len(record.cin) < 4:
-                raise ValidationError(_("La CIN doit contenir au moins quatre caractères."))
+                raise ValidationError(_("La CIN / passeport doit contenir au moins quatre caractères."))
 
     @api.constrains("status", "blocked_reason")
     def _check_blocked_reason(self):

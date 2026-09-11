@@ -4,6 +4,8 @@
         <field name="model">ar.visitor.identify.wizard</field>
         <field name="arch" type="xml">
             <form string="Identifier le visiteur" class="ar_identify_form">
+                <field name="step" invisible="1"/><field name="language" invisible="1"/>
+                <div invisible="step != 'cin'">
                 <div class="ar_identify_banner">
                     <div class="ar_identify_icon"><i class="fa fa-id-card-o" aria-hidden="true"/></div>
                     <div>
@@ -13,19 +15,42 @@
                     </div>
                 </div>
                 <div class="ar_identify_body">
-                    <label for="cin" string="Numéro de CIN"/>
+                    <label for="cin" string="Numéro de CIN / passeport"/>
                     <div class="ar_identify_input">
                         <i class="fa fa-search" aria-hidden="true"/>
-                        <field name="cin" placeholder="Saisissez la CIN du visiteur" default_focus="1"/>
+                        <field name="cin" placeholder="Saisissez la CIN / passeport du visiteur" default_focus="1"/>
                     </div>
-                    <p class="ar_identify_help">La CIN permet de retrouver le visiteur et de vérifier la validité de son dernier quiz.</p>
+                    <p class="ar_identify_help">La CIN / passeport permet de retrouver le visiteur et de vérifier la validité de son dernier quiz.</p>
                     <div class="ar_identify_note">
                         <i class="fa fa-info-circle" aria-hidden="true"/>
                         <span>Première visite ? Vous pourrez compléter son identité à l’étape suivante.</span>
                     </div>
                 </div>
+                </div>
+                <div invisible="step != 'language'" class="ar_identify_languages">
+                    <div class="ar_lang_heading">
+                        <span class="ar_lang_symbol"><i class="fa fa-globe" aria-hidden="true"/></span>
+                        <span class="ar_lang_eyebrow">BIENVENUE · WELCOME · BIENVENIDO</span>
+                        <h2>Choisissez votre langue</h2>
+                        <p>Select your language · Elija su idioma</p>
+                    </div>
+                    <div class="ar_lang_cards">
+                        <button name="action_choose_fr" type="object" class="ar_lang_card">
+                            <span class="ar_lang_code">FR</span><strong>Français</strong>
+                            <span class="ar_lang_hint">Continuer en français</span><span class="ar_lang_arrow" aria-hidden="true">→</span>
+                        </button>
+                        <button name="action_choose_en" type="object" class="ar_lang_card">
+                            <span class="ar_lang_code">EN</span><strong>English</strong>
+                            <span class="ar_lang_hint">Continue in English</span><span class="ar_lang_arrow" aria-hidden="true">→</span>
+                        </button>
+                        <button name="action_choose_es" type="object" class="ar_lang_card">
+                            <span class="ar_lang_code">ES</span><strong>Español</strong>
+                            <span class="ar_lang_hint">Continuar en español</span><span class="ar_lang_arrow" aria-hidden="true">→</span>
+                        </button>
+                    </div>
+                </div>
                 <footer>
-                    <button name="action_continue" type="object" string="Continuer" class="btn-primary ar_identify_continue"/>
+                    <button name="action_continue" invisible="step != 'cin'" type="object" string="Continuer" class="btn-primary ar_identify_continue"/>
                     <button string="Annuler" special="cancel" class="btn-secondary ar_identify_cancel"/>
                 </footer>
             </form>

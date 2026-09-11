@@ -1,13 +1,4 @@
 (() => {
-    const languageDialog = document.getElementById('ar-language-dialog');
-    if (languageDialog) {
-        languageDialog.addEventListener('cancel', (event) => event.preventDefault());
-        if (typeof languageDialog.showModal === 'function') {
-            // Server-rendered open state keeps the choices available without JS.
-            languageDialog.close();
-            languageDialog.showModal();
-        }
-    }
     const dialog = document.getElementById('ar-quiz-dialog');
     if (!dialog) return;
     const frame = dialog.querySelector('iframe');

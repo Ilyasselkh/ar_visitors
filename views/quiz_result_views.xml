@@ -9,6 +9,7 @@
                 <field name="language"/>
                 <filter name="quiz_date" string="Date du quiz" date="quiz_completed_at"/>
                 <group>
+                    <filter name="group_cin" string="CIN / passeport" context="{'group_by':'cin'}"/>
                     <filter name="person" string="Personne" context="{'group_by':'person_name'}"/>
                     <filter name="quiz" string="Quiz" context="{'group_by':'quiz_name'}"/>
                     <filter name="language" string="Langue" context="{'group_by':'language'}"/>
@@ -21,11 +22,16 @@
         <field name="model">ar.visitor.quiz.result</field>
         <field name="arch" type="xml">
             <list string="Résultats des quiz" create="0" edit="0" delete="0" default_order="quiz_completed_at desc">
-                <field name="person_name"/><field name="cin"/>
-                <field name="quiz_name"/><field name="language"/>
                 <field name="quiz_completed_at" string="Date de passation"/>
-                <field name="quiz_score" string="Score (%)"/>
                 <field name="name" string="Visite"/>
+                <field name="last_name"/><field name="first_name"/><field name="cin"/>
+                <field name="host_name"/><field name="quiz_name" string="Sondage"/>
+                <field name="result_state" widget="badge"/>
+                <field name="points" sum="Total des points"/><field name="quiz_score" string="Note (%)"/>
+                <field name="passed" optional="show"/>
+                <field name="language" optional="hide"/>
+                <button name="action_open_visit" type="object" string="Demande" icon="fa-external-link"/>
+                <button name="action_open_answers" type="object" string="Réponse" icon="fa-list-alt"/>
             </list>
         </field>
     </record>
@@ -34,12 +40,29 @@
         <field name="model">ar.visitor.quiz.result</field>
         <field name="arch" type="xml">
             <form string="Résultat du quiz" create="0" edit="0" delete="0">
+                <header><field name="result_state" widget="statusbar"/></header>
                 <sheet>
+                    <field name="scored" invisible="1"/><field name="passed" invisible="1"/>
+                    <widget name="web_ribbon" title="Échec" bg_color="text-bg-danger" invisible="not scored or passed"/>
+                    <widget name="web_ribbon" title="Réussi" bg_color="text-bg-success" invisible="not scored or not passed"/>
                     <group>
-                        <group string="Visiteur"><field name="person_name"/><field name="cin"/><field name="name" string="Visite"/></group>
-                        <group string="Quiz terminé"><field name="quiz_name"/><field name="language"/><field name="quiz_completed_at" string="Date de passation"/><field name="quiz_score" string="Score (%)"/></group>
+                        <group>
+                            <field name="quiz_name" string="Sondage"/>
+                            <field name="answer_created_at"/>
+                            <field name="person_name" string="Visiteur"/><field name="cin"/>
+                            <field name="name" string="Visite"/>
+                        </group>
+                        <group>
+                            <field name="quiz_score" string="Note (%)"/>
+                            <field name="points"/>
+                            <field name="host_name"/><field name="host_email" widget="email"/>
+                            <field name="language"/><field name="quiz_completed_at" string="Terminé le"/>
+                        </group>
                     </group>
-                    <field name="answers_html" widget="html"/><p>Le score sert uniquement à l’analyse et ne conditionne pas l’entrée du visiteur.</p>
+                    <notebook><page string="Réponses">
+                        <field name="answers_html" widget="html"/>
+                    </page></notebook>
+                    <p class="text-muted mt-3">Le score sert uniquement à l’analyse et ne conditionne pas l’entrée du visiteur.</p>
                 </sheet>
             </form>
         </field>
@@ -50,7 +73,7 @@
         <field name="view_mode">list,form</field>
         <field name="domain">[]</field>
         <field name="search_view_id" ref="view_ar_quiz_result_search"/>
-        <field name="context">{'search_default_person':1,'create':False}</field>
+        <field name="context">{'create':False}</field>
         <field name="help" type="html"><p>Aucun quiz terminé pour le moment.</p><p>Chaque passation apparaît ici avec le visiteur, la langue, la date et le score.</p></field>
     </record>
     <record id="action_ar_quiz_results_list" model="ir.actions.act_window.view">

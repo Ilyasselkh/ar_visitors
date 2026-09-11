@@ -1,0 +1,617 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Language: en_GB\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "<span class=\"ar_visit_eyebrow\">FICHE VISITEUR</span>"
+msgstr "<span class=\"ar_visit_eyebrow\">VISITOR RECORD</span>"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Accueil et suivi de la visite"
+msgstr "Visitor reception and tracking"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Accès non autorisé"
+msgstr "Access not authorized"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_checkout_wizard_form
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_identify_wizard
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_visitor_settings
+msgid "Annuler"
+msgstr "Cancel"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__cancelled
+msgid "Annulé"
+msgstr "Cancelled"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Aucun quiz actif n'est configuré pour cette langue."
+msgstr "No active quiz is configured for this language."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Aucun quiz n'est configuré."
+msgstr "No quiz is configured."
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__draft
+msgid "Brouillon"
+msgstr "Draft"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Ce visiteur possède déjà une visite en cours."
+msgstr "This visitor already has an ongoing visit."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Cette visite n'attend pas de quiz."
+msgstr "This visit is not awaiting a quiz."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Cette visite n'est pas prête pour l'entrée."
+msgstr "This visit is not ready for check-in."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Cette visite ne peut pas être ouverte sur la borne."
+msgstr "This visit cannot be opened in the kiosk."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Charger le quiz"
+msgstr "Load quiz"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Compléter l'identité"
+msgstr "Complete identity"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_identify_wizard
+msgid "Continuer"
+msgstr "Continue"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Contrôle de l'accueil requis"
+msgstr "Reception verification required"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__signature_at
+msgid "Date de signature"
+msgstr "Signature date"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__check_in_at
+msgid "Date et heure d'entrée"
+msgstr "Check-in date and time"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__check_out_at
+msgid "Date et heure de sortie"
+msgstr "Check-out date and time"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__department_id
+msgid "Department"
+msgstr "Department"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__duration_hours
+msgid "Durée (heures)"
+msgstr "Duration (hours)"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Démarrer le parcours"
+msgstr "Start journey"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Détails de la visite"
+msgstr "Visit details"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Enregistrer et notifier"
+msgstr "Save and notify"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Fermer"
+msgstr "Close"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Identité du visiteur"
+msgstr "Visitor identity"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__identity_input
+msgid "Identité à compléter"
+msgstr "Identity required"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__identity_check
+msgid "Identité à vérifier"
+msgstr "Identity verification"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Impossible de générer le lien du quiz."
+msgstr "Unable to generate the quiz link."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_person.py:0
+msgid "La CIN / passeport doit contenir au moins quatre caractères."
+msgstr "The CIN / passport must contain at least four characters."
+
+#. module: ar_visitors
+#: model:ir.model.constraint,message:ar_visitors.constraint_ar_visitor_person_cin_unique
+msgid "La CIN / passeport doit être unique."
+msgstr "The CIN / passport must be unique."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La personne à visiter est obligatoire."
+msgstr "A host is required."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La personne à visiter ne possède pas d'adresse e-mail."
+msgstr "The host has no email address."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "La photo capturée a été conservée. Renseignez les informations de la pièce d'identité."
+msgstr "The captured photo has been saved. Enter the identity document details."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/wizard/visitor_checkout_wizard.py:0
+msgid "La signature du visiteur est obligatoire pour valider la sortie."
+msgstr "The visitor's signature is required to confirm check-out."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La signature est obligatoire pour enregistrer la sortie."
+msgstr "A signature is required to record check-out."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La sortie ne peut pas précéder l'entrée."
+msgstr "Check-out cannot precede check-in."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_success
+msgid "La visite est enregistrée. Veuillez contacter l'accueil."
+msgstr "The visit is registered. Please contact reception."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La visite n'est pas en attente de signature."
+msgstr "This visit is not awaiting a signature."
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_document__language
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_identify_wizard__language
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_quiz_result__language
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__language
+msgid "Language"
+msgstr "Language"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_identify_wizard__step__language
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_search
+msgid "Langue"
+msgstr "Language"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/controllers/kiosk.py:0
+msgid "Langue incorrecte."
+msgstr "Invalid language."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Le choix de langue n'est pas disponible à cette étape."
+msgstr "Language selection is not available at this step."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Le nom, le prénom et une CIN / passeport valide sont obligatoires."
+msgstr "First name, last name and a valid CIN / passport are required."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Le parcours a déjà été démarré."
+msgstr "The journey has already started."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Le quiz n'est pas disponible à cette étape."
+msgstr "The quiz is not available at this step."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Le quiz n'est pas encore terminé."
+msgstr "The quiz is not finished yet."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Le quiz s’ouvre dans cette page."
+msgstr "The quiz opens on this page."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_checkout_wizard_form
+msgid "Le visiteur doit signer avant la validation de sa sortie"
+msgstr "The visitor must sign before confirming check-out"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Marquer la sortie et signer"
+msgstr "Check out and sign"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Motif"
+msgstr "Purpose"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__purpose
+msgid "Motif de la visite"
+msgstr "Purpose of visit"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__nationality_id
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__nationality_id
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Nationalité"
+msgstr "Nationality"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__last_name
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__last_name
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Nom"
+msgstr "Last name"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Ouvrir le parcours visiteur"
+msgstr "Open visitor journey"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Ouvrir le quiz"
+msgstr "Open quiz"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__survey_user_input_id
+msgid "Participation"
+msgstr "Participation"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__host_employee_id
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__host_pending
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Personne à visiter"
+msgstr "Host"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__image_1920
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__photo
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Photo"
+msgstr "Photo"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__first_name
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__first_name
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Prénom"
+msgstr "First name"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__survey_id
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_search
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Quiz"
+msgstr "Quiz"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_quiz_result__quiz_completed_at
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__quiz_completed_at
+msgid "Quiz Completed At"
+msgstr "Quiz completed on"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_quiz_result__quiz_score
+msgid "Quiz Score"
+msgstr "Quiz score"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_document__survey_id
+msgid "Quiz associé"
+msgstr "Assigned quiz"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Quiz de sécurité"
+msgstr "Safety quiz"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__recent_visit
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__validation_was_valid
+msgid "Quiz encore valide"
+msgstr "Quiz still valid"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__quiz_completed
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_form
+msgid "Quiz terminé"
+msgstr "Quiz completed"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Quiz visiteur"
+msgstr "Visitor quiz"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__quiz_pending
+msgid "Quiz à effectuer"
+msgstr "Quiz required"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Refuser"
+msgstr "Refuse"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__refused
+msgid "Refusé"
+msgstr "Refused"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__name
+msgid "Référence"
+msgstr "Reference"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Seule une visite en cours peut être clôturée."
+msgstr "Only an ongoing visit can be checked out."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_checkout_wizard_form
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Signature de sortie"
+msgstr "Check-out signature"
+
+#. module: ar_visitors
+#: model:ir.model,name:ar_visitors.model_ar_visitor_checkout_wizard
+msgid "Signature de sortie du visiteur"
+msgstr "Visitor check-out signature"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_checkout_wizard__signature
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Signature du visiteur"
+msgstr "Visitor signature"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__signature_pending
+msgid "Signature en attente"
+msgstr "Signature pending"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__company_name
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__visitor_company
+msgid "Société"
+msgstr "Company"
+
+#. module: ar_visitors
+#: model:ir.model,name:ar_visitors.model_survey_user_input
+msgid "Survey User Input"
+msgstr "Quiz answers"
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/controllers/kiosk.py:0
+msgid "Sélectionnez une personne à visiter."
+msgstr "Select a host."
+
+#. module: ar_visitors
+#. odoo-python
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "Une validation du responsable est nécessaire."
+msgstr "Manager approval is required."
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__approval_pending
+msgid "Validation manuelle"
+msgstr "Manual validation"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Valider l'identité"
+msgstr "Confirm identity"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_checkout_wizard_form
+msgid "Valider la sortie"
+msgstr "Confirm check-out"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Valider le contrôle"
+msgstr "Approve verification"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Veuillez contacter l'accueil."
+msgstr "Please contact reception."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Veuillez contacter l'agent d'accueil."
+msgstr "Please contact reception."
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_checkout_wizard__visit_id
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_form
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_list
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Visite"
+msgstr "Visit"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_success
+msgid "Visite enregistrée"
+msgstr "Visit registered"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_checkout_wizard__visitor_name
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__person_id
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_quiz_result_form
+msgid "Visiteur"
+msgstr "Visitor"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__checked_in
+msgid "Visiteur entré"
+msgstr "Checked in"
+
+#. module: ar_visitors
+#: model:ir.model.fields.selection,name:ar_visitors.selection__ar_visitor_visit__state__checked_out
+msgid "Visiteur sorti"
+msgstr "Checked out"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Visitors"
+msgstr "Visitors"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_success
+msgid "Votre contact a été informé."
+msgstr "Your host has been notified."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Votre visite"
+msgstr "Your visit"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Vérifier le quiz"
+msgstr "Check quiz"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_quiz_result__cin
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__cin
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__cin
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_identify_wizard__cin
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "CIN / passeport"
+msgstr "CIN / passport"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__entry_signature
+msgid "Signature à l'entrée"
+msgstr "Check-in signature"
+
+#. module: ar_visitors
+#: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__entry_signature_at
+msgid "Date de signature à l'entrée"
+msgstr "Check-in signature date"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Enregistrer la sortie"
+msgstr "Record check-out"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Effacer la signature"
+msgstr "Clear signature"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Veuillez signer avant de continuer."
+msgstr "Please sign before continuing."
+
+#. module: ar_visitors
+#: code:addons/ar_visitors/models/visitor_visit.py:0
+msgid "La signature du visiteur est obligatoire avant de valider la visite."
+msgstr "The visitor must sign before confirming the visit."
+
+#. module: ar_visitors
+#: code:addons/ar_visitors/controllers/kiosk.py:0
+msgid "Signature invalide. Veuillez signer à nouveau."
+msgstr "Invalid signature. Please sign again."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
+msgid "Ancienne signature de sortie"
+msgstr "Previous check-out signature"
+
+#. module: ar_visitors
+#: code:addons/ar_visitors/controllers/kiosk.py:0
+msgid "Nationalité invalide."
+msgstr "Invalid nationality."
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "Ajouter une photo"
+msgstr "Add a photo"
+
+#. module: ar_visitors
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
+msgid "JPG, PNG ou WEBP · 8 Mo maximum"
+msgstr "JPG, PNG or WEBP · Maximum 8 MB"
+
+#. module: ar_visitors
+#: code:addons/ar_visitors/controllers/kiosk.py:0
+msgid "Photo invalide : utilisez une image JPG, PNG ou WEBP de 8 Mo maximum."
+msgstr "Invalid photo: use a JPG, PNG or WEBP image up to 8 MB."

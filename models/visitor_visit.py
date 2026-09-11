@@ -21,7 +21,7 @@ class ArVisitorVisit(models.Model):
     nationality_id = fields.Many2one("res.country", string="Nationalité", tracking=True)
     first_name = fields.Char(string="Prénom", tracking=True)
     last_name = fields.Char(string="Nom", tracking=True)
-    cin = fields.Char(string="CIN", index=True, tracking=True)
+    cin = fields.Char(string="CIN / passeport", index=True, tracking=True)
     photo = fields.Image(string="Photo", max_width=1920, max_height=1920, attachment=True)
     visitor_company = fields.Char(string="Société")
     host_employee_id = fields.Many2one(
@@ -70,6 +70,8 @@ class ArVisitorVisit(models.Model):
     quiz_completed = fields.Boolean(string="Quiz terminé", readonly=True, copy=False)
     quiz_completed_at = fields.Datetime(readonly=True, copy=False)
     quiz_score = fields.Float(string="Score du quiz (%)", related="survey_user_input_id.scoring_percentage", store=True, groups="ar_visitors.group_ar_visitors_manager")
+    entry_signature = fields.Image(string="Signature à l'entrée", max_width=1600, max_height=800, copy=False, attachment=True)
+    entry_signature_at = fields.Datetime(string="Date de signature à l'entrée", readonly=True, copy=False)
     signature = fields.Binary(string="Signature", attachment=True, copy=False)
     signature_at = fields.Datetime(string="Date de signature", readonly=True, copy=False)
     notification_state = fields.Selection(
@@ -202,13 +204,13 @@ class ArVisitorVisit(models.Model):
                         'kiosk_token_expires_at': fields.Datetime.now() + relativedelta(minutes=int(
                             self.env['ir.config_parameter'].sudo().get_param('ar_visitors.kiosk_token_minutes', 15)))})
         return {'type': 'ir.actions.client', 'tag': 'ar_visitors.open_kiosk',
-                'params': {'url': '/ar-visitors/kiosk/%s' % session.kiosk_token}}
+                'params': {'url': '/ar-visitors/kiosk/%s' % session.kiosk_token, 'title': {'fr': 'Parcours visiteur', 'en': 'Visitor journey', 'es': 'Recorrido del visitante'}[self.language]}}
 
     def _validate_identity_values(self):
         for record in self:
             cin = self.env["ar.visitor.person"].normalize_cin(record.cin)
             if not record.first_name or not record.last_name or len(cin) < 4:
-                raise UserError(_("Le nom, le prénom et une CIN valide sont obligatoires."))
+                raise UserError(_("Le nom, le prénom et une CIN / passeport valide sont obligatoires."))
             if record.cin != cin:
                 record.cin = cin
 
@@ -236,6 +238,8 @@ class ArVisitorVisit(models.Model):
             else:
                 record._create_or_update_person()
                 record.state = "identity_check"
+        for record in self.filtered(lambda v: v.state == "identity_check"):
+            record.action_select_language()
         return True
 
     def _ensure_survey_answer(self):
@@ -309,6 +313,8 @@ class ArVisitorVisit(models.Model):
         for record in self:
             if record.state != 'host_pending' or not (record.quiz_completed or record.validation_was_valid):
                 raise UserError(_("Cette visite n'est pas prête pour l'entrée."))
+            if not record.entry_signature:
+                raise UserError(_("La signature du visiteur est obligatoire avant de valider la visite."))
             if not record.host_employee_id:
                 raise UserError(_("La personne à visiter est obligatoire."))
             if record.state == "approval_pending" and not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
@@ -320,6 +326,7 @@ class ArVisitorVisit(models.Model):
             record.write({
                 "check_in_at": record.check_in_at or fields.Datetime.now(),
                 "state": "checked_in",
+                "entry_signature_at": fields.Datetime.now(),
                 "kiosk_token": False,
                 "kiosk_token_expires_at": False,
             })
@@ -356,28 +363,12 @@ class ArVisitorVisit(models.Model):
         self.ensure_one()
         if self.state not in ("checked_in", "signature_pending"):
             raise UserError(_("Seule une visite en cours peut être clôturée."))
-        self.state = "signature_pending"
-        return {
-            "type": "ir.actions.act_window",
-            "name": _("Signature de sortie"),
-            "res_model": "ar.visitor.checkout.wizard",
-            "view_mode": "form",
-            "target": "new",
-            "context": {"default_visit_id": self.id},
-        }
+        self.write({"check_out_at": fields.Datetime.now(), "state": "checked_out"})
+        return True
 
-    def _finalize_check_out(self, signature):
-        if not signature:
-            raise UserError(_("La signature est obligatoire pour enregistrer la sortie."))
-        for record in self:
-            if record.state != "signature_pending":
-                raise UserError(_("La visite n'est pas en attente de signature."))
-            record.write({
-                "signature": signature,
-                "signature_at": fields.Datetime.now(),
-                "check_out_at": fields.Datetime.now(),
-                "state": "checked_out",
-            })
+    def _finalize_check_out(self, signature=None):
+        # Compatibility with an already-open legacy checkout dialog.
+        return self.action_check_out()
 
     def action_approve(self):
         if not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):

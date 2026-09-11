@@ -113,3 +113,38 @@
     .ar_identify_form .ar_identify_banner { padding: 20px; gap: 14px; h2 { font-size: 21px; } }
     .ar_identify_form .ar_identify_icon { width: 48px; height: 48px; flex-basis: 48px; font-size: 22px; }
 }
+
+.ar_identify_languages {
+    padding: 0;
+    .ar_lang_heading {
+        padding: 28px 24px; text-align: center; border-radius: 18px;
+        background: linear-gradient(125deg, #172338, #393c61); color: white;
+        h2 { color: #fff; font-size: 26px; font-weight: 700; margin: 14px 0 8px; letter-spacing: -.5px; }
+        p { color: #d3dbee; font-size: 13px; margin: 0; }
+    }
+    .ar_lang_symbol {
+        display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+        width: 52px; height: 52px; border: 1px solid rgba(255,255,255,.22);
+        border-radius: 16px; background: rgba(255,255,255,.08); font-size: 27px; color: #d6c7ff;
+    }
+    .ar_lang_eyebrow { font-size: 9px; letter-spacing: 1.8px; font-weight: 700; color: #cbbcf0; }
+    .ar_lang_cards { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-top: 22px; }
+    .ar_lang_card {
+        position: relative; display: flex; flex-direction: column; align-items: flex-start;
+        gap: 11px; padding: 20px 16px; border: 1px solid #e0e5ee; border-radius: 16px;
+        background: #fff; text-align: left; color: #26334a; cursor: pointer;
+        transition: background .15s, border-color .15s, box-shadow .15s;
+        strong { font-size: 19px; font-weight: 700; }
+        &:hover { background: #f7f4fd; border-color: #9a85c4; box-shadow: 0 6px 18px rgba(70,50,110,.09); }
+        &:focus-visible { outline: 3px solid #b49cde; outline-offset: 3px; }
+    }
+    .ar_lang_code { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px;
+        border-radius: 12px; background: #eee9f7; color: #705693; font-size: 12px; font-weight: 800; letter-spacing: 1px; }
+    .ar_lang_hint { color: #69778c; font-size: 11px; line-height: 1.5; }
+    .ar_lang_arrow { position: absolute; top: 25px; right: 16px; color: #8b79ad; font-size: 20px; }
+    @media (max-width: 520px) {
+        .ar_lang_cards { grid-template-columns: 1fr; }
+        .ar_lang_card { padding: 16px; gap: 6px; }
+        .ar_lang_heading h2 { font-size: 23px; }
+    }
+}
