@@ -6,10 +6,11 @@ class VisitorIdentifyWizard(models.TransientModel):
     _name = "ar.visitor.identify.wizard"
     _description = "Identifier le visiteur"
 
+    captured_photo = fields.Image(string="Photo capturée", max_width=1920, max_height=1920, copy=False)
     cin = fields.Char(string="CIN / passeport", required=True)
 
     step = fields.Selection([("cin", "CIN / passeport"), ("language", "Langue")], default="cin", required=True)
-    language = fields.Selection([("fr", "Français"), ("en", "English"), ("es", "Español")], required=True, default="fr")
+    language = fields.Selection([("fr", "Français"), ("en", "English"), ("es", "Español"), ("ar", "العربية")], required=True, default="fr")
 
     def action_continue(self):
         self.ensure_one()
@@ -19,7 +20,7 @@ class VisitorIdentifyWizard(models.TransientModel):
         self.write({"cin": cin, "step": "language"})
         return {"type": "ir.actions.act_window", "res_model": self._name,
                 "res_id": self.id, "views": [(False, "form")], "target": "new",
-                "name": "Français · English · Español"}
+                "name": "Français · English · Español · العربية"}
 
     def action_choose_fr(self):
         self.language = "fr"
@@ -31,6 +32,10 @@ class VisitorIdentifyWizard(models.TransientModel):
 
     def action_choose_es(self):
         self.language = "es"
+        return self.action_identify()
+
+    def action_choose_ar(self):
+        self.language = "ar"
         return self.action_identify()
 
     def action_identify(self):
@@ -65,14 +70,16 @@ class VisitorIdentifyWizard(models.TransientModel):
                 })
                 if not person.active or person.status != "active":
                     vals["state"] = "refused"
+            if self.captured_photo:
+                vals["photo"] = self.captured_photo
             visit = Visit.create(vals)
         # A running quiz keeps its original language and answer.
         if visit.state not in ("quiz_pending", "checked_out"):
             visit.language = self.language
-        lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES"}[visit.language]
+        lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES", "ar": "ar_001"}[visit.language]
         form_action = {
             "context": dict(self.env.context, lang=lang),
-            "type": "ir.actions.act_window", "name": {"fr": "Visite", "en": "Visit", "es": "Visita"}[visit.language],
+            "type": "ir.actions.act_window", "name": {"fr": "Visite", "en": "Visit", "es": "Visita", "ar": "زيارة"}[visit.language],
             "res_model": "ar.visitor.visit", "res_id": visit.id,
             "views": [(False, "form")], "target": "current",
         }

@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_ar_visitor_face_wizard" model="ir.ui.view">
+        <field name="name">ar.visitor.face.wizard.form</field>
+        <field name="model">ar.visitor.face.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Caméra visiteurs">
+                <field name="person_id" invisible="1"/>
+                <p>Regardez la caméra et lancez la capture. Attendez la fin des cinq échantillons avant de continuer.</p>
+                <p invisible="person_id">Si le visage n'est pas reconnu, fermez cette fenêtre et saisissez la CIN / passeport.</p>
+                <field name="samples_json" widget="eh_face_enrol_widget" nolabel="1"/>
+                <footer>
+                    <button name="action_process" type="object" string="Enregistrer le visage" class="btn-primary" invisible="not person_id"/>
+                    <button name="action_process" type="object" string="Identifier le visiteur" class="btn-primary" invisible="person_id"/>
+                    <button string="Fermer" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

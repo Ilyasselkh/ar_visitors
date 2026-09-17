@@ -5,7 +5,6 @@ access_ar_visitor_visit_user,ar.visitor.visit user,model_ar_visitor_visit,group_
 access_ar_visitor_visit_manager,ar.visitor.visit manager,model_ar_visitor_visit,group_ar_visitors_user,1,1,1,0
 access_ar_visitor_document_user,ar.visitor.document user,model_ar_visitor_document,group_ar_visitors_admin,1,0,0,0
 access_ar_visitor_document_admin,ar.visitor.document admin,model_ar_visitor_document,group_ar_visitors_admin,1,1,1,1
-access_ar_visitor_terminal_admin,ar.visitor.facial.terminal admin,model_ar_visitor_facial_terminal,group_ar_visitors_admin,1,1,1,1
 access_ar_visitor_checkout_wizard,ar.visitor.checkout.wizard,model_ar_visitor_checkout_wizard,group_ar_visitors_user,1,1,1,1
 access_ar_quiz_result,Quiz results,model_ar_visitor_quiz_result,group_ar_visitors_manager,1,0,0,0
 access_ar_visitor_settings,Visitor settings,model_ar_visitor_settings,group_ar_visitors_admin,1,1,1,1

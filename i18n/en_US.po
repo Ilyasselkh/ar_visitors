@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
-"Language: en_GB\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -479,7 +479,6 @@ msgstr "Signature pending"
 #. module: ar_visitors
 #: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__company_name
 #: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__visitor_company
-#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
 msgid "Société"
 msgstr "Company"
 

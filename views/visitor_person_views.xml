@@ -60,7 +60,6 @@
                             <field name="email" widget="email"/>
                             <field name="phone" widget="phone"/>
                             <field name="preferred_language"/>
-                            <field name="facial_reference"/>
                         </group>
                     </group>
                     <group string="Dernière visite et consentement">

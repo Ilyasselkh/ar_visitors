@@ -21,7 +21,6 @@ registry.category("actions").add("ar_visitors.open_kiosk", (env, action) => {
 
 registry.category("actions").add("ar_visitors.start_journey", async (env, action) => {
     const { form_action, visit_id } = action.params;
-    await env.services.action.doAction(form_action);
     const journey = await env.services.orm.call("ar.visitor.visit", "action_open_kiosk", [[visit_id]], {
         context: form_action.context,
     });

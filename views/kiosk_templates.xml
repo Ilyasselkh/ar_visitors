@@ -18,11 +18,11 @@
 
             </head>
 
-            <body class="ar-visitors-kiosk">
+            <body class="ar-visitors-kiosk" t-att-lang="'ar' if visit.language == 'ar' else visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'">
 
                 <main class="ar-kiosk-card">
 
-                    <header><span class="ar-brand">AR</span><h1>Visitors</h1><span class="ar-reference" t-out="visit.name"/></header>
+                    <header><span class="ar-brand">AR</span><h1 t-out="labels['brand']"/><span class="ar-reference" t-out="visit.name"/></header>
 
                     <div t-if="error" class="ar-alert ar-alert-danger" t-out="error"/>
 
@@ -30,7 +30,7 @@
 
                         <img t-if="visit.photo" t-att-src="'/ar-visitors/kiosk/%s/photo' % visit.kiosk_token" alt="Photo"/>
 
-                        <div><strong><t t-out="visit.first_name"/> <t t-out="visit.last_name"/></strong><small>CIN / passeport ••••<t t-out="(visit.cin or '')[-4:]"/></small></div>
+                        <div><strong><t t-out="visit.first_name"/> <t t-out="visit.last_name"/></strong><small><t t-out="labels['document']"/> ••••<t t-out="(visit.cin or '')[-4:]"/></small></div>
 
                     </div>
 
@@ -38,35 +38,33 @@
 
                     <section t-if="visit.state == 'identity_input'" class="ar-step">
 
-                        <h2>Compléter l'identité</h2>
+                        <h2 t-out="labels['identity_title']"/>
 
-                        <p t-if="visit.photo">La photo capturée a été conservée. Renseignez les informations de la pièce d'identité.</p>
+                        <p t-if="visit.photo" t-out="labels['identity_intro']"/>
 
-                        <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/identity' % visit.kiosk_token" method="post" enctype="multipart/form-data">
+                        <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/identity' % visit.kiosk_token" method="post">
 
-                            <label for="ar-photo-upload">Ajouter une photo</label>
-                            <input id="ar-photo-upload" type="file" name="photo" accept="image/jpeg,image/png,image/webp"/>
-                            <small>JPG, PNG ou WEBP · 8 Mo maximum</small>
-                            <img id="ar-photo-preview" hidden="hidden" alt="Photo" style="width:120px;height:120px;object-fit:cover;border-radius:14px;"/>
-                            <label>Prénom</label>
+                            <label t-out="labels['first_name']"/>
 
                             <input type="text" name="first_name" required="required" maxlength="100" t-att-value="visit.first_name or ''"/>
 
-                            <label>Nom</label>
+                            <label t-out="labels['last_name']"/>
 
                             <input type="text" name="last_name" required="required" maxlength="100" t-att-value="visit.last_name or ''"/>
 
-                            <label>CIN / passeport</label>
+                            <label t-out="labels['document']"/>
 
                             <input type="text" name="cin" required="required" maxlength="30" t-att-value="visit.cin or ''"/>
 
-                            <label for="ar-nationality">Nationalité</label>
+                            <label for="ar-visitor-company" t-out="labels['company']"/>
+                            <input id="ar-visitor-company" type="text" name="visitor_company" maxlength="200" t-att-value="visit.visitor_company or ''"/>
+                            <label for="ar-nationality" t-out="labels['nationality']"/>
                             <select id="ar-nationality" name="nationality_id">
                                 <option value="">—</option>
                                 <option t-foreach="countries" t-as="country" t-att-value="country.id"
                                     t-att-selected="country.id == visit.nationality_id.id" t-out="country.name"/>
                             </select>
-                            <button class="ar-primary" type="submit">Continuer</button>
+                            <button class="ar-primary" type="submit" t-out="labels['continue']"/>
 
                         </form>
 
@@ -75,13 +73,9 @@
 
 
                     <section t-if="visit.state == 'identity_check'" class="ar-step">
-                        <p t-if="visit.language == 'fr'">Le quiz dans la langue choisie ne peut pas être chargé. Veuillez contacter l’accueil pour vérifier sa configuration, puis réessayer.</p>
-                        <p t-elif="visit.language == 'en'">The quiz in your selected language could not be loaded. Please ask reception to check its configuration, then try again.</p>
-                        <p t-else="">No se ha podido cargar el cuestionario en el idioma seleccionado. Pida a recepción que compruebe la configuración y vuelva a intentarlo.</p>
+                        <p t-out="labels['quiz_unavailable']"/>
                         <a class="ar-button ar-primary" t-att-href="'/ar-visitors/kiosk/%s' % visit.kiosk_token">
-                            <t t-if="visit.language == 'fr'">Réessayer</t>
-                            <t t-elif="visit.language == 'en'">Try again</t>
-                            <t t-else="">Reintentar</t>
+                            <t t-out="labels['retry']"/>
                         </a>
                     </section>
 
@@ -92,13 +86,13 @@
 
                     <section t-if="visit.state == 'quiz_pending'" class="ar-step ar-center">
 
-                        <h2 t-if="visit.language == 'fr'">Quiz de sécurité</h2><h2 t-if="visit.language == 'en'">Safety quiz</h2><h2 t-if="visit.language == 'es'">Cuestionario de seguridad</h2>
+                        <h2 t-out="labels['quiz_title']"/>
 
-                        <p>Le quiz s’ouvre dans cette page.</p>
+                        <p t-out="labels['quiz_intro']"/>
 
                         <button id="ar-open-quiz" type="button" class="ar-primary" t-att-data-quiz-url="'/ar-visitors/kiosk/%s/quiz' % visit.kiosk_token">
 
-                            <t t-if="visit.language == 'fr'">Ouvrir le quiz</t><t t-elif="visit.language == 'en'">Open quiz</t><t t-else="">Abrir cuestionario</t>
+                            <t t-out="labels['open_quiz']"/>
 
                         </button>
 
@@ -116,22 +110,22 @@
 
                     <section t-if="visit.state == 'host_pending'" class="ar-step">
 
-                        <h2 t-if="visit.language == 'fr'">Votre visite</h2><h2 t-if="visit.language == 'en'">Your visit</h2><h2 t-if="visit.language == 'es'">Su visita</h2>
+                        <h2 t-out="labels['visit_title']"/>
 
                         <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/details' % visit.kiosk_token" method="post">
 
-                            <label>Personne à visiter</label>
+                            <label t-out="labels['host']"/>
 
                             <select name="host_employee_id" required="required"><option value="">—</option><option t-foreach="employees" t-as="employee" t-att-value="employee.id" t-out="employee.name"/></select>
 
-                            <label>Motif</label><input type="text" name="purpose" maxlength="200"/>
+                            <label t-out="labels['purpose']"/><input type="text" name="purpose" maxlength="200"/>
 
-                            <label>Signature du visiteur</label>
-                            <canvas id="ar-entry-signature" width="800" height="240" style="width:100%;height:160px;border:1px solid #cbd5e1;border-radius:12px;background:white;touch-action:none;" aria-label="Signature du visiteur"/>
+                            <label t-out="labels['signature']"/>
+                            <canvas id="ar-entry-signature" width="800" height="240" style="width:100%;height:160px;border:1px solid #cbd5e1;border-radius:12px;background:white;touch-action:none;" t-att-aria-label="labels['signature']"/>
                             <input type="hidden" name="entry_signature" id="ar-entry-signature-value"/>
-                            <button type="button" id="ar-clear-signature">Effacer la signature</button>
-                            <p id="ar-signature-error" hidden="hidden">Veuillez signer avant de continuer.</p>
-                            <button class="ar-primary" type="submit">Enregistrer et notifier</button>
+                            <button type="button" id="ar-clear-signature" t-out="labels['clear_signature']"/>
+                            <p id="ar-signature-error" hidden="hidden" t-out="labels['signature_required']"/>
+                            <button class="ar-primary" type="submit" t-out="labels['save']"/>
 
                         </form>
 
@@ -141,15 +135,14 @@
 
                     <section t-if="visit.state == 'approval_pending'" class="ar-step ar-center">
 
-                        <h2>Contrôle de l'accueil requis</h2><p>Veuillez contacter l'agent d'accueil.</p>
+                        <h2 t-out="labels['approval_title']"/><p t-out="labels['approval_text']"/>
 
                     </section>
 
-                    <section t-if="visit.state == 'refused'" class="ar-step ar-center"><h2>Accès non autorisé</h2><p>Veuillez contacter l'accueil.</p></section>
+                    <section t-if="visit.state == 'refused'" class="ar-step ar-center"><h2 t-out="labels['refused_title']"/><p t-out="labels['refused_text']"/></section>
 
                 </main>
 
-                <script src="/ar_visitors/static/src/js/photo_upload.js" defer="defer"/>
                 <script src="/ar_visitors/static/src/js/entry_signature.js" defer="defer"/>
                 <script src="/ar_visitors/static/src/js/kiosk_quiz.js?v=19.0.1.3.1" defer="defer"/>
             </body>
@@ -164,7 +157,7 @@
 
         <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>AR - Visitors</title><t t-call-assets="web.assets_frontend"/></head>
 
-        <body class="ar-visitors-kiosk"><main class="ar-kiosk-card ar-success"><div class="ar-success-icon">✓</div><h1>Visite enregistrée</h1><p t-if="visit.notification_state == 'sent'">Votre contact a été informé.</p><p t-else="">La visite est enregistrée. Veuillez contacter l'accueil.</p><strong t-out="visit.name"/></main></body></html>
+        <body class="ar-visitors-kiosk" t-att-lang="'ar' if visit.language == 'ar' else visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'"><main class="ar-kiosk-card ar-success"><div class="ar-success-icon">✓</div><h1 t-out="labels['success_title']"/><p t-if="visit.notification_state == 'sent'" t-out="labels['success_sent']"/><p t-else="" t-out="labels['success_pending']"/><strong t-out="visit.name"/></main></body></html>
 
     </template>
 

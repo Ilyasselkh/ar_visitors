@@ -21,5 +21,38 @@
     #ar-quiz-dialog header { flex-shrink: 0; padding: 12px 20px; justify-content: space-between; }
     #ar-quiz-dialog h2 { margin: 0; font-size: 22px; }
     #ar-quiz-dialog iframe { display: block; width: 100%; flex: 1; min-height: 0; border: 0; background: white; }
-    @media (max-width: 700px) { .ar-language-grid { grid-template-columns: 1fr; } .ar-kiosk-card { padding: 18px; } }
+    @media (max-width: 900px) {
+        padding: 18px;
+        .ar-kiosk-card { max-width: 760px; padding: 24px; }
+        #ar-quiz-dialog { width: 98vw; height: 94vh; max-height: 94vh; }
+    }
+    @media (max-width: 700px) {
+        min-height: 100dvh; padding: 12px; place-items: start center;
+        .ar-language-grid { grid-template-columns: 1fr; }
+        .ar-kiosk-card { padding: 18px; border-radius: 18px; }
+        header { align-items: flex-start; flex-wrap: wrap; gap: 10px; padding-bottom: 14px; }
+        header h1 { font-size: 23px; } .ar-brand { padding: 8px; border-radius: 8px; }
+        .ar-reference { width: 100%; margin-left: 0; font-size: 13px; }
+        .ar-person-summary { align-items: flex-start; gap: 12px; margin: 16px 0; }
+        .ar-person-summary img { width: 60px; height: 60px; }
+        .ar-person-summary strong { font-size: 18px; overflow-wrap: anywhere; }
+        button, .ar-button { width: 100%; min-height: 48px; padding: 13px 16px; font-size: 16px; text-align: center; }
+        select, input { width: 100%; min-height: 48px; font-size: 16px; }
+        #ar-quiz-dialog { width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+        #ar-quiz-dialog header { padding: 10px 14px; } #ar-quiz-dialog h2 { font-size: 18px; }
+        #ar-quiz-dialog #ar-close-quiz { width: auto; min-height: 36px; padding: 4px 10px; font-size: 28px; }
+    }
+    @media (max-width: 380px) {
+        padding: 8px;
+        .ar-kiosk-card { padding: 14px; border-radius: 14px; }
+        .ar-person-summary { padding: 10px; }
+    }
+
+    &[dir="rtl"] {
+        text-align: right;
+        .ar-reference { margin-right: auto; margin-left: 0; }
+        .ar-person-summary { text-align: right; }
+        .ar-details-form { text-align: right; }
+        #ar-quiz-dialog header { flex-direction: row-reverse; }
+    }
 }

@@ -1,21 +1,5 @@
 # AR - Visitors — Odoo 19
 
-## État de l’intégration
-
-Le module ne dépend plus du moteur local face-recognition/dlib/NumPy.
-La reconnaissance externe sera raccordée lorsque la documentation ou un exemple
-de requête/réponse sera fourni. Aucun format fournisseur n’est supposé.
-
-L’adaptateur interne `ar.visitor.recognition.provider._recognize(photo, terminal)`
-doit retourner une personne Odoo identifiée ou un ensemble vide pour un inconnu.
-Il doit lever une erreur en cas de panne, jamais transformer une panne en inconnu.
-Le transport, l’authentification et la correspondance des identifiants restent à implémenter.
-
-La route existante `POST /api/ar_visitors/v1/facial/check` conserve son authentification
-par terminal (`X-AR-Terminal`, `X-AR-Secret`). En attendant, elle retourne HTTP 503
-avec `recognition_not_configured`, sans créer de visite. Ce contrat de réception
-existant pourra être adapté à votre système ; ce n’est pas le contrat de votre API.
-
 ## Installation et paramétrage
 
 Copier ce dossier dans les addons et installer ou mettre à jour `ar_visitors`.
@@ -29,7 +13,6 @@ Dépendances Odoo : base, mail, hr, survey et web. Aucune bibliothèque faciale 
 - Paramètres : durée de validité du quiz (3 mois), durée de session de la borne,
   mise à jour des fiches existantes. Les scores servent uniquement aux analyses.
 - Renseigner les e-mails professionnels des employés et le serveur sortant Odoo.
-- Terminaux faciaux : conserver le code et le secret pour le futur raccordement.
 
 ## Tester maintenant, sans API
 
@@ -83,3 +66,29 @@ Résultats des quiz : ouvrir une passation pour voir chaque question, la répons
 saisie ou choisie et les points. Les résultats sont en lecture seule et limités
 aux sociétés autorisées. Les droits natifs de l’application Sondages, si attribués
 séparément à un utilisateur, restent gérés par Odoo.
+
+
+## Reconnaissance avec Face Recognition for HR Attendance
+
+Dépendance : `sttl_face_attendance` (Face Recognition for HR Attendance).
+Dans **Visites → Reconnaissance faciale**, un utilisateur ayant l'accès **Module**
+peut activer la caméra. Le moteur face-api.js et les modèles
+sont ceux du module installé ; les références proviennent des personnes AR Visitors,
+avec leur photo principale et jusqu'à cinq photos secondaires.
+
+Le navigateur recherche une correspondance avec une distance inférieure à 0,45.
+Si deux personnes ont des distances trop proches (écart inférieur à 0,05), le parcours
+demande une identification par CIN / passeport. Une seule personne doit être visible.
+La comparaison n'est pas une détection de présence réelle (anti-photo).
+La caméra nécessite HTTPS ou localhost et l'autorisation du navigateur.
+La comparaison des références est effectuée à chaque recherche et peut être lente
+pour un grand répertoire.
+
+Après confirmation de l'identité reconnue, le visiteur passe au choix de langue ; une personne
+inconnue passe d'abord par la saisie CIN / passeport. La photo capturée est conservée
+sur la nouvelle visite. La règle de validité du quiz, la signature d'entrée et la
+notification restent celles du parcours existant. La comparaison est une assistance
+au poste d'accueil et ne constitue pas une preuve d'identité vérifiée côté serveur.
+
+Cette intégration ne crée pas de pointage RH et utilise des méthodes Odoo authentifiées
+et les droits de lecture des personnes.

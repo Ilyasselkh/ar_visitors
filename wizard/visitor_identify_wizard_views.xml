@@ -4,7 +4,7 @@
         <field name="model">ar.visitor.identify.wizard</field>
         <field name="arch" type="xml">
             <form string="Identifier le visiteur" class="ar_identify_form">
-                <field name="step" invisible="1"/><field name="language" invisible="1"/>
+                <field name="captured_photo" invisible="1"/><field name="step" invisible="1"/><field name="language" invisible="1"/>
                 <div invisible="step != 'cin'">
                 <div class="ar_identify_banner">
                     <div class="ar_identify_icon"><i class="fa fa-id-card-o" aria-hidden="true"/></div>
@@ -46,6 +46,10 @@
                         <button name="action_choose_es" type="object" class="ar_lang_card">
                             <span class="ar_lang_code">ES</span><strong>Español</strong>
                             <span class="ar_lang_hint">Continuar en español</span><span class="ar_lang_arrow" aria-hidden="true">→</span>
+                        </button>
+                        <button name="action_choose_ar" type="object" class="ar_lang_card" dir="rtl">
+                            <span class="ar_lang_code">AR</span><strong>العربية</strong>
+                            <span class="ar_lang_hint">المتابعة باللغة العربية</span><span class="ar_lang_arrow" aria-hidden="true">←</span>
                         </button>
                     </div>
                 </div>

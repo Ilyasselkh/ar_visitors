@@ -1,0 +1,47 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Language: ar_001\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: ar_visitors
+msgid "Signature de sortie"
+msgstr "توقيع المغادرة"
+
+#. module: ar_visitors
+msgid "SORTIE VISITEUR"
+msgstr "مغادرة الزائر"
+
+#. module: ar_visitors
+msgid "Finalisez votre sortie"
+msgstr "أكمل إجراءات المغادرة"
+
+#. module: ar_visitors
+msgid "Veuillez signer ci-dessous pour confirmer votre sortie."
+msgstr "يرجى التوقيع أدناه لتأكيد مغادرتك."
+
+#. module: ar_visitors
+msgid "RÉFÉRENCE DE VISITE"
+msgstr "مرجع الزيارة"
+
+#. module: ar_visitors
+msgid "VISITEUR"
+msgstr "الزائر"
+
+#. module: ar_visitors
+msgid "SIGNATURE REQUISE"
+msgstr "التوقيع مطلوب"
+
+#. module: ar_visitors
+msgid "Signez dans la zone ci-dessous"
+msgstr "وقّع في المنطقة أدناه"
+
+#. module: ar_visitors
+msgid "Enregistrer ma signature"
+msgstr "حفظ توقيعي"
+
+#. module: ar_visitors
+msgid "Annuler"
+msgstr "إلغاء"

@@ -10,11 +10,13 @@
                     <block title="Parcours de sécurité">
                         <setting string="Durée du parcours rapide" help="Nombre de mois pendant lesquels le dernier quiz terminé permet d'éviter de refaire le quiz."><field name="ar_visitors_validity_months"/></setting>
                     </block>
-                    <block title="API et stockage">
-                        <setting string="Reconnaissance faciale externe"><div class="text-muted">Adaptateur en attente de la documentation de votre API. Le parcours manuel reste disponible.</div></setting>
+                    <block title="Stockage et session">
                         <setting string="Stockage des visiteurs"><div class="text-muted">Identités et historiques dans la base Odoo ; photos et signatures dans les pièces jointes Odoo. Sauvegarder la base et son filestore ensemble.</div></setting>
-                        <setting string="Mise à jour automatique" help="Autoriser la mise à jour du nom, de la photo et de la référence faciale d'une personne existante."><field name="ar_visitors_update_person_from_facial"/></setting>
                         <setting string="Expiration de la session borne"><field name="ar_visitors_kiosk_token_minutes"/></setting>
+                    </block>
+                    <block title="Reconnaissance faciale">
+                        <setting string="Tentatives automatiques" help="Nombre total de captures automatiques lorsqu'aucun visage fiable n'est reconnu."><field name="ar_visitors_face_recognition_attempts"/></setting>
+                        <setting string="Délai entre les tentatives" help="Temps d'attente, en secondes, avant la nouvelle capture automatique."><field name="ar_visitors_face_recognition_retry_delay"/></setting>
                     </block>
                 </app>
             </xpath>
@@ -22,7 +24,7 @@
     </record>
     <record id="view_visitor_settings" model="ir.ui.view">
         <field name="name">ar.visitor.settings.form</field><field name="model">ar.visitor.settings</field>
-        <field name="arch" type="xml"><form string="Paramètres visiteurs"><group><field name="validity_months"/><field name="kiosk_minutes"/><field name="update_person"/></group><p>API externe en attente de raccordement. Les identités sont stockées dans la base Odoo, les photos et signatures dans ses pièces jointes.</p><footer><button name="action_save" type="object" string="Enregistrer" class="btn-primary"/><button special="cancel" string="Annuler"/></footer></form></field>
+        <field name="arch" type="xml"><form string="Paramètres visiteurs"><group><field name="validity_months"/><field name="kiosk_minutes"/><field name="face_recognition_attempts"/><field name="face_recognition_retry_delay"/></group><p>Les identités et historiques sont stockés dans la base Odoo ; les photos et signatures sont conservées dans ses pièces jointes.</p><footer><button name="action_save" type="object" string="Enregistrer" class="btn-primary"/><button special="cancel" string="Annuler"/></footer></form></field>
     </record>
     <record id="action_ar_visitors_settings" model="ir.actions.act_window"><field name="name">Paramètres</field><field name="res_model">ar.visitor.settings</field><field name="view_mode">form</field><field name="view_id" ref="view_visitor_settings"/><field name="target">new</field><field name="context">{}</field></record>
 </odoo>

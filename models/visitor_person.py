@@ -29,9 +29,8 @@ class ArVisitorPerson(models.Model):
     email = fields.Char(string="E-mail")
     phone = fields.Char(string="Téléphone")
     company_name = fields.Char(string="Société")
-    facial_reference = fields.Char(string="Référence faciale", index=True, copy=False)
     preferred_language = fields.Selection(
-        [("fr", "Français"), ("en", "English"), ("es", "Español")],
+        [("fr", "Français"), ("en", "English"), ("es", "Español"), ("ar", "العربية")],
         string="Langue préférée",
         default="fr",
     )

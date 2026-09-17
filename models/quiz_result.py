@@ -21,7 +21,7 @@ class VisitorQuizResult(models.Model):
     person_name = fields.Char(readonly=True)
     cin = fields.Char(string='CIN / passeport', readonly=True)
     quiz_name = fields.Char(readonly=True)
-    language = fields.Selection([('fr', 'Français'), ('en', 'English'), ('es', 'Español')], readonly=True)
+    language = fields.Selection([('fr', 'Français'), ('en', 'English'), ('es', 'Español'), ('ar', 'العربية')], readonly=True)
     quiz_completed_at = fields.Datetime(readonly=True)
     quiz_score = fields.Float(readonly=True)
     name = fields.Char(readonly=True)

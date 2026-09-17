@@ -54,11 +54,8 @@ class ArVisitorVisit(models.Model):
     )
 
     language = fields.Selection(
-        [("fr", "Français"), ("en", "English"), ("es", "Español")], default="fr", required=True
+        [("fr", "Français"), ("en", "English"), ("es", "Español"), ("ar", "العربية")], default="fr", required=True
     )
-    terminal_id = fields.Many2one("ar.visitor.facial.terminal", ondelete="set null", tracking=True)
-    facial_event_id = fields.Char(string="Événement facial", index=True, copy=False)
-    facial_reference = fields.Char(string="Référence faciale", copy=False)
     facial_result = fields.Selection(
         [("recognized", "Reconnu"), ("unknown", "Inconnu"), ("low_confidence", "Confiance faible"),
          ("mismatch", "Incohérent"), ("manual", "Saisie manuelle")],
@@ -83,10 +80,6 @@ class ArVisitorVisit(models.Model):
     kiosk_token = fields.Char(default=lambda self: uuid.uuid4().hex, readonly=True, copy=False, index=True, groups="ar_visitors.group_ar_visitors_user")
     kiosk_token_expires_at = fields.Datetime(readonly=True, copy=False)
     company_id = fields.Many2one("res.company", default=lambda self: self.env.company, required=True)
-
-    _event_unique = models.Constraint(
-        "unique(facial_event_id)", "Cet événement facial a déjà été traité."
-    )
 
     def init(self):
         self.env.cr.execute(
@@ -130,13 +123,6 @@ class ArVisitorVisit(models.Model):
     def create(self, vals_list):
         sequence = self.env["ir.sequence"]
         expiry_minutes = int(self.env["ir.config_parameter"].sudo().get_param("ar_visitors.kiosk_token_minutes", 15))
-        facial_event_ids = [
-            vals.get("facial_event_id") for vals in vals_list if vals.get("facial_event_id")
-        ]
-        if len(facial_event_ids) != len(set(facial_event_ids)) or self.search_count([
-            ("facial_event_id", "in", facial_event_ids)
-        ]):
-            raise ValidationError(_("Cet événement facial a déjà été traité."))
         for vals in vals_list:
             if vals.get("name", "Nouveau") == "Nouveau":
                 vals["name"] = sequence.next_by_code("ar.visitor.visit") or _("Nouveau")
@@ -204,7 +190,7 @@ class ArVisitorVisit(models.Model):
                         'kiosk_token_expires_at': fields.Datetime.now() + relativedelta(minutes=int(
                             self.env['ir.config_parameter'].sudo().get_param('ar_visitors.kiosk_token_minutes', 15)))})
         return {'type': 'ir.actions.client', 'tag': 'ar_visitors.open_kiosk',
-                'params': {'url': '/ar-visitors/kiosk/%s' % session.kiosk_token, 'title': {'fr': 'Parcours visiteur', 'en': 'Visitor journey', 'es': 'Recorrido del visitante'}[self.language]}}
+                'params': {'url': '/ar-visitors/kiosk/%s' % session.kiosk_token, 'title': {'fr': 'Parcours visiteur', 'en': 'Visitor journey', 'es': 'Recorrido del visitante', 'ar': 'مسار الزائر'}[self.language]}}
 
     def _validate_identity_values(self):
         for record in self:
@@ -296,15 +282,12 @@ class ArVisitorVisit(models.Model):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "cin": self.cin,
+            "company_name": self.visitor_company,
             "preferred_language": self.language,
-            "facial_reference": self.facial_reference,
         }
         if self.photo:
             vals["image_1920"] = self.photo
-        if person:
-            if self.env["ir.config_parameter"].sudo().get_param("ar_visitors.update_person_from_facial", "False") == "True":
-                person.write(vals)
-        else:
+        if not person:
             person = Person.create(vals)
         self.person_id = person.id
         return person
@@ -367,8 +350,18 @@ class ArVisitorVisit(models.Model):
         return True
 
     def _finalize_check_out(self, signature=None):
-        # Compatibility with an already-open legacy checkout dialog.
-        return self.action_check_out()
+        self.ensure_one()
+        if self.state not in ("checked_in", "signature_pending"):
+            raise UserError(_("Seule une visite en cours peut être clôturée."))
+        if not signature:
+            raise UserError(_("La signature du visiteur est obligatoire pour valider la sortie."))
+        self.write({
+            "signature": signature,
+            "signature_at": fields.Datetime.now(),
+            "check_out_at": fields.Datetime.now(),
+            "state": "checked_out",
+        })
+        return True
 
     def action_approve(self):
         if not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):

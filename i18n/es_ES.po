@@ -6,6 +6,38 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. module: ar_visitors
+msgid "SORTIE VISITEUR"
+msgstr "SALIDA DEL VISITANTE"
+
+#. module: ar_visitors
+msgid "Finalisez votre sortie"
+msgstr "Complete su salida"
+
+#. module: ar_visitors
+msgid "Veuillez signer ci-dessous pour confirmer votre sortie."
+msgstr "Firme a continuación para confirmar su salida."
+
+#. module: ar_visitors
+msgid "RÉFÉRENCE DE VISITE"
+msgstr "REFERENCIA DE VISITA"
+
+#. module: ar_visitors
+msgid "VISITEUR"
+msgstr "VISITANTE"
+
+#. module: ar_visitors
+msgid "SIGNATURE REQUISE"
+msgstr "FIRMA OBLIGATORIA"
+
+#. module: ar_visitors
+msgid "Signez dans la zone ci-dessous"
+msgstr "Firme en el área de abajo"
+
+#. module: ar_visitors
+msgid "Enregistrer ma signature"
+msgstr "Guardar mi firma"
+
 
 #. module: ar_visitors
 #: model_terms:ir.ui.view,arch_db:ar_visitors.view_ar_visitor_visit_form
@@ -447,6 +479,7 @@ msgstr "Firma pendiente"
 #. module: ar_visitors
 #: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_person__company_name
 #: model:ir.model.fields,field_description:ar_visitors.field_ar_visitor_visit__visitor_company
+#: model_terms:ir.ui.view,arch_db:ar_visitors.kiosk_page
 msgid "Société"
 msgstr "Empresa"
 

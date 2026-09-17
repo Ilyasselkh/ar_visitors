@@ -14,7 +14,7 @@ class VisitorSurvey(Survey):
                 ("kiosk_token", "!=", False),
             ], limit=1)
             if visit:
-                lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES"}[visit.language]
+                lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES", "ar": "ar_001"}[visit.language]
                 request.update_context(lang=lang)
                 survey, answer = survey.with_context(lang=lang), answer.with_context(lang=lang)
         return survey, answer
