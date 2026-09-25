@@ -127,6 +127,7 @@ class VisitorFaceAttendance extends Component {
         await this.startCamera();
     }
     async recognize(source, fromCamera = false) {
+        let monitor;
         if (this.state.busy || this.state.redirecting) return;
         this.state.busy = true; this.state.captured = ""; this.state.match = false; this.state.person = false; this.state.checkoutError = false;
         this.state.retryMessage = "";
@@ -152,25 +153,41 @@ class VisitorFaceAttendance extends Component {
                 return;
             }
             const distances = [];
+            if (!this.alive) return;
+            const reason = this.facePositionReason(detected);
+            if (reason) throw Object.assign(new Error(reason), { retryReason: reason });
+            if (fromCamera) monitor = this.monitorFacePosition(source, options);
             let after = 0, count = 0;
             do {
                 const batch = await this.orm.call("ar.visitor.face.bridge", "reference_photos", [after]);
+                monitor?.assertValid();
                 for (const person of batch.people) {
                     if (!this.alive) return;
                     let best = Infinity;
                     for (const data of person.images) {
+                        monitor?.assertValid();
                         try {
                             const image = await faceapi.bufferToImage(new Blob([Uint8Array.from(atob(data), c => c.charCodeAt(0))]));
                             const refs = await faceapi.detectAllFaces(image, options).withFaceLandmarks().withFaceDescriptors();
                             if (refs.length === 1) best = Math.min(best, faceapi.euclideanDistance(detected[0].descriptor, refs[0].descriptor));
                         } catch (_) { /* An unusable reference must not prevent checking the other photos. */ }
                     }
+                    monitor?.assertValid();
                     if (Number.isFinite(best)) distances.push({ id: person.id, distance: best });
                     this.state.message = "Comparaison des photos : " + (++count) + " personne(s)…";
                 }
                 after = batch.next_id;
             } while (after && this.alive);
             if (!this.alive) return;
+            await monitor?.stop();
+            monitor?.assertValid();
+            if (!this.alive) return;
+            if (fromCamera) {
+                const currentFaces = await faceapi.detectAllFaces(source, options).withFaceLandmarks();
+                if (!this.alive) return;
+                const currentReason = this.facePositionReason(currentFaces);
+                if (currentReason) throw Object.assign(new Error(currentReason), { retryReason: currentReason });
+            }
             distances.sort((a,b) => a.distance-b.distance);
             const first = distances[0], second = distances[1];
             // Same threshold as the installed module, with an ambiguity margin.
@@ -185,16 +202,83 @@ class VisitorFaceAttendance extends Component {
                 this.state.message = "";
                 this.state.person = await this.orm.call("ar.visitor.face.bridge", "recognition_person", [this.state.match]);
             } else {
-                if (this.scheduleRetry("Correspondance incertaine. Gardez le visage face à la caméra.")) return;
-                this.state.message = "Visiteur inconnu ou correspondance incertaine.";
-                this.state.checkoutError = this.state.mode === "checkout";
-                if (this.state.checkoutError) this.state.captured = "";
+                if (this.state.mode === "checkout") {
+                    this.state.message = "Visiteur non reconnu. Vérifiez qu'une visite est en cours, puis réessayez.";
+                    this.state.checkoutError = true;
+                    this.state.captured = "";
+                    this.stopCamera();
+                    return;
+                }
+                // A valid, front-facing face without a match is a new visitor.
+                // Retries are deliberately reserved for capture/detection issues.
+                this.state.message = "Nouveau visiteur détecté. Ouverture de l'enregistrement…";
+                await this.openNewVisitorJourney();
+                return;
             }
             this.stopCamera();
         } catch (error) {
+            await monitor?.stop();
+            if (!this.alive) return;
+            if (error.retryReason) {
+                this.state.captured = "";
+                this.state.match = false;
+                if (this.scheduleRetry(error.retryReason)) return;
+            }
             this.state.message = this.safeErrorMessage(error, "La reconnaissance faciale a échoué. Veuillez réessayer.");
             this.state.checkoutError = this.state.mode === "checkout";
-        } finally { this.state.busy = false; }
+        } finally {
+            await monitor?.stop();
+            this.state.busy = false;
+        }
+    }
+    facePositionReason(faces) {
+        if (faces.length !== 1) {
+            return faces.length ? "Plusieurs visages détectés. Présentez une seule personne." : "Aucun visage détecté. Regardez la caméra et restez immobile.";
+        }
+        const landmarks = faces[0].landmarks;
+        const center = (points) => points.reduce((sum, p) => ({ x: sum.x + p.x / points.length, y: sum.y + p.y / points.length }), { x: 0, y: 0 });
+        const left = center(landmarks.getLeftEye()), right = center(landmarks.getRightEye());
+        const nose = landmarks.getNose()[3];
+        const dx = right.x - left.x, dy = right.y - left.y;
+        const eyeDistanceSquared = dx * dx + dy * dy;
+        // Project onto the eye line, independently of image size and head tilt.
+        const noseOffset = ((nose.x - (left.x + right.x) / 2) * dx + (nose.y - (left.y + right.y) / 2) * dy) / eyeDistanceSquared;
+        // Also check the visible cheeks: the nose alone can remain nearly centered
+        // when landmarks are estimated on a partially turned face.
+        const jaw = landmarks.getJawOutline();
+        const project = (point) => ((point.x - nose.x) * dx + (point.y - nose.y) * dy) / eyeDistanceSquared;
+        const leftCheek = -project(jaw[0]), rightCheek = project(jaw[16]);
+        const cheekAsymmetry = Math.abs(leftCheek - rightCheek) / (leftCheek + rightCheek);
+        if (!Number.isFinite(noseOffset) || Math.abs(noseOffset) > 0.18
+            || !Number.isFinite(cheekAsymmetry) || leftCheek <= 0 || rightCheek <= 0 || cheekAsymmetry > 0.2) {
+            return "Visage tourné. Replacez votre visage face à la caméra.";
+        }
+        return "";
+    }
+    monitorFacePosition(source, options) {
+        let stopped = false, timer, pending, failure;
+        const check = async () => {
+            try {
+                const faces = await faceapi.detectAllFaces(source, options).withFaceLandmarks();
+                const reason = this.facePositionReason(faces);
+                if (reason) failure = Object.assign(new Error(reason), { retryReason: reason });
+            } catch (error) {
+                failure = error;
+            }
+            // Keep the attempt invalid even if the visitor faces the camera again.
+            if (!stopped && !failure && this.alive && this.state.camera) {
+                timer = setTimeout(() => { pending = check(); }, 250);
+            }
+        };
+        pending = check();
+        return {
+            assertValid() { if (failure) throw failure; },
+            async stop() {
+                stopped = true;
+                clearTimeout(timer);
+                await pending;
+            },
+        };
     }
     scheduleRetry(reason) {
         if (!this.alive || !this.state.camera || this.state.attempt >= this.state.attemptLimit) return false;
@@ -211,6 +295,16 @@ class VisitorFaceAttendance extends Component {
     }
     async confirmIdentity() {
         await this.continueVisit();
+    }
+    async openNewVisitorJourney() {
+        const action = await this.orm.call("ar.visitor.face.bridge", "start_visit", [this.state.captured, false]);
+        if (!this.alive) return;
+        this.stopCamera();
+        await this.action.doAction(action);
+        if (this.alive) {
+            this.state.captured = "";
+            this.state.message = "Enregistrement du nouveau visiteur ouvert.";
+        }
     }
     async openCheckout(personId) {
         try {

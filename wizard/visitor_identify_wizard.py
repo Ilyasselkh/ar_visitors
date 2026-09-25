@@ -73,6 +73,9 @@ class VisitorIdentifyWizard(models.TransientModel):
             if self.captured_photo:
                 vals["photo"] = self.captured_photo
             visit = Visit.create(vals)
+        elif self.captured_photo:
+            # A resumed journey must display this recognition's validated capture.
+            visit.write({"photo": self.captured_photo})
         # A running quiz keeps its original language and answer.
         if visit.state not in ("quiz_pending", "checked_out"):
             visit.language = self.language
