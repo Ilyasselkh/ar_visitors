@@ -92,3 +92,26 @@ au poste d'accueil et ne constitue pas une preuve d'identité vérifiée côté 
 
 Cette intégration ne crée pas de pointage RH et utilise des méthodes Odoo authentifiées
 et les droits de lecture des personnes.
+
+
+### Langue du parcours visiteur
+
+La langue choisie à l’accueil est transmise aux formulaires d’identification,
+à la fiche visiteur, au parcours en borne et à la signature de sortie. Les textes
+propres au module sont regroupés dans `visitor_i18n.py`, y compris les libellés
+et les erreurs de validation. Les vues sont traduites selon le contexte `lang`,
+qui fait partie de la clé de cache Odoo, sans modifier la langue de l’opérateur.
+Les formulaires arabes s’affichent de droite à gauche.
+
+La sortie utilise la langue choisie pour cette interaction, sans changer la langue
+historique de la visite. Reprendre un quiz inachevé dans une autre langue ouvre
+le quiz configuré pour cette langue et conserve l’ancienne participation dans
+Survey. Dans la même langue, les réponses en cours sont conservées. Le contenu
+des questions reste celui des questionnaires configurés par langue dans Odoo.
+
+Après installation de cette modification (version 19.0.1.11.0), redémarrer Odoo
+avec une mise à niveau du module `ar_visitors` pour charger les vues et le champ
+langue du formulaire de sortie, puis actualiser les ressources du navigateur.
+
+Vérifications locales : `node --test tests/face_position_retry.cjs` et
+`python tests/test_visitor_localization.py` (ce dernier requiert lxml).

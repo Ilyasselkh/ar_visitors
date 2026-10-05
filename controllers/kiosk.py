@@ -1,6 +1,7 @@
 import base64
+from ..visitor_i18n import visitor_text
 
-from odoo import fields, http, _
+from odoo import fields, http
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from werkzeug.exceptions import NotFound
@@ -22,7 +23,7 @@ class ArVisitorsKiosk(http.Controller):
         visit = request.env["ar.visitor.visit"].sudo().search([("kiosk_token", "=", token)], limit=1)
         if not visit or not visit.kiosk_token_expires_at or visit.kiosk_token_expires_at < fields.Datetime.now():
             raise NotFound()
-        lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES", "ar": "ar_001"}[visit.language]
+        lang = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}[visit.language]
         request.update_context(lang=lang)
         return visit.with_context(lang=lang)
 
@@ -34,8 +35,8 @@ class ArVisitorsKiosk(http.Controller):
             "visit": visit,
             "employees": employees,
             "countries": request.env["res.country"].sudo().search([], order="name"),
-            "labels": self._labels(visit.language),
-            "error": error,
+            "labels": dict(self._labels(visit.language), close=visitor_text("Fermer", visit.language)),
+            "error": visitor_text(error, visit.language) if error else error,
             "success": success,
         })
 
@@ -60,7 +61,7 @@ class ArVisitorsKiosk(http.Controller):
             nationality_id = 0
         country = request.env["res.country"].sudo().browse(nationality_id).exists()
         if post.get("nationality_id") and not country:
-            return self._render(visit, error=_("Nationalité invalide."))
+            return self._render(visit, error=visitor_text('Nationalité invalide.', visit.language))
         visit.write({
             "visitor_company": (post.get("visitor_company") or "").strip()[:200],
             "nationality_id": country.id or False,
@@ -87,7 +88,7 @@ class ArVisitorsKiosk(http.Controller):
     def quiz(self, token, **kwargs):
         visit = self._visit(token)
         if visit.survey_id.users_login_required:
-            return request.make_response("Ce quiz exige une connexion. L’accueil doit configurer un quiz accessible aux visiteurs.", headers=[('Content-Type', 'text/plain; charset=utf-8')])
+            return request.make_response(visitor_text("Ce quiz exige une connexion. L’accueil doit configurer un quiz accessible aux visiteurs.", visit.language), headers=[('Content-Type', 'text/plain; charset=utf-8')])
         action = visit.action_open_quiz()
         return redirect(action["url"] + ("&" if "?" in action["url"] else "?") + "lang=" + visit.env.context["lang"])
 
@@ -118,16 +119,16 @@ class ArVisitorsKiosk(http.Controller):
             ("id", "=", host_id), ("company_id", "=", visit.company_id.id), ("work_email", "!=", False)
         ], limit=1)
         if not host:
-            return self._render(visit, error=_("Sélectionnez une personne à visiter."))
+            return self._render(visit, error=visitor_text('Sélectionnez une personne à visiter.', visit.language))
         signature = post.get("entry_signature") or ""
         if not signature or len(signature) > 2 * 1024 * 1024:
-            return self._render(visit, error=_("La signature du visiteur est obligatoire avant de valider la visite."))
+            return self._render(visit, error=visitor_text('La signature du visiteur est obligatoire avant de valider la visite.', visit.language))
         try:
             image = base64.b64decode(signature, validate=True)
             if not image.startswith(b"\x89PNG\r\n\x1a\n"):
                 raise ValueError()
         except (ValueError, TypeError):
-            return self._render(visit, error=_("Signature invalide. Veuillez signer à nouveau."))
+            return self._render(visit, error=visitor_text('Signature invalide. Veuillez signer à nouveau.', visit.language))
         visit.write({
             "entry_signature": signature,
             "host_employee_id": host.id,

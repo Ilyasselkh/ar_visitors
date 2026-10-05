@@ -98,9 +98,9 @@
 
                         <dialog id="ar-quiz-dialog" aria-labelledby="ar-quiz-title" t-att-data-status-url="'/ar-visitors/kiosk/%s/quiz-status' % visit.kiosk_token">
 
-                            <header><h2 id="ar-quiz-title">Quiz</h2><button id="ar-close-quiz" type="button" aria-label="Fermer">×</button></header>
+                            <header><h2 id="ar-quiz-title" t-out="labels['quiz_title']"/><button id="ar-close-quiz" type="button" t-att-aria-label="labels['close']">×</button></header>
 
-                            <iframe title="Quiz visiteur"/>
+                            <iframe t-att-title="labels['quiz_title']"/>
 
                         </dialog>
 
@@ -157,7 +157,7 @@
 
         <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>AR - Visitors</title><t t-call-assets="web.assets_frontend"/></head>
 
-        <body class="ar-visitors-kiosk" t-att-lang="'ar' if visit.language == 'ar' else visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'"><main class="ar-kiosk-card ar-success"><div class="ar-success-icon">✓</div><h1 t-out="labels['success_title']"/><p t-if="visit.notification_state == 'sent'" t-out="labels['success_sent']"/><p t-else="" t-out="labels['success_pending']"/><strong t-out="visit.name"/></main></body></html>
+        <body class="ar-visitors-kiosk" t-att-lang="'ar' if visit.language == 'ar' else visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'"><main class="ar-kiosk-card ar-success" data-visitor-registration-complete="true"><div class="ar-success-icon">✓</div><h1 t-out="labels['success_title']"/><p t-if="visit.notification_state == 'sent'" t-out="labels['success_sent']"/><p t-else="" t-out="labels['success_pending']"/><strong t-out="visit.name"/></main></body></html>
 
     </template>
 

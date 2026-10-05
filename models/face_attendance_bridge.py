@@ -1,17 +1,18 @@
 import base64
 import io
 from PIL import Image
-from odoo import api, models, _
+from odoo import api, models
 from odoo.exceptions import AccessError, ValidationError
 
 
 class VisitorFaceAttendanceBridge(models.AbstractModel):
     _name = "ar.visitor.face.bridge"
+    _inherit = "ar.visitor.localization"
     _description = "Reconnaissance visiteurs avec Face Recognition for HR Attendance"
 
     def _check_operator(self):
         if not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
-            raise AccessError(_("L’accès au module est nécessaire pour utiliser la reconnaissance faciale."))
+            raise AccessError(self._visitor_text("L’accès au module est nécessaire pour utiliser la reconnaissance faciale."))
 
     @api.model
     def recognition_attempt_limit(self):
@@ -64,7 +65,7 @@ class VisitorFaceAttendanceBridge(models.AbstractModel):
         person = self.env["ar.visitor.person"].sudo().with_context(active_test=False).search(
             self._people_domain() + [("id", "=", int(person_id))], limit=1)
         if not person:
-            raise ValidationError(_("Personne introuvable."))
+            raise ValidationError(self._visitor_text("Personne introuvable."))
         image = person.image_1920
         if isinstance(image, bytes):
             image = image.decode()
@@ -77,8 +78,12 @@ class VisitorFaceAttendanceBridge(models.AbstractModel):
         }
 
     @api.model
-    def start_visit(self, photo, person_id=False):
+    def start_visit(self, photo, person_id=False, language="fr"):
         self._check_operator()
+        languages = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}
+        if language not in languages:
+            raise ValidationError(self._visitor_text("Langue invalide."))
+        self = self.with_context(lang=languages[language], visitor_language_selected=True)
         self.env["ar.visitor.visit"].check_access("create")
         try:
             if not isinstance(photo, str) or len(photo) > 12 * 1024 * 1024:
@@ -89,31 +94,30 @@ class VisitorFaceAttendanceBridge(models.AbstractModel):
                     raise ValueError()
                 image.verify()
         except (ValueError, OSError, Image.DecompressionBombError):
-            raise ValidationError(_("Photo invalide."))
-        values = {"captured_photo": photo}
+            raise ValidationError(self._visitor_text("Photo invalide."))
+        values = {"captured_photo": photo, "language": language}
         if person_id:
             person = self.env["ar.visitor.person"].sudo().with_context(active_test=False).search(
                 self._people_domain() + [("id", "=", int(person_id))], limit=1)
             if not person:
-                raise ValidationError(_("Personne introuvable."))
-            values.update(cin=person.cin, step="language")
+                raise ValidationError(self._visitor_text("Personne introuvable."))
+            values.update(cin=person.cin)
             wizard = self.env["ar.visitor.identify.wizard"].create(values)
-            return {"type": "ir.actions.act_window", "name": _("Choisissez votre langue"),
-                    "res_model": wizard._name, "res_id": wizard.id,
-                    "views": [(False, "form")], "target": "new"}
+            return wizard.action_identify()
         # Unknown faces follow the existing CIN identification flow; no fake identity.
-        return {"type": "ir.actions.act_window", "name": _("Identifier le visiteur"),
+        return {"type": "ir.actions.act_window", "name": self._visitor_text("Identifier le visiteur"),
                 "res_model": "ar.visitor.identify.wizard", "views": [(False, "form")],
-                "target": "new", "context": {"default_captured_photo": photo}}
+                "target": "new", "context": dict(self.env.context,
+                    default_captured_photo=photo, default_language=language)}
 
     @api.model
-    def checkout_for_person(self, person_id):
+    def checkout_for_person(self, person_id, language=False):
         """Open the signature dialog only for an active visit of this person."""
         self._check_operator()
         person = self.env["ar.visitor.person"].sudo().with_context(active_test=False).search(
             self._people_domain() + [("id", "=", int(person_id))], limit=1)
         if not person:
-            raise ValidationError(_("Personne introuvable."))
+            raise ValidationError(self._visitor_text("Personne introuvable."))
         Visit = self.env["ar.visitor.visit"]
         Visit.check_access("read")
         visit = Visit.search([
@@ -121,16 +125,17 @@ class VisitorFaceAttendanceBridge(models.AbstractModel):
             ("state", "in", ("checked_in", "signature_pending")),
         ], order="check_in_at desc, id desc", limit=1)
         if not visit:
-            raise ValidationError(_("Aucune visite en cours n'a été trouvée pour cette personne."))
-        wizard = self.env["ar.visitor.checkout.wizard"].create({"visit_id": visit.id})
-        language = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}.get(visit.language, "fr_FR")
+            raise ValidationError(self._visitor_text("Aucune visite en cours n'a été trouvée pour cette personne."))
+        selected_language = language if language in ("fr", "en", "es", "ar") else visit.language
+        wizard = self.env["ar.visitor.checkout.wizard"].create({"visit_id": visit.id, "language": selected_language})
+        language = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}[selected_language]
         titles = {"fr": "Signature de sortie", "en": "Check-out signature", "es": "Firma de salida", "ar": "توقيع المغادرة"}
         return {
             "type": "ir.actions.act_window",
-            "name": titles.get(visit.language, titles["fr"]),
+            "name": titles[selected_language],
             "res_model": wizard._name,
             "res_id": wizard.id,
             "views": [(False, "form")],
             "target": "new",
-            "context": {"lang": language},
+            "context": dict(self.env.context, lang=language, default_language=selected_language, visitor_language_selected=True),
         }

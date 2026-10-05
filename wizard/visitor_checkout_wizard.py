@@ -1,20 +1,24 @@
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.exceptions import UserError
 
 
 class ArVisitorCheckoutWizard(models.TransientModel):
     _name = "ar.visitor.checkout.wizard"
+    _inherit = "ar.visitor.localization"
     _description = "Signature de sortie du visiteur"
 
     visit_id = fields.Many2one("ar.visitor.visit", string="Visite", required=True, readonly=True)
     visitor_name = fields.Char(related="visit_id.person_id.name", string="Visiteur", readonly=True)
-    language = fields.Selection(related="visit_id.language", readonly=True)
+    language = fields.Selection(
+        [("fr", "Français"), ("en", "English"), ("es", "Español"), ("ar", "العربية")],
+        required=True, default="fr", readonly=True,
+    )
     signature = fields.Binary(string="Signature du visiteur", required=True)
 
     def action_confirm(self):
         self.ensure_one()
         if not self.signature:
-            raise UserError(_("La signature du visiteur est obligatoire pour valider la sortie."))
+            raise UserError(self._visitor_text("La signature du visiteur est obligatoire pour valider la sortie."))
         self.visit_id._finalize_check_out(self.signature)
         # Reload the facial screen only after the check-out has been persisted.
         return {"type": "ir.actions.client", "tag": "reload"}

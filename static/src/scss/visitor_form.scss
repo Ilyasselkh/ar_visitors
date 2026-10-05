@@ -192,3 +192,11 @@
         .ar_lang_heading h2 { font-size: 23px; }
     }
 }
+
+// Visitor language is local to this form, independent of the operator's UI.
+.modal-content[dir="rtl"]:has(.ar_identify_form, .ar_checkout_form),
+.o_form_view[dir="rtl"]:has(.ar_visit_form) {
+    text-align: right;
+    .modal-header .btn-close { margin-left: 0; margin-right: auto; }
+    .ar_identify_eyebrow, .ar_checkout_eyebrow, .ar_visit_eyebrow { letter-spacing: normal; }
+}

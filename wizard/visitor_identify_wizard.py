@@ -1,9 +1,11 @@
-from odoo import fields, models, _
+from odoo import fields, models
 from odoo.exceptions import ValidationError
+from ..visitor_i18n import LANG_CODES
 
 
 class VisitorIdentifyWizard(models.TransientModel):
     _name = "ar.visitor.identify.wizard"
+    _inherit = "ar.visitor.localization"
     _description = "Identifier le visiteur"
 
     captured_photo = fields.Image(string="Photo capturée", max_width=1920, max_height=1920, copy=False)
@@ -14,9 +16,11 @@ class VisitorIdentifyWizard(models.TransientModel):
 
     def action_continue(self):
         self.ensure_one()
+        if self.env.context.get("visitor_language_selected"):
+            return self.action_identify()
         cin = self.env["ar.visitor.person"].normalize_cin(self.cin)
         if len(cin) < 4:
-            raise ValidationError(_("Veuillez saisir une CIN / passeport valide (au moins 4 caractères)."))
+            raise ValidationError(self._visitor_text("Veuillez saisir une CIN / passeport valide (au moins 4 caractères)."))
         self.write({"cin": cin, "step": "language"})
         return {"type": "ir.actions.act_window", "res_model": self._name,
                 "res_id": self.id, "views": [(False, "form")], "target": "new",
@@ -40,12 +44,13 @@ class VisitorIdentifyWizard(models.TransientModel):
 
     def action_identify(self):
         self.ensure_one()
+        self = self.with_context(lang=LANG_CODES[self.language])
         Visit = self.env["ar.visitor.visit"]
         Visit.check_access("create")
         Person = self.env["ar.visitor.person"].sudo().with_context(active_test=False)
         cin = Person.normalize_cin(self.cin)
         if len(cin) < 4:
-            raise ValidationError(_("Veuillez saisir une CIN / passeport valide (au moins 4 caractères)."))
+            raise ValidationError(self._visitor_text("Veuillez saisir une CIN / passeport valide (au moins 4 caractères)."))
         # Serialize simultaneous requests for the same CIN / passeport within this company.
         self.env.cr.execute("SELECT pg_advisory_xact_lock(hashtext(%s))",
                             ["ar_visitors:%s:%s" % (self.env.company.id, cin)])
@@ -76,10 +81,14 @@ class VisitorIdentifyWizard(models.TransientModel):
         elif self.captured_photo:
             # A resumed journey must display this recognition's validated capture.
             visit.write({"photo": self.captured_photo})
-        # A running quiz keeps its original language and answer.
-        if visit.state not in ("quiz_pending", "checked_out"):
+        # Keep previous answers for audit, but open the selected language's quiz
+        # when a visitor resumes an unfinished visit in another language.
+        if visit.state == "quiz_pending" and visit.language != self.language:
+            visit.write({"language": self.language, "survey_user_input_id": False, "state": "identity_check"})
+            visit.action_select_language()
+        elif visit.state != "checked_out":
             visit.language = self.language
-        lang = {"fr": "fr_FR", "en": "en_GB", "es": "es_ES", "ar": "ar_001"}[visit.language]
+        lang = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}[visit.language]
         form_action = {
             "context": dict(self.env.context, lang=lang),
             "type": "ir.actions.act_window", "name": {"fr": "Visite", "en": "Visit", "es": "Visita", "ar": "زيارة"}[visit.language],

@@ -10,7 +10,7 @@
 
             <t t-if="visitor_url">
 
-                <a class="btn btn-primary" data-visitor-return="1" t-att-href="visitor_url">Continuer la visite / Continue / Continuar</a>
+                <a class="btn btn-primary" data-visitor-return="1" t-att-href="visitor_url" t-out="answer._visitor_continue_label()"/>
 
                 <script>if (window.parent !== window) {
 

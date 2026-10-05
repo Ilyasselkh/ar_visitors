@@ -1,4 +1,5 @@
 from odoo import models
+from ..visitor_i18n import visitor_text
 
 
 class SurveyUserInput(models.Model):
@@ -10,6 +11,10 @@ class SurveyUserInput(models.Model):
             ('survey_user_input_id', '=', self.id), ('state', '=', 'host_pending'),
         ], limit=1)
         return '/ar-visitors/kiosk/%s' % visit.kiosk_token if visit.kiosk_token else False
+
+    def _visitor_continue_label(self):
+        self.ensure_one()
+        return visitor_text("Continuer", self.env.context.get("lang"))
 
     def _mark_done(self):
         result = super()._mark_done()

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='utf-8'?>
 <odoo>
     <record id="view_ar_visitor_checkout_wizard_form" model="ir.ui.view">
         <field name="name">ar.visitor.checkout.wizard.form</field>
@@ -9,30 +9,21 @@
                 <sheet>
                     <div class="ar_checkout_hero">
                         <span class="ar_checkout_icon"><i class="fa fa-sign-out" aria-hidden="true"/></span>
-                        <div invisible="language != 'fr'"><span class="ar_checkout_eyebrow">SORTIE VISITEUR</span><h2>Finalisez votre sortie</h2><p>Veuillez signer ci-dessous pour confirmer votre sortie.</p></div>
-                        <div invisible="language != 'en'"><span class="ar_checkout_eyebrow">VISITOR CHECK-OUT</span><h2>Complete your departure</h2><p>Please sign below to confirm your check-out.</p></div>
-                        <div invisible="language != 'es'"><span class="ar_checkout_eyebrow">SALIDA DEL VISITANTE</span><h2>Complete su salida</h2><p>Firme a continuación para confirmar su salida.</p></div>
-                        <div invisible="language != 'ar'" dir="rtl"><span class="ar_checkout_eyebrow">مغادرة الزائر</span><h2>أكمل إجراءات المغادرة</h2><p>يرجى التوقيع أدناه لتأكيد مغادرتك.</p></div>
-                    </div>
+                        <div><span class="ar_checkout_eyebrow">SORTIE VISITEUR</span><h2>Finalisez votre sortie</h2><p>Veuillez signer ci-dessous pour confirmer votre sortie.</p></div>
+                        </div>
                     <div class="ar_checkout_details">
-                        <div><span invisible="language != 'fr'">RÉFÉRENCE DE VISITE</span><span invisible="language != 'en'">VISIT REFERENCE</span><span invisible="language != 'es'">REFERENCIA DE VISITA</span><span invisible="language != 'ar'" dir="rtl">مرجع الزيارة</span><field name="visit_id" readonly="1" nolabel="1"/></div>
-                        <div><span invisible="language != 'fr'">VISITEUR</span><span invisible="language != 'en'">VISITOR</span><span invisible="language != 'es'">VISITANTE</span><span invisible="language != 'ar'" dir="rtl">الزائر</span><field name="visitor_name" readonly="1" nolabel="1"/></div>
+                        <div><span>RÉFÉRENCE DE VISITE</span><field name="visit_id" readonly="1" nolabel="1"/></div>
+                        <div><span>VISITEUR</span><field name="visitor_name" readonly="1" nolabel="1"/></div>
                     </div>
                     <div class="ar_checkout_signature_section">
-                        <div class="ar_checkout_section_heading"><div><span class="ar_checkout_eyebrow" invisible="language != 'fr'">SIGNATURE REQUISE</span><h3 invisible="language != 'fr'">Signez dans la zone ci-dessous</h3><span class="ar_checkout_eyebrow" invisible="language != 'en'">SIGNATURE REQUIRED</span><h3 invisible="language != 'en'">Sign in the area below</h3><span class="ar_checkout_eyebrow" invisible="language != 'es'">FIRMA OBLIGATORIA</span><h3 invisible="language != 'es'">Firme en el área de abajo</h3><span class="ar_checkout_eyebrow" invisible="language != 'ar'" dir="rtl">التوقيع مطلوب</span><h3 invisible="language != 'ar'" dir="rtl">وقّع في المنطقة أدناه</h3></div><i class="fa fa-pencil-square-o" aria-hidden="true"/></div>
+                        <div class="ar_checkout_section_heading"><div><span class="ar_checkout_eyebrow">SIGNATURE REQUISE</span><h3>Signez dans la zone ci-dessous</h3></div><i class="fa fa-pencil-square-o" aria-hidden="true"/></div>
                         <field name="signature" widget="ar_signature_pad" nolabel="1"/>
                     </div>
                 </sheet>
                 <footer>
-                    <button name="action_confirm" type="object" string="Enregistrer ma signature" class="btn-primary" invisible="language != 'fr'"/>
-                    <button name="action_confirm" type="object" string="Save my signature" class="btn-primary" invisible="language != 'en'"/>
-                    <button name="action_confirm" type="object" string="Guardar mi firma" class="btn-primary" invisible="language != 'es'"/>
-                    <button name="action_confirm" type="object" string="حفظ توقيعي" class="btn-primary" invisible="language != 'ar'"/>
-                    <button string="Annuler" special="cancel" class="btn-secondary" invisible="language != 'fr'"/>
-                    <button string="Cancel" special="cancel" class="btn-secondary" invisible="language != 'en'"/>
-                    <button string="Cancelar" special="cancel" class="btn-secondary" invisible="language != 'es'"/>
-                    <button string="إلغاء" special="cancel" class="btn-secondary" invisible="language != 'ar'"/>
-                </footer>
+                    <button name="action_confirm" type="object" string="Enregistrer ma signature" class="btn-primary"/>
+                    <button string="Annuler" special="cancel" class="btn-secondary"/>
+                    </footer>
             </form>
         </field>
     </record>

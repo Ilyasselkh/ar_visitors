@@ -1,3 +1,4 @@
+from . import visitor_localization
 from . import visitor_person
 from . import visitor_quiz_config
 from . import visitor_visit

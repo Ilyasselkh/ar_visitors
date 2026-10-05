@@ -3,7 +3,7 @@ import uuid
 
 from dateutil.relativedelta import relativedelta
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -12,7 +12,7 @@ _logger = logging.getLogger(__name__)
 class ArVisitorVisit(models.Model):
     _name = "ar.visitor.visit"
     _description = "Visite visiteur"
-    _inherit = ["mail.thread", "mail.activity.mixin"]
+    _inherit = ["mail.thread", "mail.activity.mixin", "ar.visitor.localization"]
     _order = "check_in_at desc, id desc"
 
     name = fields.Char(string="Référence", default="Nouveau", readonly=True, copy=False, index=True)
@@ -125,7 +125,7 @@ class ArVisitorVisit(models.Model):
         expiry_minutes = int(self.env["ir.config_parameter"].sudo().get_param("ar_visitors.kiosk_token_minutes", 15))
         for vals in vals_list:
             if vals.get("name", "Nouveau") == "Nouveau":
-                vals["name"] = sequence.next_by_code("ar.visitor.visit") or _("Nouveau")
+                vals["name"] = sequence.next_by_code("ar.visitor.visit") or self._visitor_text("Nouveau")
             vals["cin"] = self.env["ar.visitor.person"].normalize_cin(vals.get("cin"))
             vals.setdefault("kiosk_token_expires_at", fields.Datetime.now() + relativedelta(minutes=expiry_minutes))
         return super().create(vals_list)
@@ -134,16 +134,16 @@ class ArVisitorVisit(models.Model):
     def _check_dates(self):
         for record in self:
             if record.check_in_at and record.check_out_at and record.check_out_at < record.check_in_at:
-                raise ValidationError(_("La sortie ne peut pas précéder l'entrée."))
+                raise ValidationError(self._visitor_text("La sortie ne peut pas précéder l'entrée."))
 
     def action_select_language(self):
         for record in self:
             if record.state not in ('draft', 'identity_check'):
-                raise UserError(_("Le choix de langue n'est pas disponible à cette étape."))
+                raise UserError(self._visitor_text("Le choix de langue n'est pas disponible à cette étape."))
             record._validate_identity_values()
             configuration = self.env["ar.visitor.document"].sudo().get_current_document(record.language, record.company_id)
             if not configuration:
-                raise UserError(_("Aucun quiz actif n'est configuré pour cette langue."))
+                raise UserError(self._visitor_text("Aucun quiz actif n'est configuré pour cette langue."))
             record.write({"survey_id": configuration.survey_id.id, "state": "quiz_pending"})
             record._ensure_survey_answer()
         return True
@@ -151,7 +151,7 @@ class ArVisitorVisit(models.Model):
     def action_start_manual(self):
         for record in self:
             if record.state != 'draft':
-                raise UserError(_("Le parcours a déjà été démarré."))
+                raise UserError(self._visitor_text("Le parcours a déjà été démarré."))
             if record.person_id and not record.cin:
                 record.cin = record.person_id.cin
             if not record.cin:
@@ -183,7 +183,7 @@ class ArVisitorVisit(models.Model):
         if self.state == 'draft':
             self.action_start_manual()
         if self.state not in ('identity_input', 'identity_check', 'quiz_pending', 'host_pending'):
-            raise UserError(_("Cette visite ne peut pas être ouverte sur la borne."))
+            raise UserError(self._visitor_text("Cette visite ne peut pas être ouverte sur la borne."))
         session = self.sudo()
         if not session.kiosk_token or not session.kiosk_token_expires_at or session.kiosk_token_expires_at < fields.Datetime.now():
             session.write({'kiosk_token': uuid.uuid4().hex,
@@ -196,7 +196,7 @@ class ArVisitorVisit(models.Model):
         for record in self:
             cin = self.env["ar.visitor.person"].normalize_cin(record.cin)
             if not record.first_name or not record.last_name or len(cin) < 4:
-                raise UserError(_("Le nom, le prénom et une CIN / passeport valide sont obligatoires."))
+                raise UserError(self._visitor_text("Le nom, le prénom et une CIN / passeport valide sont obligatoires."))
             if record.cin != cin:
                 record.cin = cin
 
@@ -235,7 +235,7 @@ class ArVisitorVisit(models.Model):
         if self.survey_user_input_id:
             return self.survey_user_input_id
         if not self.survey_id:
-            raise UserError(_("Aucun quiz n'est configuré."))
+            raise UserError(self._visitor_text("Aucun quiz n'est configuré."))
         survey = self.survey_id.sudo()
         answer = survey._create_answer(check_attempts=False)
         self.survey_user_input_id = answer.id
@@ -244,13 +244,13 @@ class ArVisitorVisit(models.Model):
     def action_open_quiz(self):
         self.ensure_one()
         if self.state != 'quiz_pending':
-            raise UserError(_("Le quiz n'est pas disponible à cette étape."))
+            raise UserError(self._visitor_text("Le quiz n'est pas disponible à cette étape."))
         answer = self._ensure_survey_answer()
         url = answer.get_start_url()
         if not url and answer.access_token:
             url = "/survey/start/%s?answer_token=%s" % (self.survey_id.access_token, answer.access_token)
         if not url:
-            raise UserError(_("Impossible de générer le lien du quiz."))
+            raise UserError(self._visitor_text("Impossible de générer le lien du quiz."))
         return {"type": "ir.actions.act_url", "url": url, "target": "new"}
 
     def action_check_quiz(self):
@@ -258,10 +258,10 @@ class ArVisitorVisit(models.Model):
             if record.quiz_completed:
                 continue
             if record.state != 'quiz_pending':
-                raise UserError(_("Cette visite n'attend pas de quiz."))
+                raise UserError(self._visitor_text("Cette visite n'attend pas de quiz."))
             answer = record.sudo().survey_user_input_id
             if not answer or answer.state != "done":
-                raise UserError(_("Le quiz n'est pas encore terminé."))
+                raise UserError(self._visitor_text("Le quiz n'est pas encore terminé."))
             record.write({
                 "quiz_completed": True,
                 "quiz_completed_at": answer.end_datetime or fields.Datetime.now(),
@@ -295,17 +295,17 @@ class ArVisitorVisit(models.Model):
     def action_check_in(self):
         for record in self:
             if record.state != 'host_pending' or not (record.quiz_completed or record.validation_was_valid):
-                raise UserError(_("Cette visite n'est pas prête pour l'entrée."))
+                raise UserError(self._visitor_text("Cette visite n'est pas prête pour l'entrée."))
             if not record.entry_signature:
-                raise UserError(_("La signature du visiteur est obligatoire avant de valider la visite."))
+                raise UserError(self._visitor_text("La signature du visiteur est obligatoire avant de valider la visite."))
             if not record.host_employee_id:
-                raise UserError(_("La personne à visiter est obligatoire."))
+                raise UserError(self._visitor_text("La personne à visiter est obligatoire."))
             if record.state == "approval_pending" and not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
-                raise UserError(_("Une validation du responsable est nécessaire."))
+                raise UserError(self._visitor_text("Une validation du responsable est nécessaire."))
             if not record.person_id:
                 record._create_or_update_person()
             if self.search_count([("person_id", "=", record.person_id.id), ("state", "in", ['checked_in', 'signature_pending']), ("id", "!=", record.id)]):
-                raise UserError(_("Ce visiteur possède déjà une visite en cours."))
+                raise UserError(self._visitor_text("Ce visiteur possède déjà une visite en cours."))
             record.write({
                 "check_in_at": record.check_in_at or fields.Datetime.now(),
                 "state": "checked_in",
@@ -326,13 +326,13 @@ class ArVisitorVisit(models.Model):
         for record in self:
             email_to = record._get_host_email()
             if not template or not email_to:
-                message = _("La personne à visiter ne possède pas d'adresse e-mail.")
+                message = self._visitor_text("La personne à visiter ne possède pas d'adresse e-mail.")
                 record.write({"notification_state": "failed", "notification_error": message})
                 continue
             try:
                 template.sudo().send_mail(record.id, force_send=True, raise_exception=True, email_values={"email_to": email_to})
                 record.write({"notification_state": "sent", "notification_at": fields.Datetime.now(), "notification_error": False})
-                record.message_post(body=_("Notification envoyée à %s.") % record.host_employee_id.name)
+                record.message_post(body=self._visitor_text("Notification envoyée à %s.") % record.host_employee_id.name)
             except Exception as exc:
                 _logger.exception("Visitor host notification failed for visit %s", record.id)
                 message = str(exc)[:1000]
@@ -345,16 +345,16 @@ class ArVisitorVisit(models.Model):
     def action_check_out(self):
         self.ensure_one()
         if self.state not in ("checked_in", "signature_pending"):
-            raise UserError(_("Seule une visite en cours peut être clôturée."))
+            raise UserError(self._visitor_text("Seule une visite en cours peut être clôturée."))
         self.write({"check_out_at": fields.Datetime.now(), "state": "checked_out"})
         return True
 
     def _finalize_check_out(self, signature=None):
         self.ensure_one()
         if self.state not in ("checked_in", "signature_pending"):
-            raise UserError(_("Seule une visite en cours peut être clôturée."))
+            raise UserError(self._visitor_text("Seule une visite en cours peut être clôturée."))
         if not signature:
-            raise UserError(_("La signature du visiteur est obligatoire pour valider la sortie."))
+            raise UserError(self._visitor_text("La signature du visiteur est obligatoire pour valider la sortie."))
         self.write({
             "signature": signature,
             "signature_at": fields.Datetime.now(),
@@ -365,7 +365,7 @@ class ArVisitorVisit(models.Model):
 
     def action_approve(self):
         if not self.env.user.has_group("ar_visitors.group_ar_visitors_user"):
-            raise UserError(_("Seul un responsable peut accorder une dérogation."))
+            raise UserError(self._visitor_text("Seul un responsable peut accorder une dérogation."))
         for record in self:
             if record.person_id:
                 next_state = "host_pending" if record.person_id.recent_visit else "identity_check"
@@ -376,7 +376,7 @@ class ArVisitorVisit(models.Model):
                 })
             else:
                 record.state = "identity_input"
-            record.message_post(body=_("Contrôle manuel validé par %s.") % self.env.user.display_name)
+            record.message_post(body=self._visitor_text("Contrôle manuel validé par %s.") % self.env.user.display_name)
 
     def action_refuse(self):
         self.write({"state": "refused", "kiosk_token": False, "kiosk_token_expires_at": False})
