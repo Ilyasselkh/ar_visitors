@@ -25,29 +25,50 @@ function harness() {
     return { screen, timers, calls, cleanup: () => cleanup() };
 }
 
-test('only the success page closes after three seconds and reloads the parent', () => {
+for (const delay of [1000, 3000]) test(`success stays visible for ${delay}ms then reloads once`, () => {
     const { screen, timers, calls } = harness();
     screen.onJourneyLoad();
     assert.equal(timers.size, 0);
-    screen.journey.el.contentDocument.querySelector = selector => {
-        assert.equal(selector, '[data-visitor-registration-complete="true"]');
-        return {};
-    };
+    screen.journey.el.contentDocument.querySelector = selector => selector.includes('data-visitor-registration-complete') ? {dataset: {returnDelay: String(delay)}} : null;
     screen.onJourneyLoad();
+    assert.equal(timers.get(1).delay, delay);
     assert.deepEqual(calls, []);
-    assert.equal(timers.get(1).delay, 3000);
+    screen.onJourneyLoad();
+    assert.equal(timers.size, 1);
     timers.get(1).fn();
     assert.deepEqual(calls, ['close', 'reload']);
 });
-
-test('navigation away or closing the dialog cancels the pending reload', () => {
+test('closing the dialog cancels the pending return', () => {
     const { screen, timers, cleanup } = harness();
-    screen.journey.el.contentDocument.querySelector = () => ({});
+    screen.journey.el.contentDocument.querySelector = selector => selector.includes('data-visitor-registration-complete') ? {dataset: {returnDelay: '1000'}} : null;
     screen.onJourneyLoad();
     cleanup();
     assert.equal(timers.size, 0);
+});
+
+test('visit details explicitly clear the iframe root and body backgrounds', () => {
+    const {screen} = harness();
+    const styles = [];
+    const classes = [];
+    screen.journey.el.closest = () => ({classList: {toggle: (name, value) => classes.push([name, value])}});
+    screen.journey.el.contentDocument = {
+        documentElement: {style: {setProperty: (...args) => styles.push(['html', ...args])}},
+        body: {style: {setProperty: (...args) => styles.push(['body', ...args])}},
+        querySelector: selector => selector === '#ar-entry-signature' ? {} : null,
+    };
+    screen.onJourneyLoad();
+    assert.deepEqual(styles, [
+        ['html', 'background', 'transparent', 'important'],
+        ['body', 'background', 'transparent', 'important'],
+    ]);
+    assert.ok(classes.some(([name, value]) => name === 'ar_visit_details_dialog' && value));
+});
+
+test('validation pages and unavailable frame documents never close or reload', () => {
+    const { screen, timers, calls } = harness();
     screen.onJourneyLoad();
     screen.journey.el.contentDocument = null;
     screen.onJourneyLoad();
     assert.equal(timers.size, 0);
+    assert.deepEqual(calls, []);
 });

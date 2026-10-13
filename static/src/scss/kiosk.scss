@@ -15,7 +15,7 @@
     .ar-details-form { display: grid; gap: 12px; } select, input { padding: 14px; border: 1px solid #c9d3de; border-radius: 10px; font-size: 18px; }
     .ar-alert { padding: 14px; border-radius: 10px; margin: 16px 0; } .ar-alert-danger { background: #fde7e8; color: #8c171b; }
     .ar-center, .ar-success { text-align: center; } .ar-center form { margin-top: 18px; } .ar-success-icon { font-size: 72px; color: #16845b; }
-    #ar-quiz-dialog { width: 96vw; max-width: 1200px; height: 92vh; max-height: 92vh; padding: 0; border: 0; border-radius: 18px; overflow: hidden; }
+    #ar-quiz-dialog { width: 97vw; max-width: 1500px; height: 96dvh; max-height: 96dvh; padding: 0; border: 0; border-radius: 18px; overflow: hidden; }
     #ar-quiz-dialog[open] { display: flex; flex-direction: column; }
     #ar-quiz-dialog::backdrop { background: rgba(15, 23, 42, .65); }
     #ar-quiz-dialog header { flex-shrink: 0; padding: 12px 20px; justify-content: space-between; }
@@ -54,5 +54,72 @@
         .ar-person-summary { text-align: right; }
         .ar-details-form { text-align: right; }
         #ar-quiz-dialog header { flex-direction: row-reverse; }
+    }
+}
+body.ar-visitors-kiosk:has(#ar-quiz-dialog) {
+    background: transparent;
+    > .ar-kiosk-card { visibility: hidden; }
+    #ar-quiz-dialog { visibility: visible; }
+}
+// Keep host selection, signature and validation together in the journey window.
+body.ar-visitors-kiosk:has(#ar-entry-signature) {
+    padding: 12px; min-height: 100dvh; background: transparent !important;
+    .ar-kiosk-card { padding: 20px 26px; border-radius: 18px; max-width: 1160px; }
+    header { padding-bottom: 8px; gap: 10px; }
+    header h1 { font-size: 23px; }
+    .ar-brand { padding: 8px; }
+    .ar-person-summary { margin: 10px 0; padding: 10px; gap: 12px; }
+    .ar-person-summary img { width: 48px; height: 48px; }
+    .ar-person-summary strong { font-size: 18px; }
+    .ar-step h2 { font-size: 25px; margin: 8px 0 12px; }
+    .ar-details-form { gap: 8px; }
+    label { font-size: 14px; }
+    .ar-visit-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .ar-visit-fields > div { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    select, input { width: 100%; padding: 9px 12px; min-height: 40px; font-size: 16px; }
+    #ar-entry-signature { height: 30dvh !important; max-height: 260px; min-height: 120px; }
+    .ar-visit-actions { display: flex; justify-content: flex-end; gap: 12px; }
+    .ar-visit-actions button { width: auto; min-height: 40px; padding: 9px 18px; font-size: 16px; }
+    .ar-visit-close { display: grid; place-items: center; flex-shrink: 0; width: 32px; min-height: 32px; padding: 0; border-radius: 9px; font-size: 24px; line-height: 1; }
+    #ar-signature-error { margin: 0; color: #8c171b; }
+    @media (max-width: 500px) {
+        .ar-kiosk-card { padding: 12px; }
+        .ar-reference { width: auto; margin-inline-start: auto; }
+        .ar-visit-fields { grid-template-columns: 1fr; gap: 8px; }
+        .ar-visit-actions { gap: 6px; }
+        .ar-visit-actions button { padding: 8px 10px; font-size: 14px; }
+    }
+}
+html:has(body.ar-visitors-kiosk #ar-entry-signature) { background: transparent !important; }
+@media (max-height: 650px) {
+    body.ar-visitors-kiosk:has(#ar-entry-signature) {
+        padding: 8px;
+        .ar-kiosk-card { padding: 12px 16px; }
+        header { padding-bottom: 6px; gap: 8px; }
+        header h1 { font-size: 18px; line-height: 1.2; }
+        .ar-brand { padding: 6px; font-size: 12px; }
+        .ar-person-summary { margin: 6px 0; padding: 6px; }
+        .ar-person-summary img { width: 36px; height: 36px; }
+        .ar-person-summary strong { font-size: 16px; }
+        .ar-person-summary small { font-size: 12px; }
+        .ar-step h2 { font-size: 20px; margin: 6px 0 8px; }
+        .ar-details-form { gap: 6px; }
+        .ar-visit-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .ar-visit-fields > div { gap: 4px; }
+        label { font-size: 12px; }
+        select, input { min-height: 34px; padding: 6px 8px; font-size: 14px; }
+        #ar-entry-signature { min-height: 72px; height: 24dvh !important; max-height: 130px; }
+        .ar-visit-actions button { min-height: 34px; padding: 7px 10px; font-size: 13px; }
+    }
+}
+@media (max-height: 400px) {
+    body.ar-visitors-kiosk:has(#ar-entry-signature) {
+        .ar-kiosk-card { padding: 8px 12px; }
+        .ar-person-summary { margin: 4px 0; padding: 4px; }
+        .ar-person-summary img { width: 28px; height: 28px; }
+        .ar-person-summary strong { font-size: 14px; }
+        .ar-step h2 { font-size: 18px; margin: 4px 0; }
+        .ar-details-form { gap: 4px; }
+        #ar-entry-signature { height: 20dvh !important; }
     }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ar_visitors.InvitationTypeBadge">
+        <span t-att-class="'ar-invitation-badge ar-invitation-badge--' + kind">
+            <i t-att-class="'fa ' + icon" aria-hidden="true"/> <t t-esc="label"/>
+        </span>
+    </t>
+    <t t-name="ar_visitors.InvitationLegend">
+        <aside class="ar-invitation-legend" aria-label="Légende des types d’invitation">
+            <strong>Légende</strong>
+            <div><span class="ar-invitation-badge ar-invitation-badge--email"><i class="fa fa-envelope-o" aria-hidden="true"/> E-mail</span><span>Invitation personnelle envoyée par e-mail</span></div>
+            <div><span class="ar-invitation-badge ar-invitation-badge--shared"><i class="fa fa-link" aria-hidden="true"/> Lien partagé</span><span>Lien utilisable par plusieurs visiteurs</span></div>
+            <div><span class="ar-invitation-badge ar-invitation-badge--registration"><i class="fa fa-user-o" aria-hidden="true"/> Via lien partagé</span><span>Inscription individuelle issue d’un lien partagé</span></div>
+        </aside>
+    </t>
+    <t t-name="ar_visitors.InvitationListRenderer" t-inherit="web.ListRenderer" t-inherit-mode="primary">
+        <xpath expr="//div[@t-ref='root']" position="before"><t t-call="ar_visitors.InvitationLegend"/></xpath>
+    </t>
+    <t t-name="ar_visitors.InvitationKanbanRenderer" t-inherit="web.KanbanRenderer" t-inherit-mode="primary">
+        <xpath expr="//div[@t-ref='root']" position="before"><t t-call="ar_visitors.InvitationLegend"/></xpath>
+    </t>
+</templates>

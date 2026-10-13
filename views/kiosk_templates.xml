@@ -15,6 +15,7 @@
                 <title>AR - Visitors</title>
 
                 <t t-call-assets="web.assets_frontend"/>
+                <link rel="stylesheet" href="/ar_visitors/static/src/css/safety_notice.css?v=1"/>
 
             </head>
 
@@ -57,9 +58,9 @@
                             <input type="text" name="cin" required="required" maxlength="30" t-att-value="visit.cin or ''"/>
 
                             <label for="ar-visitor-company" t-out="labels['company']"/>
-                            <input id="ar-visitor-company" type="text" name="visitor_company" maxlength="200" t-att-value="visit.visitor_company or ''"/>
+                            <input id="ar-visitor-company" type="text" name="visitor_company" required="required" maxlength="200" t-att-value="visit.visitor_company or ''"/>
                             <label for="ar-nationality" t-out="labels['nationality']"/>
-                            <select id="ar-nationality" name="nationality_id">
+                            <select id="ar-nationality" name="nationality_id" required="required">
                                 <option value="">—</option>
                                 <option t-foreach="countries" t-as="country" t-att-value="country.id"
                                     t-att-selected="country.id == visit.nationality_id.id" t-out="country.name"/>
@@ -108,24 +109,47 @@
 
 
 
-                    <section t-if="visit.state == 'host_pending'" class="ar-step">
+                    <section t-if="visit.state == 'host_pending' and visit.kiosk_purpose == 'arrival' and visit.safety_understanding != 'yes'" class="ar-step">
+                        <h2 t-out="safety_labels['safety']"/>
+                        <div t-if="visit.safety_understanding == 'no'" class="ar-safety-notice" role="alert">
+                            <span class="ar-safety-notice-icon" aria-hidden="true">!</span>
+                            <div class="ar-safety-notice-content">
+                                <p t-out="safety_labels['safety_help']"/>
+                                <p class="ar-safety-notice-next"><span aria-hidden="true">✓</span> <strong t-out="safety_labels['safety_continue']"/></p>
+                            </div>
+                        </div>
+                        <article t-foreach="safety_instructions" t-as="instruction" style="padding:20px;margin:16px 0;border:1px solid #dce5ef;border-radius:16px;">
+                            <p style="white-space:pre-line;"><span t-out="instruction['emoji']"/> <span t-out="instruction['text']"/></p>
+                            <img t-foreach="instruction['images']" t-as="image" t-att-src="'data:image/png;base64,' + image" alt="" style="display:block;max-width:100%;max-height:65vh;margin:12px auto;object-fit:contain;"/>
+                        </article>
+                        <form method="post" t-att-action="'/ar-visitors/kiosk/%s/safety' % visit.kiosk_token">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <p t-out="safety_labels['safety_confirm']"/>
+                            <button type="submit" name="understanding" value="yes" class="ar-primary" t-out="safety_labels['safety_validate']"/>
+                            <button type="submit" name="understanding" value="no" t-out="safety_labels['safety_no']"/>
+                        </form>
+                    </section>
+                    <section t-if="visit.state == 'host_pending' and visit.kiosk_purpose == 'arrival' and visit.safety_understanding == 'yes'" class="ar-step">
 
                         <h2 t-out="labels['visit_title']"/>
 
                         <form class="ar-details-form" t-att-action="'/ar-visitors/kiosk/%s/details' % visit.kiosk_token" method="post">
 
-                            <label t-out="labels['host']"/>
-
-                            <select name="host_employee_id" required="required"><option value="">—</option><option t-foreach="employees" t-as="employee" t-att-value="employee.id" t-out="employee.name"/></select>
-
-                            <label t-out="labels['purpose']"/><input type="text" name="purpose" maxlength="200"/>
+                            <div class="ar-visit-fields">
+                                <div><label for="ar-visit-host" t-out="labels['host']"/>
+                                    <select id="ar-visit-host" name="host_employee_id" required="required"><option value="">—</option><option t-foreach="employees" t-as="employee" t-att-value="employee.id" t-out="employee.name"/></select>
+                                </div>
+                                <div><label for="ar-visit-purpose" t-out="labels['purpose']"/><input id="ar-visit-purpose" type="text" name="purpose" maxlength="200"/></div>
+                            </div>
 
                             <label t-out="labels['signature']"/>
                             <canvas id="ar-entry-signature" width="800" height="240" style="width:100%;height:160px;border:1px solid #cbd5e1;border-radius:12px;background:white;touch-action:none;" t-att-aria-label="labels['signature']"/>
                             <input type="hidden" name="entry_signature" id="ar-entry-signature-value"/>
-                            <button type="button" id="ar-clear-signature" t-out="labels['clear_signature']"/>
                             <p id="ar-signature-error" hidden="hidden" t-out="labels['signature_required']"/>
-                            <button class="ar-primary" type="submit" t-out="labels['save']"/>
+                            <div class="ar-visit-actions">
+                                <button type="button" id="ar-clear-signature" t-out="labels['clear_signature']"/>
+                                <button class="ar-primary" type="submit" t-out="labels['save']"/>
+                            </div>
 
                         </form>
 
@@ -144,7 +168,7 @@
                 </main>
 
                 <script src="/ar_visitors/static/src/js/entry_signature.js" defer="defer"/>
-                <script src="/ar_visitors/static/src/js/kiosk_quiz.js?v=19.0.1.3.1" defer="defer"/>
+                <script src="/ar_visitors/static/src/js/kiosk_quiz.js?v=19.0.1.27.0" defer="defer"/>
             </body>
 
         </html>
@@ -157,7 +181,7 @@
 
         <html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>AR - Visitors</title><t t-call-assets="web.assets_frontend"/></head>
 
-        <body class="ar-visitors-kiosk" t-att-lang="'ar' if visit.language == 'ar' else visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'"><main class="ar-kiosk-card ar-success" data-visitor-registration-complete="true"><div class="ar-success-icon">✓</div><h1 t-out="labels['success_title']"/><p t-if="visit.notification_state == 'sent'" t-out="labels['success_sent']"/><p t-else="" t-out="labels['success_pending']"/><strong t-out="visit.name"/></main></body></html>
+        <body class="ar-visitors-kiosk ar_completion_page" t-att-lang="visit.language" t-att-dir="'rtl' if visit.language == 'ar' else 'ltr'"><main class="ar_completion_result" data-visitor-registration-complete="true" t-att-data-return-delay="1000 if visit.kiosk_purpose == 'profile' else 3000"><svg class="ar_completion_check" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="43"/><path d="M28 50 L44 66 L73 36"/></svg><h1 t-if="visit.kiosk_purpose == 'profile'"><t t-if="visit.profile_already_exists">Votre fiche existe déjà</t><t t-else="">Votre fiche est bien enregistrée</t></h1><h1 t-else="">Bienvenue chez ARaymond</h1></main></body></html>
 
     </template>
 

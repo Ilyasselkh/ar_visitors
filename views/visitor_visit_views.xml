@@ -24,9 +24,7 @@
                 <button name="action_open_kiosk" type="object" string="Ouvrir le parcours visiteur" class="btn-primary" invisible="state not in ('draft','identity_input','identity_check','quiz_pending','host_pending')"/>
                 <button name="action_start_manual" type="object" string="Démarrer le parcours" class="btn-primary" invisible="state != 'draft'"/>
                 <button name="action_confirm_identity" type="object" string="Valider l'identité" class="btn-primary" invisible="state != 'identity_input'"/>
-                <button name="action_select_language" type="object" string="Charger le quiz" class="btn-primary" invisible="state != 'identity_check'"/>
-                <button name="action_open_quiz" type="object" string="Ouvrir le quiz" class="btn-primary" invisible="state != 'quiz_pending'"/>
-                <button name="action_check_quiz" type="object" string="Vérifier le quiz" class="btn-success" invisible="state != 'quiz_pending'"/>
+                <button name="action_check_quiz" type="object" string="Continuer le parcours" class="btn-primary" invisible="state not in ['identity_check', 'quiz_pending']"/>
                 <button name="action_check_in" type="object" string="Enregistrer et notifier" class="btn-success" invisible="state != 'host_pending'"/>
                 <button name="action_check_out" type="object" string="Enregistrer la sortie" class="btn-primary" invisible="state not in ('checked_in','signature_pending')"/>
                 <button name="action_approve" type="object" string="Valider le contrôle" groups="ar_visitors.group_ar_visitors_user" invisible="state != 'approval_pending'"/>

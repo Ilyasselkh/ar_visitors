@@ -56,6 +56,7 @@ class VisitorIdentifyWizard(models.TransientModel):
                             ["ar_visitors:%s:%s" % (self.env.company.id, cin)])
         visit = Visit.search([
             ("cin", "=", cin), ("company_id", "=", self.env.company.id),
+            ("kiosk_purpose", "=", "arrival"),
             ("state", "not in", ["checked_out", "refused", "cancelled"]),
         ], limit=1)
         if not visit:
@@ -77,7 +78,21 @@ class VisitorIdentifyWizard(models.TransientModel):
                     vals["state"] = "refused"
             if self.captured_photo:
                 vals["photo"] = self.captured_photo
+            invitation = self.env['ar.visitor.invitation'].sudo().search([
+                ('cin', '=', cin), ('company_id', '=', self.env.company.id),
+                ('state', '=', 'ready'), ('planned_date', '=', fields.Date.context_today(self)),
+                ('visit_id', '=', False),
+            ], limit=1)
+            if invitation and person:
+                vals.update(invitation._arrival_values(person))
+                if self.captured_photo:
+                    vals['photo'] = self.captured_photo
+            invitation_answer_id = vals.pop('survey_user_input_id', False)
             visit = Visit.create(vals)
+            if visit.invitation_id:
+                if invitation_answer_id:
+                    visit.sudo().write({'survey_user_input_id': invitation_answer_id})
+                visit.invitation_id.sudo().write({'visit_id': visit.id, 'state': 'on_site', 'token': False, 'otp_hash': False})
         elif self.captured_photo:
             # A resumed journey must display this recognition's validated capture.
             visit.write({"photo": self.captured_photo})

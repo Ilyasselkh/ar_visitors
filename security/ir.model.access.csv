@@ -13,3 +13,9 @@ access_ar_survey_config_read,Visitor quiz selection,survey.model_survey_survey,g
 access_ar_visitor_identify_wizard,Visitor identification,model_ar_visitor_identify_wizard,group_ar_visitors_user,1,1,1,1
 
 access_ar_visitor_person_photo,Visitor secondary photos,model_ar_visitor_person_photo,group_ar_visitors_api_admin,1,1,1,1
+access_ar_visitor_invitation_user,ar.visitor.invitation.user,model_ar_visitor_invitation,ar_visitors.group_ar_visitors_user,1,1,1,0
+
+access_safety_instruction_user,Safety instructions read,model_ar_visitor_safety_instruction,group_ar_visitors_user,1,0,0,0
+access_safety_instruction_admin,Safety instructions configuration,model_ar_visitor_safety_instruction,group_ar_visitors_admin,1,1,1,1
+access_safety_image_user,Safety images read,model_ar_visitor_safety_image,group_ar_visitors_user,1,0,0,0
+access_safety_image_admin,Safety images configuration,model_ar_visitor_safety_image,group_ar_visitors_admin,1,1,1,1

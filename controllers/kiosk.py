@@ -1,5 +1,6 @@
 import base64
 from ..visitor_i18n import visitor_text
+from ..prereg_labels import labels as safety_labels
 
 from odoo import fields, http
 from odoo.exceptions import UserError, ValidationError
@@ -28,11 +29,19 @@ class ArVisitorsKiosk(http.Controller):
         return visit.with_context(lang=lang)
 
     def _render(self, visit, error=None, success=None):
+        instructions = request.env['ar.visitor.safety.instruction'].sudo().search([])
+        images = request.env['ar.visitor.safety.image'].sudo().search([
+            ('instruction_id', 'in', instructions.ids), ('language', '=', visit.language)])
+        safety = [{'text': item._localized_text(visit.language), 'emoji': item.emoji,
+                   'images': [image.image.decode() for image in images if image.instruction_id == item and image.image]}
+                  for item in instructions]
         employees = request.env["hr.employee"].sudo().search([
             ("company_id", "=", visit.company_id.id), ("work_email", "!=", False)
         ], order="name")
         return request.render("ar_visitors.kiosk_page", {
             "visit": visit,
+            "safety_instructions": safety,
+            "safety_labels": safety_labels(visit.language),
             "employees": employees,
             "countries": request.env["res.country"].sudo().search([], order="name"),
             "labels": dict(self._labels(visit.language), close=visitor_text("Fermer", visit.language)),
@@ -43,11 +52,20 @@ class ArVisitorsKiosk(http.Controller):
     @http.route("/ar-visitors/kiosk/<string:token>", type="http", auth="public", website=False, csrf=False)
     def kiosk(self, token, **kwargs):
         visit = self._visit(token)
-        if visit.state == "identity_check":
+        if visit.kiosk_purpose == 'profile' and visit.state == 'host_pending':
+            if visit.person_id:
+                visit.write({'profile_completed': True, 'state': 'profile_done', 'check_in_at': False})
+            else:
+                visit.write({'state': 'identity_check', 'check_in_at': False})
+        if visit.profile_completed:
+            return request.render("ar_visitors.kiosk_success", {"visit": visit, "labels": self._labels(visit.language)})
+        if visit.state in ('identity_check', 'quiz_pending'):
             try:
-                visit.action_select_language()
+                visit._continue_without_quiz()
             except UserError as exc:
                 return self._render(visit, error=str(exc))
+        if visit.profile_completed:
+            return request.render("ar_visitors.kiosk_success", {"visit": visit, "labels": self._labels(visit.language)})
         return self._render(visit)
 
     @http.route("/ar-visitors/kiosk/<string:token>/identity", type="http", auth="public", methods=["POST"], csrf=False)
@@ -55,12 +73,15 @@ class ArVisitorsKiosk(http.Controller):
         visit = self._visit(token)
         if visit.state != "identity_input":
             return redirect("/ar-visitors/kiosk/%s" % token)
+        required_fields = ("first_name", "last_name", "cin", "visitor_company", "nationality_id")
+        if any(not (post.get(name) or "").strip() for name in required_fields):
+            return self._render(visit, error="Veuillez remplir tous les champs avant de continuer.")
         try:
             nationality_id = int(post.get("nationality_id") or 0)
         except (ValueError, TypeError):
             nationality_id = 0
         country = request.env["res.country"].sudo().browse(nationality_id).exists()
-        if post.get("nationality_id") and not country:
+        if not country:
             return self._render(visit, error=visitor_text('Nationalité invalide.', visit.language))
         visit.write({
             "visitor_company": (post.get("visitor_company") or "").strip()[:200],
@@ -75,6 +96,14 @@ class ArVisitorsKiosk(http.Controller):
             return self._render(visit, error=str(exc))
         return redirect("/ar-visitors/kiosk/%s" % token)
 
+    @http.route('/ar-visitors/kiosk/<string:token>/safety', type='http', auth='public', methods=['POST'])
+    def safety(self, token, **post):
+        visit = self._visit(token)
+        if visit.state == 'host_pending' and post.get('understanding') in ('yes', 'no'):
+            visit.write({'safety_understanding': post['understanding'],
+                         'safety_acknowledged_at': fields.Datetime.now(), 'check_in_at': False})
+        return redirect('/ar-visitors/kiosk/%s' % token, code=303)
+
     @http.route("/ar-visitors/kiosk/<string:token>/photo", type="http", auth="public", csrf=False)
     def photo(self, token, **kwargs):
         visit = self._visit(token)
@@ -87,10 +116,8 @@ class ArVisitorsKiosk(http.Controller):
     @http.route("/ar-visitors/kiosk/<string:token>/quiz", type="http", auth="public", methods=["GET"], csrf=False)
     def quiz(self, token, **kwargs):
         visit = self._visit(token)
-        if visit.survey_id.users_login_required:
-            return request.make_response(visitor_text("Ce quiz exige une connexion. L’accueil doit configurer un quiz accessible aux visiteurs.", visit.language), headers=[('Content-Type', 'text/plain; charset=utf-8')])
-        action = visit.action_open_quiz()
-        return redirect(action["url"] + ("&" if "?" in action["url"] else "?") + "lang=" + visit.env.context["lang"])
+        visit._continue_without_quiz()
+        return redirect("/ar-visitors/kiosk/%s" % token)
 
     @http.route('/ar-visitors/kiosk/<string:token>/quiz-status', type='http', auth='public', methods=['GET'])
     def quiz_status(self, token, **kwargs):
@@ -109,7 +136,7 @@ class ArVisitorsKiosk(http.Controller):
     @http.route("/ar-visitors/kiosk/<string:token>/details", type="http", auth="public", methods=["POST"], csrf=False)
     def details(self, token, **post):
         visit = self._visit(token)
-        if visit.state != "host_pending":
+        if visit.kiosk_purpose != "arrival" or visit.state != "host_pending":
             return redirect("/ar-visitors/kiosk/%s" % token)
         try:
             host_id = int(post.get("host_employee_id") or 0)
@@ -136,7 +163,7 @@ class ArVisitorsKiosk(http.Controller):
             "state": "host_pending",
         })
         try:
-            visit.action_check_in()
+            visit.with_context(visitor_defer_notification=True).action_check_in()
         except (UserError, ValidationError) as exc:
             return self._render(visit, error=str(exc))
         return request.render("ar_visitors.kiosk_success", {"visit": visit, "labels": self._labels(visit.language)})

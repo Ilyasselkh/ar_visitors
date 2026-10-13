@@ -10,14 +10,21 @@ _logger = logging.getLogger(__name__)
 
 
 class ArVisitorVisit(models.Model):
+    invitation_id = fields.Many2one('ar.visitor.invitation', readonly=True, copy=False, ondelete='restrict')
+    safety_understanding = fields.Selection([('yes', 'Consignes comprises'), ('no', 'Explications nécessaires à l’accueil')], string="Compréhension des consignes", readonly=True, copy=False)
+    safety_acknowledged_at = fields.Datetime(readonly=True, copy=False)
     _name = "ar.visitor.visit"
     _description = "Visite visiteur"
     _inherit = ["mail.thread", "mail.activity.mixin", "ar.visitor.localization"]
     _order = "check_in_at desc, id desc"
 
     name = fields.Char(string="Référence", default="Nouveau", readonly=True, copy=False, index=True)
+    kiosk_purpose = fields.Selection([("arrival", "Entrée"), ("profile", "Fiche visiteur")], default="arrival", required=True, copy=False)
+    kiosk_consent = fields.Boolean(copy=False)
+    profile_completed = fields.Boolean(copy=False)
+    profile_already_exists = fields.Boolean(readonly=True, copy=False)
     active = fields.Boolean(default=True)
-    person_id = fields.Many2one("ar.visitor.person", string="Visiteur", ondelete="restrict", tracking=True)
+    person_id = fields.Many2one("ar.visitor.person", string="Visiteur", ondelete="cascade", tracking=True)
     nationality_id = fields.Many2one("res.country", string="Nationalité", tracking=True)
     first_name = fields.Char(string="Prénom", tracking=True)
     last_name = fields.Char(string="Nom", tracking=True)
@@ -46,6 +53,7 @@ class ArVisitorVisit(models.Model):
             ("checked_out", "Visiteur sorti"),
             ("refused", "Refusé"),
             ("cancelled", "Annulé"),
+            ("profile_done", "Fiche renseignée"),
         ],
         default="draft",
         required=True,
@@ -141,11 +149,18 @@ class ArVisitorVisit(models.Model):
             if record.state not in ('draft', 'identity_check'):
                 raise UserError(self._visitor_text("Le choix de langue n'est pas disponible à cette étape."))
             record._validate_identity_values()
-            configuration = self.env["ar.visitor.document"].sudo().get_current_document(record.language, record.company_id)
-            if not configuration:
-                raise UserError(self._visitor_text("Aucun quiz actif n'est configuré pour cette langue."))
-            record.write({"survey_id": configuration.survey_id.id, "state": "quiz_pending"})
-            record._ensure_survey_answer()
+            record._continue_without_quiz()
+        return True
+
+    def _continue_without_quiz(self):
+        for record in self:
+            if record.state not in ('draft', 'identity_check', 'quiz_pending'):
+                continue
+            record._create_or_update_person()
+            values = {'state': 'host_pending', 'check_in_at': False}
+            if record.kiosk_purpose == 'profile':
+                values.update(state='profile_done', profile_completed=True)
+            record.write(values)
         return True
 
     def action_start_manual(self):
@@ -211,6 +226,10 @@ class ArVisitorVisit(models.Model):
                 if record.facial_result == 'unknown':
                     record.write({'person_id': person.id, 'state': 'approval_pending'})
                     continue
+                if record.kiosk_purpose == 'profile':
+                    record.write({'person_id': person.id, 'profile_already_exists': True,
+                                  'profile_completed': True, 'state': 'profile_done', 'check_in_at': False})
+                    continue
                 record.write({
                     "person_id": person.id,
                     "nationality_id": record.nationality_id.id or person.nationality_id.id,
@@ -224,6 +243,8 @@ class ArVisitorVisit(models.Model):
             else:
                 record._create_or_update_person()
                 record.state = "identity_check"
+        for record in self.filtered(lambda v: v.kiosk_purpose == 'profile' and v.state == 'host_pending'):
+            record.write({'profile_completed': True, 'state': 'profile_done', 'check_in_at': False})
         for record in self.filtered(lambda v: v.state == "identity_check"):
             record.action_select_language()
         return True
@@ -243,6 +264,13 @@ class ArVisitorVisit(models.Model):
 
     def action_open_quiz(self):
         self.ensure_one()
+        self._continue_without_quiz()
+        if self.profile_completed:
+            return {'type': 'ir.actions.act_window_close'}
+        return self.action_open_kiosk()
+
+    def _legacy_action_open_quiz(self):
+        self.ensure_one()
         if self.state != 'quiz_pending':
             raise UserError(self._visitor_text("Le quiz n'est pas disponible à cette étape."))
         answer = self._ensure_survey_answer()
@@ -254,6 +282,9 @@ class ArVisitorVisit(models.Model):
         return {"type": "ir.actions.act_url", "url": url, "target": "new"}
 
     def action_check_quiz(self):
+        return self._continue_without_quiz()
+
+    def _legacy_action_check_quiz(self):
         for record in self:
             if record.quiz_completed:
                 continue
@@ -265,11 +296,13 @@ class ArVisitorVisit(models.Model):
             record.write({
                 "quiz_completed": True,
                 "quiz_completed_at": answer.end_datetime or fields.Datetime.now(),
-                "check_in_at": answer.end_datetime or fields.Datetime.now(),
+                "check_in_at": False,
                 "state": "host_pending",
                 "kiosk_token_expires_at": fields.Datetime.now() + relativedelta(minutes=int(self.env['ir.config_parameter'].sudo().get_param('ar_visitors.kiosk_token_minutes', 15))),
             })
             record._create_or_update_person()
+            if record.kiosk_purpose == 'profile':
+                record.write({'profile_completed': True, 'state': 'profile_done', 'check_in_at': False})
         return True
 
     def _create_or_update_person(self):
@@ -284,6 +317,7 @@ class ArVisitorVisit(models.Model):
             "cin": self.cin,
             "company_name": self.visitor_company,
             "preferred_language": self.language,
+            **({"consent": True} if self.kiosk_consent else {}),
         }
         if self.photo:
             vals["image_1920"] = self.photo
@@ -294,7 +328,11 @@ class ArVisitorVisit(models.Model):
 
     def action_check_in(self):
         for record in self:
-            if record.state != 'host_pending' or not (record.quiz_completed or record.validation_was_valid):
+            if record.safety_understanding != 'yes':
+                raise UserError(record._visitor_text("Veuillez confirmer la compréhension des consignes avant d’enregistrer l’entrée."))
+            if record.kiosk_purpose != 'arrival':
+                raise UserError("La fiche visiteur ne doit pas enregistrer une entrée.")
+            if record.state != 'host_pending':
                 raise UserError(self._visitor_text("Cette visite n'est pas prête pour l'entrée."))
             if not record.entry_signature:
                 raise UserError(self._visitor_text("La signature du visiteur est obligatoire avant de valider la visite."))
@@ -307,14 +345,28 @@ class ArVisitorVisit(models.Model):
             if self.search_count([("person_id", "=", record.person_id.id), ("state", "in", ['checked_in', 'signature_pending']), ("id", "!=", record.id)]):
                 raise UserError(self._visitor_text("Ce visiteur possède déjà une visite en cours."))
             record.write({
-                "check_in_at": record.check_in_at or fields.Datetime.now(),
+                "check_in_at": fields.Datetime.now() if record.invitation_id else record.check_in_at or fields.Datetime.now(),
                 "state": "checked_in",
                 "entry_signature_at": fields.Datetime.now(),
                 "kiosk_token": False,
                 "kiosk_token_expires_at": False,
             })
-            record._send_host_notification()
+            if record.invitation_id:
+                record.invitation_id.sudo().write({'state': 'arrived', 'token': False, 'otp_hash': False})
+            if self.env.context.get('visitor_defer_notification'):
+                record.write({'notification_state': 'pending', 'notification_error': False})
+                self.env.ref('ar_visitors.ir_cron_send_visitor_notifications').sudo()._trigger()
+            else:
+                record._send_host_notification()
         return True
+
+    @api.model
+    def _cron_send_visitor_notifications(self):
+        visits = self.search([
+            ('notification_state', '=', 'pending'), ('check_in_at', '!=', False),
+            ('state', 'in', ['checked_in', 'signature_pending', 'checked_out']),
+        ], limit=30, order='id')
+        visits._send_host_notification()
 
     def _get_host_email(self):
         self.ensure_one()

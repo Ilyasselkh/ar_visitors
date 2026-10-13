@@ -11,6 +11,10 @@ const TRANSLATIONS = {
     es: { language: "Idioma", title: "Reconocimiento facial", intro: "Presente un solo rostro ante la cámara para buscar un visitante.", enable: "Activar cámara", recognize: "Reconocer visitante", cin: "Introducir DNI / pasaporte", checkout: "Registrar salida", consentTitle: "Consentimiento obligatorio", consentPhoto: "Al activar la cámara, acepta la captura de su foto para el reconocimiento facial.", consentData: "Su foto y los datos necesarios para su visita podrán registrarse en Odoo, conforme a la política de privacidad de la empresa.", consentCheck: "Confirmo que he leído y acepto el registro de mi foto y de los datos de mi visita.", refuse: "Rechazar", accept: "Acepto y continúo", recognized: "VISITANTE RECONOCIDO", nationality: "Nacionalidad:", isYou: "¿Es usted?", yes: "Sí, soy yo", no: "No, no soy yo", continue: "Continuar", retry: "Reintentar reconocimiento facial", matched: "Se encontró una coincidencia. Continúe para abrir el recorrido del visitante.", unmatched: "No hay una coincidencia fiable. Continúe para identificar al visitante con DNI / pasaporte." },
     ar: { language: "اللغة", title: "التعرّف على الوجه", intro: "ضع وجهاً واحداً أمام الكاميرا للبحث عن زائر.", enable: "تشغيل الكاميرا", recognize: "التعرّف على الزائر", cin: "إدخال البطاقة / جواز السفر", checkout: "تسجيل المغادرة", consentTitle: "الموافقة مطلوبة", consentPhoto: "بتشغيل الكاميرا، توافق على التقاط صورتك للتعرّف على الوجه.", consentData: "قد تُسجّل صورتك والبيانات اللازمة لزيارتك في أودو وفقاً لسياسة خصوصية الشركة.", consentCheck: "أؤكد أنني قرأت وأوافق على تسجيل صورتي وبيانات زيارتي.", refuse: "رفض", accept: "أوافق وأتابع", recognized: "تم التعرّف على الزائر", nationality: "الجنسية:", isYou: "هل هذا أنت؟", yes: "نعم، هذا أنا", no: "لا، لست أنا", continue: "متابعة", retry: "إعادة التعرّف على الوجه", matched: "تم العثور على تطابق. تابع لفتح مسار الزائر.", unmatched: "لا يوجد تطابق موثوق. تابع لتعريف الزائر بالبطاقة / جواز السفر." },
 };
+Object.assign(TRANSLATIONS.fr, { closeVisit: "Clôturer", openVisit: "Ce visiteur possède déjà une visite en cours." });
+Object.assign(TRANSLATIONS.en, { closeVisit: "Close visit", openVisit: "This visitor already has an active visit." });
+Object.assign(TRANSLATIONS.es, { closeVisit: "Cerrar visita", openVisit: "Este visitante ya tiene una visita en curso." });
+Object.assign(TRANSLATIONS.ar, { closeVisit: "إنهاء الزيارة", openVisit: "لدى هذا الزائر زيارة جارية بالفعل." });
 const STATUS_TRANSLATIONS = {
     "fr": {
         "La caméra nécessite HTTPS ou localhost.": "La caméra nécessite HTTPS ou localhost.",
@@ -98,6 +102,18 @@ Object.assign(TRANSLATIONS.fr, { comparison: "Comparaison des photos :", automat
 Object.assign(TRANSLATIONS.en, { comparison: "Comparing photos:", automaticRetry: "Automatic retry" });
 Object.assign(TRANSLATIONS.es, { comparison: "Comparando fotos:", automaticRetry: "Reintento automático" });
 Object.assign(TRANSLATIONS.ar, { comparison: "مقارنة الصور:", automaticRetry: "إعادة المحاولة تلقائياً" });
+Object.assign(TRANSLATIONS.fr, {startVisit: "Enregistrer une entrée", finishVisit: "Enregistrer une sortie", profile: "Renseigner votre fiche visiteur", safety: "Prendre connaissance des consignes de sécurité", home: "Retour à l’accueil", confirmExit: "Valider ma sortie"});
+Object.assign(TRANSLATIONS.en, {startVisit: "Check in", finishVisit: "Check out", profile: "Complete your visitor profile", safety: "Read the safety instructions", home: "Return to reception", confirmExit: "Confirm check-out"});
+Object.assign(TRANSLATIONS.es, {startVisit: "Registrar entrada", finishVisit: "Registrar salida", profile: "Completar su ficha de visitante", safety: "Consultar las instrucciones de seguridad", home: "Volver al inicio", confirmExit: "Confirmar salida"});
+Object.assign(TRANSLATIONS.ar, {startVisit: "تسجيل الدخول", finishVisit: "تسجيل المغادرة", profile: "استكمال بطاقة الزائر", safety: "الاطلاع على تعليمات السلامة", home: "العودة للرئيسية", confirmExit: "تأكيد المغادرة"});
+Object.assign(TRANSLATIONS.fr, {viewImage: "Agrandir l’image", closeImage: "Fermer l’image"});
+Object.assign(TRANSLATIONS.en, {viewImage: "Enlarge image", closeImage: "Close image"});
+Object.assign(TRANSLATIONS.es, {viewImage: "Ampliar imagen", closeImage: "Cerrar imagen"});
+Object.assign(TRANSLATIONS.ar, {viewImage: "تكبير الصورة", closeImage: "إغلاق الصورة"});
+Object.assign(TRANSLATIONS.fr, {nextSafety: "Consigne suivante", safetyStep: "Consigne", safetyRequired: "Parcourez toutes les consignes pour revenir à l’accueil."});
+Object.assign(TRANSLATIONS.en, {nextSafety: "Next instruction", safetyStep: "Instruction", safetyRequired: "View all instructions before returning to reception."});
+Object.assign(TRANSLATIONS.es, {nextSafety: "Siguiente instrucción", safetyStep: "Instrucción", safetyRequired: "Consulte todas las instrucciones antes de volver al inicio."});
+Object.assign(TRANSLATIONS.ar, {nextSafety: "التعليمة التالية", safetyStep: "التعليمة", safetyRequired: "اطّلع على جميع التعليمات قبل العودة إلى الصفحة الرئيسية."});
 function loadModels() {
     if (!modelsReady) {
         modelsReady = (async () => {
@@ -115,11 +131,120 @@ function loadModels() {
     return modelsReady;
 }
 
+Object.assign(TRANSLATIONS.fr, {
+    welcome: "Bienvenue chez ARaymond",
+    welcomeIntro: "Nous sommes heureux de vous accueillir sur notre site. Pour préparer votre visite dans les meilleures conditions, laissez-vous guider par notre système d’accueil des visiteurs.",
+    welcomeSteps: "Identifiez-vous, renseignez les informations nécessaires et prenez connaissance de nos consignes de sécurité. Votre contact sera informé de votre arrivée une fois votre enregistrement terminé.",
+    welcomeClosing: "Merci de votre coopération et bonne visite !",
+});
+Object.assign(TRANSLATIONS.en, {
+    welcome: "Welcome to ARaymond",
+    welcomeIntro: "We are pleased to welcome you to our site. To help you prepare for your visit, let our visitor reception system guide you through each step.",
+    welcomeSteps: "Identify yourself, provide the required information and read our safety instructions. Your host will be notified of your arrival once your registration is complete.",
+    welcomeClosing: "Thank you for your cooperation. Enjoy your visit!",
+});
+Object.assign(TRANSLATIONS.es, {
+    welcome: "Bienvenido a ARaymond",
+    welcomeIntro: "Nos complace darle la bienvenida a nuestras instalaciones. Para preparar su visita en las mejores condiciones, déjese guiar por nuestro sistema de recepción de visitantes.",
+    welcomeSteps: "Identifíquese, facilite la información necesaria y consulte nuestras instrucciones de seguridad. Su contacto será informado de su llegada una vez completado el registro.",
+    welcomeClosing: "¡Gracias por su colaboración y disfrute de su visita!",
+});
+Object.assign(TRANSLATIONS.ar, {
+    welcome: "مرحباً بكم في ARaymond",
+    welcomeIntro: "يسعدنا استقبالكم في موقعنا. لتحضير زيارتكم في أفضل الظروف، سيرشدكم نظام استقبال الزوار خلال جميع الخطوات.",
+    welcomeSteps: "يرجى التعريف بأنفسكم وإدخال المعلومات المطلوبة والاطلاع على تعليمات السلامة. سيتم إبلاغ الشخص الذي ستزورونه بوصولكم بعد إتمام التسجيل.",
+    welcomeClosing: "شكراً لتعاونكم، ونتمنى لكم زيارة موفقة!",
+});
+
+const WELCOME_UI = {
+    fr: ["Accueil visiteurs", "Votre visite, en toute simplicité.", "Un parcours en trois étapes", "Identification", "Présentez-vous à la caméra.", "Sécurité", "Découvrez nos consignes de sécurité.", "Enregistrement", "Enregistrez votre entrée ou votre sortie.", "Enregistrer une entrée", "Enregistrer une sortie", "Caméra active", "Caméra inactive", "Placez votre visage au centre du cadre", "01 / IDENTIFICATION"],
+    en: ["Visitor reception", "Your visit, made simple.", "A journey in three steps", "Identification", "Face the camera to begin.", "Safety", "Read our safety guidelines.", "Registration", "Complete your registration and notify your host.", "Start my visit", "Check out", "Camera active", "Camera inactive", "Position your face in the centre of the frame", "01 / IDENTIFICATION"],
+    es: ["Recepción de visitantes", "Su visita, con total sencillez.", "Un recorrido en tres pasos", "Identificación", "Sitúese frente a la cámara.", "Seguridad", "Consulte las instrucciones de seguridad.", "Registro", "Finalice el registro y avise a su contacto.", "Comenzar mi visita", "Registrar mi salida", "Cámara activa", "Cámara inactiva", "Coloque su rostro en el centro del encuadre", "01 / IDENTIFICACIÓN"],
+    ar: ["استقبال الزوار", "زيارتكم، بكل سهولة.", "مسار من ثلاث خطوات", "التعريف بالهوية", "قف أمام الكاميرا للبدء.", "السلامة", "اطلع على تعليمات السلامة.", "التسجيل", "أكمل تسجيل زيارتك وأبلغ الشخص الذي ستزوره.", "بدء زيارتي", "تسجيل مغادرتي", "الكاميرا مفعّلة", "الكاميرا غير مفعّلة", "ضع وجهك في وسط الإطار", "01 / التعريف بالهوية"],
+};
+for (const [language, values] of Object.entries(WELCOME_UI)) {
+    ["reception", "welcomeTagline", "journeyTitle", "stepIdentity", "stepIdentityText", "stepSafety", "stepSafetyText", "stepRegistration", "stepRegistrationText", "startVisit", "finishVisit", "cameraActive", "cameraInactive", "cameraGuide", "identificationStep"].forEach((key, index) => {
+        TRANSLATIONS[language][key] = values[index];
+    });
+}
+
+Object.assign(TRANSLATIONS.fr, {
+    consentCaptureHint: "Si l’image n’est pas captée, relancez la reconnaissance et reculez légèrement votre visage.",
+});
+Object.assign(TRANSLATIONS.en, {
+    consentParagraphs: [
+        "To make access to our site easier and faster during your visits, we have introduced a facial recognition system dedicated to managing visitor access.",
+        "After your confirmation, your captured photo and the information needed to identify you as a visitor will be recorded in our system in accordance with the company's privacy policy.",
+        "This data will be retained to simplify your future visits and enable automatic recognition when you arrive at the site. It will be used exclusively to manage access to the site and will not be used for any other purpose.",
+        "Access to this information is strictly limited to authorized persons according to defined access levels. The data is protected by appropriate security measures ensuring its confidentiality, integrity and protection against unauthorized access.",
+        "By clicking “I accept and continue”, you consent to the recording and use of your photo and data under the conditions described above.",
+        "If you do not wish to give your consent, please select “Refuse”. You can then access the site by following the alternative manual procedure provided for visitors.",
+    ],
+    consentCaptureHint: "If the image is not captured, restart recognition and move your face slightly farther back.",
+});
+Object.assign(TRANSLATIONS.es, {
+    consentParagraphs: [
+        "Para facilitar y agilizar su acceso a nuestras instalaciones durante sus visitas, hemos implementado un sistema de reconocimiento facial dedicado a la gestión del acceso de visitantes.",
+        "Tras su confirmación, se capturará su foto y la información necesaria para identificarle como visitante se registrará en nuestro sistema de acuerdo con la política de privacidad de la empresa.",
+        "Estos datos se conservarán para simplificar sus futuras visitas y permitir el reconocimiento automático a su llegada a las instalaciones. Se utilizarán exclusivamente para gestionar el acceso a las instalaciones y no se destinarán a ningún otro uso.",
+        "El acceso a esta información está estrictamente limitado a las personas autorizadas según los niveles de acceso definidos. Los datos están protegidos mediante medidas de seguridad adecuadas que garantizan su confidencialidad, su integridad y su protección frente a cualquier acceso no autorizado.",
+        "Al hacer clic en «Acepto y continúo», da su consentimiento para el registro y el uso de su foto y sus datos en las condiciones descritas anteriormente.",
+        "Si no desea dar su consentimiento, seleccione «Rechazar». Podrá entonces acceder a las instalaciones siguiendo el procedimiento manual alternativo previsto para los visitantes.",
+    ],
+    consentCaptureHint: "Si no se captura la imagen, reinicie el reconocimiento y aleje ligeramente el rostro.",
+});
+Object.assign(TRANSLATIONS.ar, {
+    consentParagraphs: [
+        "لتسهيل وتسريع دخولكم إلى موقعنا أثناء زياراتكم، اعتمدنا نظاماً للتعرّف على الوجه مخصصاً لإدارة دخول الزوار.",
+        "بعد تأكيد موافقتكم، سيتم التقاط صورتكم وتسجيل المعلومات اللازمة للتعرّف عليكم بصفتكم زائراً في نظامنا، وفقاً لسياسة الخصوصية الخاصة بالشركة.",
+        "سيتم الاحتفاظ بهذه البيانات لتسهيل زياراتكم المستقبلية وإتاحة التعرّف التلقائي عليكم عند وصولكم إلى الموقع. وستُستخدم حصرياً لإدارة الدخول إلى الموقع، ولن تُستخدم لأي غرض آخر.",
+        "يقتصر الوصول إلى هذه المعلومات بشكل صارم على الأشخاص المصرّح لهم وفقاً لمستويات الصلاحيات المحددة. وتُحمى البيانات بتدابير أمنية مناسبة تضمن سريتها وسلامتها وحمايتها من أي وصول غير مصرّح به.",
+        "بالنقر على «أوافق وأتابع»، فإنكم توافقون على تسجيل صورتكم وبياناتكم واستخدامها وفقاً للشروط الموضحة أعلاه.",
+        "إذا كنتم لا ترغبون في منح موافقتكم، يُرجى اختيار «رفض». ويمكنكم حينئذٍ الدخول إلى الموقع باتباع الإجراء اليدوي البديل المخصص للزوار.",
+    ],
+    consentCaptureHint: "إذا لم تُلتقط الصورة، أعيدوا تشغيل التعرّف على الوجه وأبعدوا وجوهكم قليلاً عن الكاميرا.",
+});
+
+for (const [language, values] of Object.entries({
+    fr: ['Merci de valider la bonne compréhension des consignes.', 'Valider', 'Non', 'Merci de le signaler à l’accueil afin que les consignes vous soient expliquées.'],
+    en: ['Please confirm that you understand the safety instructions.', 'Confirm', 'No', 'Please let reception know so that the safety instructions can be explained to you.'],
+    es: ['Confirme que ha comprendido las instrucciones de seguridad.', 'Validar', 'No', 'Comuníquelo a recepción para que le expliquen las instrucciones de seguridad.'],
+    ar: ['يرجى تأكيد فهم تعليمات السلامة.', 'تأكيد', 'لا', 'يرجى إبلاغ الاستقبال حتى يتم شرح تعليمات السلامة لك.'],
+})) {
+    ['safetyConfirm', 'safetyValidate', 'safetyNo', 'safetyHelp'].forEach((key, index) => {
+        TRANSLATIONS[language][key] = values[index];
+    });
+}
+
 class VisitorFaceAttendance extends Component {
     static template = xml`
         <div class="ar_face_screen" t-att-dir="isRtl ? 'rtl' : 'ltr'">
+            <header class="ar_face_topbar">
+                <div class="ar_face_brand"><img src="/ar_visitors/static/src/img/araymond-logo.png" alt="ARaymond"/><span t-esc="t('reception')"/></div>
+            </header>
+            <aside class="ar_face_welcome" t-att-dir="isRtl ? 'rtl' : 'ltr'">
+                <span class="ar_face_eyebrow" t-esc="t('welcome')"/>
+                <h2 t-esc="t('welcomeTagline')"/>
+
+                <h3 t-esc="t('journeyTitle')"/>
+                <ol class="ar_face_steps">
+                    <li><span class="ar_face_step_icon"><i class="fa fa-user-o" aria-hidden="true"/></span><div><strong t-esc="t('stepIdentity')"/><p t-esc="t('stepIdentityText')"/></div><span class="ar_face_step_number">01</span></li>
+                    <li><span class="ar_face_step_icon"><i class="fa fa-shield" aria-hidden="true"/></span><div><strong t-esc="t('stepSafety')"/><p t-esc="t('stepSafetyText')"/></div><span class="ar_face_step_number">02</span></li>
+                    <li><span class="ar_face_step_icon"><i class="fa fa-check-square-o" aria-hidden="true"/></span><div><strong t-esc="t('stepRegistration')"/><p t-esc="t('stepRegistrationText')"/></div><span class="ar_face_step_number">03</span></li>
+                </ol>
+
+
+                <div class="ar_face_controls ar_face_welcome_controls">
+                    <button class="btn btn-primary" t-on-click="beginRecognition" t-att-disabled="state.busy || state.redirecting || state.consentOpen"><i class="fa fa-arrow-right" aria-hidden="true"/><span t-esc="t('startVisit')"/></button>
+                    <button class="btn btn-outline-primary" t-on-click="beginCheckout" t-att-disabled="state.busy || state.redirecting || state.consentOpen"><i class="fa fa-sign-out" aria-hidden="true"/><span t-esc="t('finishVisit')"/></button>
+                </div>
+                <div class="ar_face_controls ar_face_welcome_controls">
+                    <button class="btn ar_face_profile_button" t-on-click="beginProfile" t-att-disabled="state.busy || state.redirecting || state.consentOpen"><i class="fa fa-id-card-o" aria-hidden="true"/><span t-esc="t('profile')"/></button>
+                    <button class="btn ar_face_safety_button" t-on-click="openSafety" t-att-disabled="state.busy || state.redirecting || state.consentOpen"><i class="fa fa-shield" aria-hidden="true"/><span t-esc="t('safety')"/></button>
+                </div>
+                <div class="ar_face_welcome_footer"><i class="fa fa-handshake-o" aria-hidden="true"/><span t-esc="t('welcomeClosing')"/></div>
+            </aside>
             <div class="ar_face_panel">
-                <div class="ar_face_heading"><div><span class="ar_face_badge">AR VISITORS</span><h1 t-esc="t('title')"/></div>
                     <div class="ar_face_language"><span t-esc="t('language')"/>
                         <div class="ar_face_language_buttons" role="group" t-att-aria-label="t('language')" dir="ltr">
                             <button t-foreach="languages" t-as="language" t-key="language.code" type="button"
@@ -131,30 +256,68 @@ class VisitorFaceAttendance extends Component {
                             </button>
                         </div>
                     </div>
-                </div>
-                <p t-esc="t('intro')"/>
-                <div class="ar_face_camera">
-                    <video t-ref="video" autoplay="autoplay" playsinline="playsinline" muted="muted"/>
+
+                <div class="ar_face_camera_area" t-ref="cameraArea">
+                <div class="ar_face_camera" t-ref="cameraFrame">
+                    <video t-ref="video" t-on-loadedmetadata="fitCameraFrame" t-on-resize="fitCameraFrame" autoplay="autoplay" playsinline="playsinline" muted="muted"/>
+                    <div class="ar_face_camera_status" t-att-class="{ 'is-active': state.camera }"><span/><t t-esc="t(state.camera ? 'cameraActive' : 'cameraInactive')"/></div>
+                    <div t-if="state.camera" class="ar_face_camera_corners" aria-hidden="true"><span/><span/><span/><span/></div>
+                    <div t-if="!state.retryMessage" class="ar_face_camera_guide"><i class="fa fa-camera" aria-hidden="true"/><span t-esc="t('cameraGuide')"/></div>
                     <div t-if="state.retryMessage" class="ar_face_retry_overlay" role="status" aria-live="polite">
                         <t t-esc="state.retryMessage"/>
                     </div>
                 </div>
-                <div class="ar_face_controls">
-                    <button class="btn btn-primary" t-on-click="beginRecognition" t-att-disabled="state.busy || state.redirecting || state.consentOpen" t-esc="t('recognize')"/>
-                    <button class="btn btn-outline-primary" t-on-click="beginCheckout" t-att-disabled="state.busy || state.redirecting || state.consentOpen" t-esc="t('checkout')"/>
+                </div>
+                <div t-if="state.safetyOpen" class="ar_face_safety_overlay" role="dialog" aria-modal="true" aria-labelledby="ar-safety-title">
+                    <div class="ar_face_safety_card">
+                        <header class="ar_safety_header"><span class="ar_safety_header_icon" aria-hidden="true"><i class="fa fa-shield"/></span><h2 id="ar-safety-title" t-esc="t('safety')"/></header>
+                        <ol class="ar_safety_summary">
+                            <li t-foreach="state.instructions" t-as="item" t-key="item.id" t-att-title="item.name" t-att-class="{'is-current': item_index === state.safetyIndex, 'is-seen': item_index &lt; state.safetyIndex}" t-att-aria-current="item_index === state.safetyIndex ? 'step' : undefined">
+                                <span class="ar_safety_summary_number" t-esc="item_index + 1"/><span class="ar_safety_summary_emoji" aria-hidden="true" t-esc="item.emoji"/><span class="ar_safety_summary_text visually-hidden" t-esc="item.name"/>
+                            </li>
+                        </ol>
+                        <div class="ar_safety_list" tabindex="0">
+                            <t t-set="instruction" t-value="activeSafetyInstruction"/>
+                            <article t-if="instruction" class="ar_safety_instruction ar_safety_slide" t-key="instruction.id" t-att-class="{'ar_safety_emergency': ['🚨', '☎️', '📞'].includes(instruction.emoji)}">
+                                <div class="ar_safety_instruction_content">
+                                    <span class="ar_safety_emoji" t-esc="instruction.emoji"/>
+                                    <div class="ar_safety_step_label"><t t-esc="t('safetyStep')"/> <t t-esc="state.safetyIndex + 1"/> / <t t-esc="state.instructions.length"/></div>
+                                    <p class="ar_safety_text" t-esc="instruction.name"/>
+                                </div>
+                                <div t-if="instruction.images &amp;&amp; instruction.images.length" class="ar_safety_gallery ar_safety_readable_images">
+                                    <img t-foreach="instruction.images" t-as="safetyImage" t-key="safetyImage.id" t-att-src="safetyImage.url" t-att-alt="safetyImage.name" loading="lazy"/>
+                                </div>
+                            </article>
+                        </div>
+                        <footer class="ar_safety_footer ar_safety_guided_footer">
+                            <div class="ar_safety_progress" role="status" aria-live="polite"><strong><t t-esc="t('safetyStep')"/> <t t-esc="state.instructions.length ? state.safetyIndex + 1 : 0"/> / <t t-esc="state.instructions.length"/></strong><small t-if="!safetyComplete" t-esc="t('safetyRequired')"/></div>
+                            <button t-if="!safetyComplete" type="button" class="btn ar_face_home_button ar_safety_next_button" t-on-click="nextSafetyInstruction"><span t-esc="t('nextSafety')"/><i t-att-class="isRtl ? 'fa fa-arrow-left' : 'fa fa-arrow-right'" aria-hidden="true"/></button>
+                            <button type="button" class="btn ar_face_home_button" t-att-disabled="!safetyComplete" t-on-click="returnHome"><i class="fa fa-home" aria-hidden="true"/><span t-esc="t('home')"/></button>
+                        </footer>
+                    </div>
+                </div>
+                <div t-if="state.safetyImage" class="ar_safety_image_viewer" role="dialog" aria-modal="true" t-att-aria-label="state.safetyImage.name" t-ref="imageViewer" tabindex="-1" t-on-keydown="onSafetyImageKeydown">
+                    <div class="ar_safety_image_viewer_card">
+                        <header><h3 t-esc="state.safetyImage.name"/><button type="button" t-on-click="closeSafetyImage" t-att-aria-label="t('closeImage')"><i class="fa fa-times" aria-hidden="true"/></button></header>
+                        <img t-att-src="state.safetyImage.url" t-att-alt="state.safetyImage.name"/>
+                    </div>
                 </div>
                 <p class="ar_face_status" role="status" t-esc="state.message"/>
                 <div t-if="state.consentOpen" class="ar_face_consent_overlay" role="dialog" aria-modal="true" aria-labelledby="ar-face-consent-title">
                     <div class="ar_face_consent_card">
+                        <div class="ar_face_consent_icon"><i class="fa fa-shield" aria-hidden="true"/></div>
                         <h2 id="ar-face-consent-title" t-esc="t('consentTitle')"/>
-                        <p t-esc="t('consentPhoto')"/><p t-esc="t('consentData')"/>
+                        <t t-foreach="consentParagraphs" t-as="paragraph" t-key="paragraph_index">
+                            <p t-esc="paragraph"/>
+                        </t>
+                        <p class="ar_face_consent_capture_hint" t-esc="t('consentCaptureHint')"/>
                         <div class="ar_face_consent_actions">
                             <button class="btn btn-danger" t-on-click="cancelCameraConsent" t-esc="t('refuse')"/>
                             <button class="btn btn-success" t-on-click="confirmCameraConsent" t-esc="t('accept')"/>
                         </div>
                     </div>
                 </div>
-                <div t-if="state.person &amp;&amp; state.mode === 'arrival'" class="ar_face_identity_overlay">
+                <div t-if="state.person &amp;&amp; state.mode !== 'checkout'" class="ar_face_identity_overlay">
                     <div class="ar_face_identity_card" role="dialog" aria-modal="true" aria-live="polite" aria-label="Identity confirmation">
                         <img t-if="state.person.image" t-att-src="'data:image/jpeg;base64,' + state.person.image" alt="Recognized visitor"/>
                         <div t-else="" class="ar_face_avatar" aria-hidden="true"><t t-esc="initials"/></div>
@@ -163,14 +326,17 @@ class VisitorFaceAttendance extends Component {
                             <h2><t t-esc="state.person.first_name"/> <t t-esc="state.person.last_name"/></h2>
                             <p t-if="state.person.nationality"><strong t-esc="t('nationality')"/> <t t-esc="state.person.nationality"/></p>
                             <p class="ar_face_identity_question" t-esc="t('isYou')"/>
+                            <p t-if="state.person.has_open_visit &amp;&amp; state.mode === 'arrival' &amp;&amp; !state.journeyError" class="alert alert-warning" role="alert" t-esc="t('openVisit')"/>
+                            <p t-if="state.journeyError" class="alert alert-danger" role="alert" t-esc="state.journeyError"/>
                             <div class="ar_face_identity_actions">
-                                <button class="btn btn-primary" t-on-click="confirmIdentity" t-att-disabled="state.busy" t-esc="t('yes')"/>
+                                <button t-if="state.person.has_open_visit &amp;&amp; state.mode === 'arrival'" class="btn btn-primary" t-on-click="closeRecognizedVisit" t-att-disabled="state.busy" t-esc="t('closeVisit')"/>
+                                <button t-else="" class="btn btn-primary" t-on-click="confirmIdentity" t-att-disabled="state.busy" t-esc="t('yes')"/>
                                 <button class="btn btn-outline-secondary" t-on-click="rejectIdentity" t-att-disabled="state.busy" t-esc="t('no')"/>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div t-if="state.captured &amp;&amp; !state.busy &amp;&amp; !state.person &amp;&amp; state.mode === 'arrival'" class="ar_face_result">
+                <div t-if="state.captured &amp;&amp; !state.busy &amp;&amp; !state.person &amp;&amp; state.mode !== 'checkout'" class="ar_face_result">
                     <img t-att-src="'data:image/jpeg;base64,' + state.captured" alt="Photo capturée"/>
                     <p t-if="state.match" t-esc="t('matched')"/><p t-else="" t-esc="t('unmatched')"/>
                     <button class="btn btn-primary" t-on-click="continueVisit" t-esc="t('continue')"/>
@@ -185,18 +351,36 @@ class VisitorFaceAttendance extends Component {
         this.orm = useService("orm");
         this.action = useService("action");
         this.video = useRef("video");
-        this.state = useState({ busy: false, camera: false, redirecting: false, message: "", retryMessage: "", captured: "", match: false, person: false, mode: "arrival", checkoutError: false, consentOpen: false, consentAccepted: false, language: "fr", attempt: 0, attemptLimit: 3, retryDelay: 1.5 });
+        this.cameraArea = useRef("cameraArea");
+        this.cameraFrame = useRef("cameraFrame");
+        this.imageViewer = useRef("imageViewer");
+        this.state = useState({ safetyIndex: 0, safetyImage: false, safetyOpen: false, instructions: [], checkoutPerson: false, busy: false, camera: false, redirecting: false, message: "", retryMessage: "", captured: "", match: false, person: false, mode: "arrival", checkoutError: false, consentOpen: false, consentAccepted: false, language: "fr", attempt: 0, attemptLimit: 3, retryDelay: 1.5 });
         this.alive = true;
         onMounted(() => {
+            this.cameraLayoutObserver = new ResizeObserver(() => this.fitCameraFrame());
+            this.cameraLayoutObserver.observe(this.cameraArea.el);
+            this.fitCameraFrame();
             this.startCamera();
             this.startIdleRefresh();
         });
         onWillUnmount(() => {
+            this.cameraLayoutObserver?.disconnect();
             this.alive = false;
             this.stopIdleRefresh();
             clearTimeout(this.retryTimer);
             this.stopCamera();
         });
+    }
+    fitCameraFrame() {
+        const area = this.cameraArea?.el;
+        const frame = this.cameraFrame?.el;
+        const video = this.video.el;
+        if (!this.alive || !area || !frame) return;
+        const ratio = video.videoWidth && video.videoHeight ? video.videoWidth / video.videoHeight : 4 / 3;
+        const width = Math.min(area.clientWidth, area.clientHeight * ratio);
+        if (width <= 0) return;
+        frame.style.width = `${width}px`;
+        frame.style.height = `${width / ratio}px`;
     }
     startIdleRefresh() {
         this.resetIdleRefresh = () => { this.idleSince = Date.now(); };
@@ -234,7 +418,7 @@ class VisitorFaceAttendance extends Component {
                 this.idleSince = Date.now();
                 return;
             }
-            if (Date.now() - this.idleSince >= 180000) {
+            if (Date.now() - this.idleSince >= 600000) {
                 this.state.redirecting = true;
                 window.location.reload();
             }
@@ -274,6 +458,7 @@ class VisitorFaceAttendance extends Component {
             await this.video.el.play();
             if (!this.alive || generation !== this.cameraGeneration) return;
             this.state.camera = true;
+            this.fitCameraFrame();
         } catch (error) {
             this.stopCamera();
             this.state.message = error.message || this.t("Impossible d’accéder à la caméra.");
@@ -282,6 +467,18 @@ class VisitorFaceAttendance extends Component {
         }
     }
     t(key) { return TRANSLATIONS[this.state.language]?.[key] || TRANSLATIONS.fr[key] || key; }
+    get consentParagraphs() {
+        const paragraphs = TRANSLATIONS[this.state.language]?.consentParagraphs;
+        if (paragraphs) return paragraphs;
+        return [
+            "Afin de faciliter et d'accélérer votre accès à notre site lors de vos visites, nous avons mis en place un système de reconnaissance faciale dédié à la gestion des accès visiteurs.",
+            "Après votre confirmation, votre photo capturée et les informations nécessaires à votre identification en tant que visiteur seront enregistrées dans notre système conformément à la politique de confidentialité de l'entreprise.",
+            "Ces données seront conservées afin de simplifier vos futures visites et de permettre une reconnaissance automatique lors de votre arrivée sur le site. Elles seront utilisées exclusivement pour la gestion des accès au site et ne feront l'objet d'aucune autre utilisation.",
+            "L'accès à ces informations est strictement limité aux personnes autorisées selon des niveaux d'habilitation définis. Les données sont protégées par des mesures de sécurité appropriées garantissant leur confidentialité, leur intégrité et leur protection contre tout accès non autorisé.",
+            "En cliquant sur « J'accepte et continue », vous donnez votre consentement à l'enregistrement et à l'utilisation de votre photo et de vos données dans les conditions décrites ci-dessus.",
+            "Si vous ne souhaitez pas donner votre consentement, veuillez sélectionner « Refuser ». Vous pourrez alors accéder au site en suivant la procédure alternative manuelle prévue pour les visiteurs.",
+        ];
+    }
     get languages() {
         return [{ code: "fr", label: "Français" }, { code: "en", label: "English" },
             { code: "es", label: "Español" }, { code: "ar", label: "العربية" }];
@@ -298,10 +495,10 @@ class VisitorFaceAttendance extends Component {
     }
     get isRtl() { return this.state.language === "ar"; }
     async confirmCameraConsent() {
-        if (!this.alive || this.state.redirecting || this.state.busy || !this.state.camera || !this.state.consentOpen) return;
+        if (!this.alive || this.state.busy || !this.state.consentOpen) return;
         this.state.consentOpen = false;
-        this.cameraConsentGranted = true;
-        await this.capture();
+        this.state.consentAccepted = true;
+        await this.continueVisit();
     }
     cancelCameraConsent() {
         if (this.state.redirecting) return;
@@ -329,6 +526,41 @@ class VisitorFaceAttendance extends Component {
     async beginRecognition() {
         await this.requestRecognition("arrival");
     }
+    async beginProfile() { await this.requestRecognition("profile"); }
+    returnHome() {
+        if (this.state.safetyOpen && !this.safetyComplete) return;
+        this.state.safetyImage = false;
+        this.state.safetyOpen = false;
+        this.safetyImageTrigger = null;
+    }
+    async openSafety() {
+        this.state.instructions = await this.orm.call("ar.visitor.face.bridge", "safety_instructions", [this.state.language || "fr"], {context: this.languageContext});
+        this.state.safetyIndex = 0;
+        this.state.safetyOpen = true;
+    }
+    get activeSafetyInstruction() { return this.state.instructions?.[this.state.safetyIndex || 0]; }
+    get safetyComplete() { return !this.state.instructions?.length || (this.state.safetyIndex || 0) === this.state.instructions.length - 1; }
+    nextSafetyInstruction() {
+        if (!this.state.safetyOpen || this.safetyComplete) return;
+        this.state.safetyIndex = (this.state.safetyIndex || 0) + 1;
+        this.state.safetyImage = false;
+    }
+    showSafetyImage(image, event) {
+        this.safetyImageTrigger = event.currentTarget;
+        this.state.safetyImage = image;
+        requestAnimationFrame(() => { if (this.alive) this.imageViewer.el?.focus(); });
+    }
+    closeSafetyImage() {
+        this.state.safetyImage = false;
+        this.safetyImageTrigger?.focus();
+    }
+    onSafetyImageKeydown(event) {
+        if (event.key === "Escape") { event.stopPropagation(); this.closeSafetyImage(); }
+        if (event.key === "Tab") {
+            event.preventDefault();
+            this.imageViewer.el?.querySelector("button")?.focus();
+        }
+    }
     async beginCheckout() {
         await this.requestRecognition("checkout");
     }
@@ -344,10 +576,11 @@ class VisitorFaceAttendance extends Component {
         this.state.checkoutError = false;
         this.state.retryMessage = "";
         this.state.attempt = 0;
-        this.cameraConsentGranted = false;
+        this.cameraConsentGranted = true;
         this.state.consentAccepted = false;
-        this.state.consentOpen = true;
+        this.state.consentOpen = false;
         this.state.message = "";
+        await this.capture();
     }
     async recognize(source, fromCamera = false) {
         let monitor;
@@ -425,7 +658,9 @@ class VisitorFaceAttendance extends Component {
                 this.state.person = await this.orm.call("ar.visitor.face.bridge", "recognition_person", [this.state.match], { context: this.languageContext });
             } else {
                 if (this.state.mode === "checkout") {
-                    this.state.message = this.t("Visiteur non reconnu. Vérifiez qu'une visite est en cours, puis réessayez.");
+                    const reason = this.t("Visiteur non reconnu. Vérifiez qu'une visite est en cours, puis réessayez.");
+                    if (this.scheduleRetry(reason)) return;
+                    this.state.message = reason;
                     this.state.checkoutError = true;
                     this.state.captured = "";
                     return;
@@ -444,7 +679,9 @@ class VisitorFaceAttendance extends Component {
                 this.state.match = false;
                 if (this.scheduleRetry(error.retryReason)) return;
             }
-            this.state.message = this.safeErrorMessage(error, this.t("La reconnaissance faciale a échoué. Veuillez réessayer."));
+            const reason = this.safeErrorMessage(error, this.t("La reconnaissance faciale a échoué. Veuillez réessayer."));
+            if (this.scheduleRetry(reason)) return;
+            this.state.message = reason;
             this.state.checkoutError = this.state.mode === "checkout";
         } finally {
             await monitor?.stop();
@@ -501,7 +738,16 @@ class VisitorFaceAttendance extends Component {
         };
     }
     scheduleRetry(reason) {
-        if (!this.alive || !this.state.camera || this.state.attempt >= this.state.attemptLimit) return false;
+        if (!this.alive || !this.state.camera || this.state.redirecting) return false;
+        if (this.state.attempt >= this.state.attemptLimit) {
+            this.state.redirecting = true;
+            this.state.consentOpen = false;
+            this.state.message = reason;
+            clearTimeout(this.retryTimer);
+            this.stopCamera();
+            window.location.reload();
+            return true;
+        }
         this.state.retryMessage = `${this.t("automaticRetry")} (${this.state.attempt + 1}/${this.state.attemptLimit})…`;
         this.state.message = reason;
         this.retryTimer = setTimeout(() => {
@@ -514,27 +760,34 @@ class VisitorFaceAttendance extends Component {
         return person ? `${person.first_name?.[0] || ""}${person.last_name?.[0] || ""}`.toUpperCase() : "";
     }
     async confirmIdentity() {
+        if (this.state.busy || this.openingJourney) return;
         await this.continueVisit();
     }
-    async openNewVisitorJourney() {
-        const action = await this.orm.call("ar.visitor.face.bridge", "start_visit", [this.state.captured, false, this.state.language || "fr"], { context: this.languageContext });
-        if (!this.alive) return;
-        await this.action.doAction(action);
-        if (this.alive) {
-            this.state.captured = "";
-            this.state.message = this.t("Enregistrement du nouveau visiteur ouvert.");
+    async closeRecognizedVisit() {
+        if (this.state.busy || this.openingJourney || !this.state.person?.has_open_visit) return;
+        this.state.busy = true;
+        this.state.journeyError = "";
+        try {
+            await this.openCheckout(this.state.person.id, true);
+        } finally {
+            if (this.alive) this.state.busy = false;
         }
     }
-    async openCheckout(personId) {
+    async openNewVisitorJourney() {
+        this.state.consentOpen = true;
+        this.state.message = "";
+    }
+    async openCheckout(personId, fromArrival = false) {
         try {
-            const action = await this.orm.call("ar.visitor.face.bridge", "checkout_for_person", [personId, this.state.language || "fr"], { context: this.languageContext });
+            const action = await this.orm.call("ar.visitor.face.bridge", "checkout_for_person", [personId, this.state.language || "fr", fromArrival], { context: this.languageContext });
             if (!this.alive) return;
             await this.action.doAction(action);
-        } catch (error) {
-            if (!this.alive) return;
             this.state.captured = "";
-            this.state.match = false;
+            this.state.message = "";
+        } catch (error) {
+            this.state.captured = "";
             this.state.message = this.checkoutErrorMessage(error);
+            if (fromArrival) this.state.journeyError = this.state.message;
             this.state.checkoutError = true;
         }
     }
@@ -561,18 +814,23 @@ class VisitorFaceAttendance extends Component {
         await this.requestRecognition("checkout");
     }
     rejectIdentity() {
-        if (this.state.busy) return;
+        if (this.state.busy || this.state.redirecting) return;
+        this.state.redirecting = true;
         this.state.person = false;
         this.state.match = false;
         this.state.captured = "";
-        this.state.message = this.t("Identity not confirmed. Please try again or enter your CIN / passport.");
+        this.stopCamera();
+        window.location.reload();
     }
     async continueVisit() {
         if (!this.alive || this.state.busy || this.openingJourney || !this.state.captured) return;
+        const confirmedPerson = this.state.person;
+        this.state.person = false;
+        this.state.journeyError = "";
         this.openingJourney = true;
         this.state.busy = true;
         try {
-            const action = await this.orm.call("ar.visitor.face.bridge", "start_visit", [this.state.captured, this.state.match || false, this.state.language || "fr"], { context: this.languageContext });
+            const action = await this.orm.call("ar.visitor.face.bridge", "start_visit", [this.state.captured, this.state.match || false, this.state.language || "fr", this.state.mode === "profile" ? "profile" : "arrival", this.state.consentAccepted], { context: this.languageContext });
             if (!this.alive) return;
             await this.action.doAction(action);
             if (this.alive) {
@@ -581,7 +839,11 @@ class VisitorFaceAttendance extends Component {
                 this.state.message = this.t("Parcours ouvert.");
             }
         } catch (error) {
-            if (this.alive) this.state.message = this.safeErrorMessage(error, this.t("Impossible d’ouvrir le parcours. Réessayez avec Continuer."));
+            if (this.alive) {
+                this.state.person = confirmedPerson;
+                this.state.journeyError = this.safeErrorMessage(error, this.t("Impossible d’ouvrir le parcours. Réessayez avec Continuer."));
+                this.state.message = this.state.journeyError;
+            }
         } finally {
             this.openingJourney = false;
             if (this.alive) { this.state.busy = false; this.state.redirecting = false; }

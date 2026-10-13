@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="shared_invitation_page" name="Invitation partagée">
+        <html t-att-lang="invitation.language" t-att-dir="'rtl' if invitation.language == 'ar' else 'ltr'">
+            <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title t-out="labels['title']"/>
+                <link rel="stylesheet" href="/ar_visitors/static/src/css/preregistration.css"/>
+            </head>
+            <body><main class="prereg">
+                <h1 t-out="labels['title']"/>
+                <t t-if="live">
+                    <p t-out="labels['remote_finish']"/>
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="primary" t-out="labels['start_visit']"/>
+                    </form>
+                </t>
+                <p t-else="" role="alert" t-out="labels['closed']"/>
+            </main></body>
+        </html>
+    </template>
+    <template id="preregistration_page" name="Pré-enregistrement visiteur">
+        <html t-att-lang="invitation.language" t-att-dir="'rtl' if invitation.language == 'ar' else 'ltr'">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <meta name="referrer" content="no-referrer"/>
+                <title t-out="labels['title']"/>
+                <link rel="stylesheet" href="/ar_visitors/static/src/css/preregistration.css?v=19.0.1.16.0"/>
+                <link rel="stylesheet" href="/ar_visitors/static/src/css/safety_notice.css?v=2"/>
+                <t t-call-assets="ar_visitors.public_reception" t-js="false"/>
+            </head>
+            <body t-att-class="'public-reception' if live and invitation.state == 'sent' and not invitation.safety_pending else ''">
+                <main t-att-class="'ar_face_screen' if live and invitation.state == 'sent' and not invitation.safety_pending else 'prereg'" t-att-dir="'rtl' if invitation.language == 'ar' else 'ltr'" t-att-data-csrf-url="invitation._url() + '/csrf'" t-att-data-session-error="labels['session_error']">
+                    <header class="ar_face_topbar"><div class="ar_face_brand"><img src="/ar_visitors/static/src/img/araymond-logo.png" alt="ARaymond"/><span t-out="labels['reception']"/></div></header>
+                    <t t-if="not live"><p role="alert" t-out="labels['closed']"/></t>
+                    <t t-else="">
+
+
+                        <p t-if="message" class="notice public-notice" role="status" t-out="labels[message]"/>
+                        <t t-if="invitation.safety_pending">
+                            <section style="width:100%;max-width:1000px;margin:24px auto;padding:24px;">
+                                <h1 t-out="labels['safety']"/>
+                                <div t-if="invitation.safety_understanding == 'no'" class="ar-safety-notice" role="alert">
+                                    <span class="ar-safety-notice-icon" aria-hidden="true">!</span>
+                                    <div class="ar-safety-notice-content">
+                                        <p t-out="labels['safety_help']"/>
+                                    </div>
+                                </div>
+                                <article t-foreach="safety_instructions" t-as="instruction" style="background:white;border:1px solid #dce5ef;border-radius:16px;padding:20px;margin:16px 0;">
+                                    <p style="white-space:pre-line;font-size:18px;"><span t-out="instruction['emoji']"/> <span t-out="instruction['text']"/></p>
+                                    <img t-foreach="instruction['images']" t-as="image" t-att-src="'data:image/png;base64,' + image" alt="" style="display:block;max-width:100%;max-height:65vh;margin:12px auto;object-fit:contain;"/>
+                                </article>
+                                <form method="post" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="action" value="safety"/>
+                                    <p style="flex:1;min-width:220px;margin:0;" t-out="labels['safety_confirm']"/>
+                                    <button type="submit" name="understanding" value="yes" class="primary" t-out="labels['safety_validate']"/>
+                                    <button type="submit" name="understanding" value="no" t-out="labels['safety_no']"/>
+                                </form>
+                            </section>
+                        </t>
+                        <t t-elif="invitation.state == 'sent'">
+                            <aside class="ar_face_welcome" t-att-dir="'rtl' if invitation.language == 'ar' else 'ltr'">
+                                <span class="ar_face_eyebrow" t-out="labels['welcome']"/>
+                                <h2 t-out="labels['headline']"/>
+                                <h3 t-out="labels['journey_title']"/>
+                                <ol class="ar_face_steps">
+                                    <li><span class="ar_face_step_icon"><i class="fa fa-user-o" aria-hidden="true"/></span><div><strong t-out="labels['identification']"/><p t-out="labels['face_hint']"/></div><span class="ar_face_step_number">01</span></li>
+                                    <li><span class="ar_face_step_icon"><i class="fa fa-check-square-o" aria-hidden="true"/></span><div><strong t-out="labels['registration']"/><p t-out="labels['remote_finish']"/></div><span class="ar_face_step_number">02</span></li>
+                                </ol>
+                                <div class="ar_face_controls ar_face_welcome_controls"><button id="prereg-start" class="btn btn-primary" type="button"><i class="fa fa-arrow-right" aria-hidden="true"/><span t-out="labels['start_visit']"/></button></div>
+                                <div class="ar_face_welcome_footer"><i class="fa fa-handshake-o" aria-hidden="true"/><span t-out="labels['closing']"/></div>
+                            </aside>
+                            <div class="ar_face_panel">
+                                <form method="post" class="ar_face_language">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="action" value="language"/>
+                                    <span t-out="labels['language']"/>
+                                    <div class="ar_face_language_buttons" role="group" t-att-aria-label="labels['language']" dir="ltr">
+                                        <t t-foreach="[('fr', 'Français'), ('en', 'English'), ('es', 'Español'), ('ar', 'العربية')]" t-as="lang">
+                                            <button name="language" t-att-value="lang[0]" t-att-class="'ar_face_language_button active' if invitation.language == lang[0] else 'ar_face_language_button'" t-att-aria-pressed="'true' if invitation.language == lang[0] else 'false'"><img t-att-src="'/ar_visitors/static/src/img/flags/' + lang[0] + '.svg'" alt=""/><span t-att-lang="lang[0]" t-out="lang[1]"/></button>
+                                        </t>
+                                    </div>
+                                </form>
+                                <div class="ar_face_camera_area" id="prereg-camera-area"><div class="ar_face_camera" id="prereg-camera-frame">
+                                    <video id="prereg-video" autoplay="autoplay" muted="muted" playsinline="playsinline"/>
+                                    <div class="ar_face_camera_status" id="prereg-camera-status" t-att-data-active="labels['camera_active']" t-att-data-inactive="labels['camera_inactive']"><span/><b t-out="labels['camera_inactive']"/></div>
+                                    <div class="ar_face_camera_corners" id="prereg-corners" hidden="hidden" aria-hidden="true"><span/><span/><span/><span/></div>
+                                    <div class="ar_face_camera_guide"><i class="fa fa-camera" aria-hidden="true"/><span t-out="labels['face_hint']"/></div>
+                                </div></div>
+                                <button type="button" id="prereg-camera" hidden="hidden" t-out="labels['camera']"/>
+                                <p id="prereg-error" class="ar_face_status" role="alert"/>
+                            </div>
+                            <dialog id="prereg-consent-dialog" aria-labelledby="consent-title">
+                                <h2 id="consent-title" t-out="labels['consent_title']"/>
+                                <p t-foreach="labels['consent_paragraphs']" t-as="paragraph" t-out="paragraph"/>
+                                <p t-out="labels['capture_notice']"/>
+                                <div class="dialog-actions"><button type="button" id="prereg-refuse" t-out="labels['refuse']"/><button type="button" id="prereg-accept" class="accept" t-out="labels['accept']"/></div>
+                            </dialog>
+                            <dialog id="prereg-details-dialog" aria-labelledby="identity-title">
+                                <button type="button" id="prereg-close-details" class="close-details" t-out="labels['close']"/>
+                                <h2 id="identity-title" t-out="labels['step_identity']"/>
+                                <form method="post" id="prereg-identity" t-att-data-required="labels['required']" t-att-data-camera-error="labels['camera_error']" t-att-data-capture-error="labels['capture_notice']">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="action" value="identity"/>
+                                    <input type="hidden" name="consent" id="prereg-consent" value=""/>
+                                    <input type="hidden" name="photo" id="prereg-photo"/>
+                                    <div class="photo-summary"><img id="prereg-preview" t-att-alt="labels['step_photo']"/><button type="button" id="prereg-retake" t-out="labels['capture']"/></div>
+                                <div class="fields">
+                                    <t t-foreach="['first_name', 'last_name', 'cin', 'phone', 'visitor_company']" t-as="key">
+                                        <label><span t-out="labels['company' if key == 'visitor_company' else key]"/><input t-att-name="key" maxlength="200" t-att-value="invitation[key] or ''" t-att-required="'required' if key in ['first_name', 'last_name', 'cin'] else None"/></label>
+                                    </t>
+                                    <label><span t-out="labels['nationality']"/><select name="nationality_id"><option value="0">—</option><t t-foreach="countries" t-as="country"><option t-att-value="country.id" t-att-selected="country == invitation.nationality_id" t-out="country.name"/></t></select></label>
+                                </div>
+                                    <p id="prereg-form-error" role="alert"/>
+                                    <button type="submit" class="primary" t-out="labels['quiz']"/>
+                                </form>
+                            </dialog>
+                        </t>
+                        <t t-elif="invitation.state == 'quiz_pending'">
+                            <t t-if="failed">
+                                <p class="notice" t-out="labels['failed']"/>
+                                <form method="post"><input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/><button name="action" value="retry" t-out="labels['quiz']"/></form>
+                            </t>
+                            <t t-else="">
+                                <button id="ar-open-quiz" t-att-data-quiz-url="invitation._url() + '/quiz'" t-out="labels['quiz']"/>
+                                <dialog id="ar-quiz-dialog" t-att-data-status-url="invitation._url() + '/status'">
+                                    <button id="ar-close-quiz" t-out="labels['close']"/>
+                                    <iframe t-att-title="labels['quiz']"/>
+                                </dialog>
+                                <script src="/ar_visitors/static/src/js/kiosk_quiz.js?v=19.0.1.14.0"/>
+                            </t>
+                        </t>
+                        <t t-elif="invitation.state == 'ready'">
+                            <dialog t-if="invitation.safety_understanding == 'no'" id="prereg-safety-notice-dialog" class="ar-safety-notice-dialog" aria-labelledby="prereg-safety-notice-title">
+                                <h2 id="prereg-safety-notice-title" t-out="labels['safety']"/>
+                                <div class="ar-safety-notice" role="alert">
+                                    <span class="ar-safety-notice-icon" aria-hidden="true">!</span>
+                                    <div class="ar-safety-notice-content"><p t-out="labels['safety_help']"/></div>
+                                </div>
+                                <button id="prereg-safety-notice-confirm" type="button" class="primary" t-out="labels['safety_validate']"/>
+                            </dialog>
+                            <section class="success"><h2 t-out="labels['ready']"/><p t-out="labels['ready_body']"/></section>
+                        </t>
+                    </t>
+                </main>
+                <script src="/ar_visitors/static/src/js/preregistration.js?v=19.0.1.16.3"/>
+            </body>
+        </html>
+    </template>
+</odoo>

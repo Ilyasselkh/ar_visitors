@@ -1,0 +1,16 @@
+/* The reception layout and its responsive rules come from the kiosk stylesheet.
+   Only standalone-page defaults are adjusted here (there is no Odoo webclient). */
+body.public-reception { margin: 0; padding: 0; height: 100dvh; }
+.public-reception .ar_face_screen { width: 100%; height: 100dvh; max-width: none; }
+.public-reception .ar_face_topbar { margin: 0; }
+.public-reception .ar_face_language { margin: 0; }
+.public-reception .ar_face_screen button { margin: 0; font-family: inherit; }
+.public-reception .ar_face_screen .ar_face_language_button { line-height: 1.4; }
+.public-reception .ar_face_welcome h2 { letter-spacing: normal; }
+.public-reception .ar_face_screen .public-notice { position: fixed; top: 70px; inset-inline: 20%; z-index: 5; }
+.public-reception [hidden] { display: none !important; }
+.public-reception .ar_face_camera_status b { font-weight: inherit; }
+.public-reception #prereg-camera { align-self: center; }
+.public-reception .ar_face_screen dialog { color: #18334d; line-height: 1.6; }
+.public-reception #prereg-consent-dialog { max-height: 90dvh; overflow-y: auto; }
+@media (max-width: 767px) { .public-reception .ar_face_screen { min-height: 100dvh; height: auto; } }

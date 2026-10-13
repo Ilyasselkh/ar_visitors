@@ -1,0 +1,117 @@
+"""Public invitation wording, independent of the logged-in Odoo user's language."""
+TEXT = {
+    'safety_confirm': ('Merci de valider la bonne compréhension des consignes.', 'Please confirm that you understand the safety instructions.', 'Confirme que ha comprendido las instrucciones de seguridad.', 'يرجى تأكيد فهم تعليمات السلامة.'),
+    'safety_validate': ('Valider', 'Confirm', 'Validar', 'تأكيد'),
+    'safety_no': ('Non', 'No', 'No', 'لا'),
+    'safety_continue': ('Merci de cliquer sur « Valider » pour continuer l’enregistrement.', 'Please click “Confirm” to continue registration.', 'Haga clic en «Validar» para continuar el registro.', 'يرجى الضغط على «تأكيد» لمتابعة التسجيل.'),
+    'safety_help': ('Merci de le signaler dès votre arrivée à l’accueil afin que les consignes vous soient expliquées.', 'Please let reception know when you arrive so that the safety instructions can be explained to you.', 'Comuníquelo a recepción a su llegada para que le expliquen las instrucciones de seguridad.', 'يرجى إبلاغ الاستقبال عند وصولك حتى يتم شرح تعليمات السلامة لك.'),
+    'quiz_missing': ('Aucun quiz actif n’est associé à cette langue pour la société de votre invitation. Contactez l’accueil.', 'No active quiz is configured for this language and the company on your invitation. Contact reception.', 'No hay un cuestionario activo configurado para este idioma y la empresa de su invitación. Contacte con recepción.', 'لا يوجد اختبار نشط لهذه اللغة وللشركة المرتبطة بدعوتك. تواصل مع الاستقبال.'),
+    'quiz_archived': ('Le questionnaire associé est archivé. L’accueil doit le réactiver.', 'The linked questionnaire is archived. Reception must reactivate it.', 'El cuestionario asociado está archivado. Recepción debe reactivarlo.', 'الاستبيان المرتبط مؤرشف. يجب على الاستقبال إعادة تفعيله.'),
+    'quiz_session': ('Ce quiz est en mode session en direct. L’accueil doit configurer un quiz accessible individuellement à distance.', 'This quiz is in live session mode. Reception must configure a quiz for individual remote access.', 'Este cuestionario está en modo sesión en directo. Recepción debe configurar el acceso individual a distancia.', 'هذا الاختبار في وضع الجلسة المباشرة. يجب على الاستقبال إعداد اختبار متاح بشكل فردي عن بُعد.'),
+    'quiz_login': ('Ce quiz exige une connexion Odoo. L’accueil doit autoriser les visiteurs sans compte à y accéder.', 'This quiz requires an Odoo login. Reception must allow visitors without an account to access it.', 'Este cuestionario requiere iniciar sesión en Odoo. Recepción debe permitir el acceso sin cuenta.', 'يتطلب هذا الاختبار تسجيل الدخول إلى Odoo. يجب على الاستقبال السماح للزوار بالدخول دون حساب.'),
+    'quiz_empty': ('Ce quiz ne contient aucune question. Contactez l’accueil.', 'This quiz has no questions. Contact reception.', 'Este cuestionario no contiene preguntas. Contacte con recepción.', 'لا يحتوي هذا الاختبار على أسئلة. تواصل مع الاستقبال.'),
+    'quiz_scoring': ('La notation du quiz est désactivée ou aucune réponse ne rapporte de points. L’accueil doit vérifier la notation et les points des bonnes réponses.', 'Quiz scoring is disabled or no answer awards points. Reception must check scoring and the points assigned to correct answers.', 'La puntuación está desactivada o ninguna respuesta otorga puntos. Recepción debe revisar la puntuación de las respuestas correctas.', 'التنقيط معطّل أو لا تمنح أي إجابة نقاطاً. يجب على الاستقبال التحقق من التنقيط ونقاط الإجابات الصحيحة.'),
+    'session_error': ('Impossible de préparer l’envoi. Vérifiez votre connexion puis cliquez à nouveau sur le bouton.', 'Unable to prepare submission. Check your connection and click the button again.', 'No se pudo preparar el envío. Compruebe su conexión y pulse de nuevo el botón.', 'تعذر تجهيز الإرسال. تحقق من الاتصال ثم اضغط على الزر مجدداً.'),
+    'reception': ('Accueil visiteurs', 'Visitor reception', 'Recepción de visitantes', 'استقبال الزوار'),
+    'language': ('Langue', 'Language', 'Idioma', 'اللغة'),
+    'journey_title': ('Un parcours en trois étapes', 'A journey in three steps', 'Un recorrido en tres etapas', 'مسار من ثلاث خطوات'),
+    'identification': ('Identification', 'Identification', 'Identificación', 'التعريف بالهوية'),
+    'safety': ('Consignes de Sécurité', 'Safety Instructions', 'Instrucciones de Seguridad', 'تعليمات السلامة'),
+    'registration': ('Enregistrement', 'Registration', 'Registro', 'التسجيل'),
+    'remote_finish': ('Finalisez votre préparation avant votre arrivée.', 'Complete your preparation before arrival.', 'Finalice su preparación antes de llegar.', 'أكمل استعداداتك قبل الوصول.'),
+    'start_visit': ('Enregistrer ma visite', 'Start my visit', 'Comenzar mi visita', 'بدء زيارتي'),
+    'closing': ('Merci de votre coopération et bonne visite !', 'Thank you for your cooperation. Enjoy your visit!', '¡Gracias por su colaboración y disfrute de su visita!', 'شكراً لتعاونكم ونتمنى لكم زيارة موفقة!'),
+    'camera_active': ('Caméra active', 'Camera active', 'Cámara activa', 'الكاميرا نشطة'),
+    'camera_inactive': ('Caméra inactive', 'Camera inactive', 'Cámara inactiva', 'الكاميرا غير نشطة'),
+    'welcome': ('Bienvenue chez ARaymond', 'Welcome to ARaymond', 'Bienvenido a ARaymond', 'مرحباً بكم في ARaymond'),
+    'headline': ('Votre visite, en toute simplicité.', 'Your visit, made simple.', 'Su visita, con toda sencillez.', 'زيارتك بكل سهولة.'),
+    'step_photo': ('Votre photo', 'Your photo', 'Su foto', 'صورتك'),
+    'step_photo_text': ('Autorisez la capture et présentez votre visage.', 'Allow capture and face the camera.', 'Autorice la captura y mire a la cámara.', 'وافق على التقاط الصورة وانظر إلى الكاميرا.'),
+    'step_identity': ('Votre identité', 'Your identity', 'Su identidad', 'هويتك'),
+    'step_identity_text': ('Complétez les informations de votre visite.', 'Complete your visitor details.', 'Complete sus datos de visitante.', 'أكمل بيانات زيارتك.'),
+    'step_quiz_text': ('Préparez votre arrivée avec notre quiz de sécurité.', 'Prepare for arrival with our safety quiz.', 'Prepare su llegada con el cuestionario de seguridad.', 'استعد لوصولك عبر اختبار السلامة.'),
+    'face_hint': ('Placez votre visage au centre du cadre.', 'Position your face in the centre of the frame.', 'Coloque su rostro en el centro del marco.', 'ضع وجهك في وسط الإطار.'),
+    'consent_title': ('Votre consentement', 'Your consent', 'Su consentimiento', 'موافقتك'),
+    'capture_notice': ('Si l’image n’est pas capturée, reculez votre visage puis relancez en cliquant sur « Enregistrer ma visite » et « J’accepte et continue ».', 'If the image is not captured, move your face back and retry by clicking “Start my visit” and “Accept and continue”.', 'Si no se captura la imagen, aleje el rostro y vuelva a intentarlo pulsando «Comenzar mi visita» y «Aceptar y continuar».', 'إذا لم تُلتقط الصورة، أبعد وجهك ثم أعد المحاولة بالضغط على «بدء زيارتي» و«أوافق وأتابع».'),
+    'accept': ('J’accepte et continue', 'Accept and continue', 'Aceptar y continuar', 'أوافق وأتابع'),
+    'refuse': ('Refuser', 'Decline', 'Rechazar', 'رفض'),
+
+    'title': ('Préparer votre visite', 'Prepare your visit', 'Prepare su visita', 'التحضير لزيارتك'),
+    'intro': ('Complétez votre inscription et le quiz avant votre arrivée. Le choix de la personne à visiter se fera sur place.', 'Complete registration and the quiz before arrival. You will choose your host on site.', 'Complete el registro y el cuestionario antes de llegar. Elegirá a su contacto en recepción.', 'أكمل التسجيل واختبار السلامة قبل وصولك. ستختار الشخص المراد زيارته عند الوصول.'),
+    'invite_subject': ('ARaymond — Préparez votre visite', 'ARaymond — Prepare your visit', 'ARaymond — Prepare su visita', 'ARaymond — التحضير لزيارتك'),
+    'invite_body': ('Préparez votre visite en ouvrant ce lien personnel. Il donne directement accès à votre dossier : ne le partagez pas.', 'Prepare your visit by opening this personal link. It gives direct access to your registration: do not share it.', 'Prepare su visita abriendo este enlace personal. Da acceso directo a su registro: no lo comparta.', 'حضّر زيارتك عبر هذا الرابط الشخصي. يتيح الوصول المباشر إلى ملفك، فلا تشاركه مع الآخرين.'),
+    'date': ('Arrivée prévue', 'Planned arrival', 'Llegada prevista', 'تاريخ الوصول المتوقع'),
+    'start': ('Préparer ma visite', 'Prepare my visit', 'Preparar mi visita', 'التحضير لزيارتي'),
+    'send': ('Recevoir un code par e-mail', 'Email me a code', 'Recibir un código por correo', 'إرسال رمز إلى بريدي'),
+    'code_subject': ('Votre code de connexion ARaymond', 'Your ARaymond sign-in code', 'Su código de acceso ARaymond', 'رمز الدخول إلى ARaymond'),
+    'code_body': ('Ce code est valable 10 minutes. Ne le partagez pas.', 'This code is valid for 10 minutes. Do not share it.', 'Este código es válido durante 10 minutos. No lo comparta.', 'هذا الرمز صالح لمدة 10 دقائق. لا تشاركه مع الآخرين.'),
+    'sent': ('Code mis en attente d’envoi. Consultez votre boîte e-mail.', 'Code queued for delivery. Check your email.', 'Código preparado para envío. Revise su correo.', 'تمت جدولة إرسال الرمز. تحقق من بريدك الإلكتروني.'),
+    'wait': ('Veuillez patienter avant de demander un nouveau code (5 envois maximum par heure).', 'Please wait before requesting another code (maximum 5 per hour).', 'Espere antes de solicitar otro código (máximo 5 por hora).', 'يرجى الانتظار قبل طلب رمز جديد (5 مرات كحد أقصى في الساعة).'),
+    'code': ('Code à 6 chiffres', '6-digit code', 'Código de 6 dígitos', 'رمز من 6 أرقام'),
+    'verify': ('Se connecter', 'Sign in', 'Conectarse', 'تسجيل الدخول'),
+    'invalid': ('Code incorrect ou expiré. Demandez un nouveau code si nécessaire.', 'Incorrect or expired code. Request a new code if needed.', 'Código incorrecto o caducado. Solicite uno nuevo si es necesario.', 'الرمز غير صحيح أو منتهي الصلاحية. اطلب رمزاً جديداً عند الحاجة.'),
+    'first_name': ('Prénom', 'First name', 'Nombre', 'الاسم الشخصي'),
+    'last_name': ('Nom', 'Last name', 'Apellido', 'اسم العائلة'),
+    'cin': ('CIN / passeport', 'ID / passport', 'Documento / pasaporte', 'بطاقة الهوية / جواز السفر'),
+    'phone': ('Téléphone', 'Phone', 'Teléfono', 'الهاتف'),
+    'company': ('Société', 'Company', 'Empresa', 'الشركة'),
+    'nationality': ('Nationalité', 'Nationality', 'Nacionalidad', 'الجنسية'),
+    'consent': ('J’accepte l’enregistrement de mes données et de ma photo pour préparer ma visite et permettre mon identification à l’accueil.', 'I consent to my details and photo being saved to prepare my visit and identify me at reception.', 'Acepto que se guarden mis datos y mi foto para preparar mi visita e identificarme en recepción.', 'أوافق على حفظ بياناتي وصورتي للتحضير لزيارتي والتعرف علي عند الاستقبال.'),
+    'camera': ('Ouvrir la caméra', 'Open camera', 'Abrir cámara', 'فتح الكاميرا'),
+    'capture': ('Prendre / reprendre la photo', 'Take / retake photo', 'Tomar / repetir foto', 'التقاط / إعادة التقاط الصورة'),
+    'camera_error': ('Caméra indisponible. Autorisez son accès ou utilisez un appareil équipé d’une caméra.', 'Camera unavailable. Allow access or use a device with a camera.', 'Cámara no disponible. Autorice el acceso o utilice un dispositivo con cámara.', 'الكاميرا غير متاحة. اسمح بالوصول إليها أو استخدم جهازاً مزوداً بكاميرا.'),
+    'required': ('Complétez votre identité, acceptez le consentement et prenez une photo.', 'Complete your identity, accept consent and take a photo.', 'Complete su identidad, acepte el consentimiento y tome una foto.', 'أكمل بيانات هويتك ووافق على حفظ البيانات والتقط صورة.'),
+    'quiz': ('Passer le quiz de sécurité', 'Take the safety quiz', 'Realizar el cuestionario de seguridad', 'بدء اختبار السلامة'),
+    'unavailable': ('Le quiz est indisponible dans cette langue. Contactez l’accueil.', 'The quiz is unavailable in this language. Contact reception.', 'El cuestionario no está disponible en este idioma. Contacte con recepción.', 'الاختبار غير متاح بهذه اللغة. تواصل مع الاستقبال.'),
+    'failed': ('Le score requis n’est pas atteint. Veuillez repasser le quiz.', 'The required score was not reached. Please retake the quiz.', 'No se alcanzó la puntuación requerida. Repita el cuestionario.', 'لم يتم بلوغ النتيجة المطلوبة. يرجى إعادة الاختبار.'),
+    'ready': ('Pré-enregistré — en attente d’arrivée', 'Pre-registered — awaiting arrival', 'Prerregistrado — pendiente de llegada', 'تم التسجيل المسبق — في انتظار الوصول'),
+    'ready_body': ('Votre préparation est terminée. Le jour prévu, présentez-vous à la borne d’accueil pour vous identifier, choisir votre contact et signer. Aucune entrée n’a encore été enregistrée.', 'Preparation is complete. On the planned date, identify yourself at reception, choose your host and sign. No arrival has been recorded yet.', 'La preparación ha finalizado. El día previsto, identifíquese en recepción, elija a su contacto y firme. Todavía no se ha registrado ninguna entrada.', 'اكتمل التحضير. في الموعد المحدد، توجه إلى الاستقبال للتعريف بنفسك واختيار الشخص المراد زيارته والتوقيع. لم يتم تسجيل أي دخول بعد.'),
+    'closed': ('Ce lien est expiré, annulé ou déjà utilisé à l’accueil. Contactez l’entreprise si nécessaire.', 'This link has expired, been cancelled or already used at reception. Contact the company if needed.', 'Este enlace ha caducado, se ha cancelado o ya se ha utilizado en recepción. Contacte con la empresa.', 'انتهت صلاحية هذا الرابط أو تم إلغاؤه أو استخدامه في الاستقبال. تواصل مع الشركة عند الحاجة.'),
+    'close': ('Fermer', 'Close', 'Cerrar', 'إغلاق'),
+    'logout': ('Se déconnecter', 'Sign out', 'Cerrar sesión', 'تسجيل الخروج'),
+}
+
+
+def labels(language):
+    index = ('fr', 'en', 'es', 'ar').index(language if language in ('fr', 'en', 'es', 'ar') else 'fr')
+    result = {key: values[index] for key, values in TEXT.items()}
+    result.update({
+        'journey_title': ('Un parcours en deux étapes', 'A journey in two steps', 'Un recorrido en dos etapas', 'مسار من خطوتين')[index],
+        'quiz': ('Consulter les consignes', 'Read safety instructions', 'Consultar las instrucciones', 'قراءة تعليمات السلامة')[index],
+        'intro': ('Complétez votre inscription avant votre arrivée. Le choix de la personne à visiter se fera sur place.', 'Complete registration before arrival. You will choose your host on site.', 'Complete el registro antes de llegar. Elegirá a su contacto en recepción.', 'أكمل التسجيل قبل وصولك. ستختار الشخص المراد زيارته عند الوصول.')[index],
+    })
+    result['consent_paragraphs'] = CONSENT_PARAGRAPHS[index]
+    return result
+
+
+CONSENT_FR = [
+    "Afin de faciliter et d'accélérer votre accès à notre site lors de vos visites, nous avons mis en place un système de reconnaissance faciale dédié à la gestion des accès visiteurs.",
+    "Après votre confirmation, votre photo sera capturée et les informations nécessaires à votre identification en tant que visiteur seront enregistrées dans notre système conformément à la politique de confidentialité de l'entreprise.",
+    "Ces données seront conservées afin de simplifier vos futures visites et de permettre une reconnaissance automatique lors de votre arrivée sur le site. Elles seront utilisées exclusivement pour la gestion des accès au site et ne feront l'objet d'aucune autre utilisation.",
+    "L'accès à ces informations est strictement limité aux personnes autorisées selon des niveaux d'habilitation définis. Les données sont protégées par des mesures de sécurité appropriées garantissant leur confidentialité, leur intégrité et leur protection contre tout accès non autorisé.",
+    "En cliquant sur « J'accepte et continue », vous donnez votre consentement à l'enregistrement et à l'utilisation de votre photo et de vos données dans les conditions décrites ci-dessus.",
+    "Si vous ne souhaitez pas donner votre consentement, veuillez sélectionner « Refuser ». Vous pourrez alors accéder au site en suivant la procédure alternative manuelle prévue pour les visiteurs.",
+]
+
+CONSENT_PARAGRAPHS = (CONSENT_FR, [
+    "To make access to our site easier and faster during your visits, we have introduced a facial recognition system dedicated to managing visitor access.",
+    "After your confirmation, your photo will be captured and the information needed to identify you as a visitor will be recorded in our system in accordance with the company's privacy policy.",
+    "This data will be retained to simplify your future visits and enable automatic recognition when you arrive at the site. It will be used exclusively to manage access to the site and will not be used for any other purpose.",
+    "Access to this information is strictly limited to authorized persons according to defined access levels. The data is protected by appropriate security measures ensuring its confidentiality, integrity and protection against unauthorized access.",
+    "By clicking “Accept and continue”, you consent to the recording and use of your photo and data under the conditions described above.",
+    "If you do not wish to give your consent, please select “Decline”. You can then access the site by following the alternative manual procedure provided for visitors.",
+], [
+    "Para facilitar y agilizar su acceso a nuestras instalaciones durante sus visitas, hemos implementado un sistema de reconocimiento facial dedicado a la gestión del acceso de visitantes.",
+    "Tras su confirmación, se capturará su foto y la información necesaria para identificarle como visitante se registrará en nuestro sistema de acuerdo con la política de privacidad de la empresa.",
+    "Estos datos se conservarán para simplificar sus futuras visitas y permitir el reconocimiento automático a su llegada a las instalaciones. Se utilizarán exclusivamente para gestionar el acceso a las instalaciones y no se destinarán a ningún otro uso.",
+    "El acceso a esta información está estrictamente limitado a las personas autorizadas según los niveles de acceso definidos. Los datos están protegidos mediante medidas de seguridad adecuadas que garantizan su confidencialidad, su integridad y su protección frente a cualquier acceso no autorizado.",
+    "Al hacer clic en «Aceptar y continuar», da su consentimiento para el registro y el uso de su foto y sus datos en las condiciones descritas anteriormente.",
+    "Si no desea dar su consentimiento, seleccione «Rechazar». Podrá entonces acceder a las instalaciones siguiendo el procedimiento manual alternativo previsto para los visitantes.",
+], [
+    "لتسهيل وتسريع دخولكم إلى موقعنا أثناء زياراتكم، اعتمدنا نظاماً للتعرّف على الوجه مخصصاً لإدارة دخول الزوار.",
+    "بعد تأكيد موافقتكم، سيتم التقاط صورتكم وتسجيل المعلومات اللازمة للتعرّف عليكم بصفتكم زائراً في نظامنا، وفقاً لسياسة الخصوصية الخاصة بالشركة.",
+    "سيتم الاحتفاظ بهذه البيانات لتسهيل زياراتكم المستقبلية وإتاحة التعرّف التلقائي عليكم عند وصولكم إلى الموقع. وستُستخدم حصرياً لإدارة الدخول إلى الموقع، ولن تُستخدم لأي غرض آخر.",
+    "يقتصر الوصول إلى هذه المعلومات بشكل صارم على الأشخاص المصرّح لهم وفقاً لمستويات الصلاحيات المحددة. وتُحمى البيانات بتدابير أمنية مناسبة تضمن سريتها وسلامتها وحمايتها من أي وصول غير مصرّح به.",
+    "بالنقر على «أوافق وأتابع»، فإنكم توافقون على تسجيل صورتكم وبياناتكم واستخدامها وفقاً للشروط الموضحة أعلاه.",
+    "إذا كنتم لا ترغبون في منح موافقتكم، يُرجى اختيار «رفض». ويمكنكم حينئذٍ الدخول إلى الموقع باتباع الإجراء اليدوي البديل المخصص للزوار.",
+])

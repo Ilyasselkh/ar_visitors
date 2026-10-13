@@ -47,6 +47,7 @@ class ArVisitorPerson(models.Model):
     consent = fields.Boolean(string="Consentement", tracking=True)
     consent_at = fields.Datetime(string="Date du consentement", readonly=True)
     visit_ids = fields.One2many("ar.visitor.visit", "person_id", string="Visites")
+    invitation_ids = fields.One2many('ar.visitor.invitation', 'person_id', string='Invitations')
     visit_count = fields.Integer(compute="_compute_visit_count")
 
     _cin_unique = models.Constraint("unique(cin)", "La CIN / passeport doit être unique.")
@@ -141,3 +142,12 @@ class ArVisitorPerson(models.Model):
             "domain": [("person_id", "=", self.id)],
             "context": {"default_person_id": self.id},
         }
+
+    def unlink(self):
+        self.check_access("unlink")
+        # Delete through the ORM so visit attachments, activities and chatter are
+        # cleaned up too. Include archived visits in the person's full history.
+        self.env["ar.visitor.visit"].sudo().with_context(active_test=False).search([
+            ("person_id", "in", self.ids),
+        ]).unlink()
+        return super().unlink()
