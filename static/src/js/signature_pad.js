@@ -31,6 +31,7 @@ class VisitorSignaturePad extends Component {
     prepareCanvas() {
         const canvas = this.canvas.el;
         const ratio = window.devicePixelRatio || 1;
+        this.canvasRatio = ratio;
         const box = canvas.getBoundingClientRect();
         canvas.width = Math.max(1, Math.round(box.width * ratio));
         canvas.height = Math.max(1, Math.round(box.height * ratio));
@@ -43,7 +44,13 @@ class VisitorSignaturePad extends Component {
     }
     point(event) {
         const box = this.canvas.el.getBoundingClientRect();
-        return { x: event.clientX - box.left, y: event.clientY - box.top };
+        // Keep pointer coordinates aligned after rotation or dialog resizing,
+        // without resizing (and clearing) a signature already being drawn.
+        const ratio = this.canvasRatio || 1;
+        return {
+            x: (event.clientX - box.left) * this.canvas.el.width / (box.width || 1) / ratio,
+            y: (event.clientY - box.top) * this.canvas.el.height / (box.height || 1) / ratio,
+        };
     }
     start(event) {
         event.preventDefault();

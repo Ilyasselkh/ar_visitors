@@ -4,7 +4,7 @@
         <field name="name">ar.visitor.checkout.wizard.form</field>
         <field name="model">ar.visitor.checkout.wizard</field>
         <field name="arch" type="xml">
-            <form string="Signature de sortie" class="ar_checkout_form">
+            <form string="Signature de sortie" class="ar_visitor_admin ar_checkout_form">
                 <field name="language" invisible="1"/>
                 <sheet>
                     <div class="ar_checkout_hero">

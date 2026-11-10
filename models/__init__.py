@@ -1,3 +1,4 @@
+from . import safety_instruction
 from . import visitor_localization
 from . import visitor_person
 from . import visitor_quiz_config
@@ -9,3 +10,4 @@ from . import quiz_result
 from . import visitor_person_photo
 
 from . import face_attendance_bridge
+from . import visitor_invitation

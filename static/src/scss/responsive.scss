@@ -1,0 +1,107 @@
+// Shared last-pass layout rules, scoped to visitor screens only.
+.ar_face_screen, .ar-visitors-kiosk, .prereg,
+.ar_visitor_admin, .ar_identify_form, .ar_checkout_form,
+.ar_quiz_feedback, .ar_survey_safety, .ar_completion_result {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    input, select, textarea, iframe, canvas { max-width: 100%; min-width: 0; }
+    button, .btn, .ar-button { white-space: normal; overflow-wrap: anywhere; }
+}
+.ar_face_screen > *, .ar_face_panel > *, .ar_face_brand,
+.ar_face_identity_details, .ar_hse_slide > *, .ar-person-summary > div,
+.prereg .fields > *, .ar_visit_card, .ar_checkout_details > * { min-width: 0; }
+.ar_face_topbar .ar_face_brand img { max-width: 100%; object-fit: contain; }
+.ar_face_language_buttons { max-width: 100%; }
+.ar_face_identity_card, .ar_face_consent_card {
+    max-height: calc(100dvh - 32px); overflow-y: auto; overscroll-behavior: contain;
+}
+.ar_completion_overlay { overflow-y: auto; }
+.ar_completion_result { max-width: 100%; }
+.ar_visitor_admin {
+    .o_form_sheet { min-width: 0; }
+    .o_field_widget, .o_group, .o_inner_group { min-width: 0; max-width: 100%; }
+    .o_field_image img { max-width: 100%; object-fit: contain; }
+    .o_field_char, .o_field_text, .o_field_uri { overflow-wrap: anywhere; }
+    .o_list_renderer { max-width: 100%; overflow-x: auto; }
+    .o_kanban_record { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+}
+.ar-invitation-legend { min-width: 0; overflow-wrap: anywhere; }
+.ar-invitation-badge { max-width: 100%; white-space: normal; }
+.ar-visitors-kiosk .ar-visit-actions { flex-wrap: wrap; }
+.ar-visitors-kiosk #ar-quiz-dialog { max-width: 100%; }
+.ar_quiz_feedback { box-sizing: border-box; }
+.ar_survey_safety .ar_survey_safety_images {
+    grid-template-columns: repeat(auto-fit, minmax(#{"min(140px, 100%)"}, 1fr));
+}
+body.ar_visitor_quiz {
+    .o_survey_form, .js_question-wrapper { min-width: 0; overflow-wrap: anywhere; }
+    .o_survey_page_per_question .o_survey_form_choice:has(.o_survey_choice_img) {
+        grid-template-columns: repeat(auto-fit, minmax(#{"min(180px, 100%)"}, 1fr));
+    }
+}
+@media (max-width: 1023px) {
+    .ar_face_topbar { flex-wrap: wrap; gap: 12px; }
+    .ar_face_language { flex-wrap: wrap; min-width: 0; }
+    .ar_face_screen .ar_face_controls { grid-template-columns: minmax(0, 1fr); }
+    .ar_face_panel .ar_hse_slide { grid-template-columns: minmax(0, 1fr); text-align: center; }
+    .ar_hse_slide_art { margin-inline: auto; max-width: #{"min(280px, 100%)"}; }
+    .ar_hse_slide_copy p { margin-inline: auto; }
+}
+@media (max-width: 767px) {
+    .ar_face_screen { container-type: normal; height: auto; min-height: 100%; max-height: none; overflow: visible; }
+    .ar_face_screen .ar_face_welcome { order: 1; }
+    .ar_face_screen .ar_face_panel { order: 2; }
+    .ar_face_screen .ar_face_panel { flex: none; min-height: min-content; }
+    .ar_face_panel .ar_hse_carousel { min-height: 0; padding: 20px; }
+    .ar_face_panel .ar_hse_slide h2 { font-size: clamp(24px, 6vw, 34px); }
+    .ar_hse_slide { padding: 20px 0; }
+    .ar_hse_carousel_header, .ar_hse_carousel_footer { flex-wrap: wrap; gap: 12px; }
+    .ar_hse_carousel_tabs { flex-wrap: wrap; }
+    .ar_face_identity_overlay, .ar_face_consent_overlay { padding: 12px; }
+    .ar_face_identity_card, .ar_face_consent_card { max-height: calc(100dvh - 24px); }
+    .ar_face_identity_actions, .ar_face_consent_actions { flex-wrap: wrap; }
+    .ar_face_identity_actions .btn, .ar_face_consent_actions .btn { min-height: 44px; }
+    .ar_visitor_admin .o_form_statusbar, .ar_visit_form .o_form_statusbar {
+        flex-wrap: wrap; gap: 8px;
+        .o_statusbar_buttons { flex-wrap: wrap; gap: 6px; }
+        .o_statusbar_status { max-width: 100%; overflow-x: auto; }
+    }
+    .ar_visitor_admin .o_notebook .nav { flex-wrap: nowrap; overflow-x: auto; }
+    .modal-dialog:has(.ar_visitor_admin, .ar_identify_form, .ar_checkout_form) {
+        width: auto; max-width: calc(100% - 16px); margin: 8px;
+        .modal-header, .modal-footer { flex-wrap: wrap; gap: 8px; }
+        .modal-body { padding: 12px; }
+        .modal-footer .btn { min-height: 44px; flex: 1 1 140px; }
+    }
+    .ar_visit_details_dialog .modal-dialog { width: calc(100% - 16px); margin: 8px; }
+    .ar_visit_details_dialog iframe { height: calc(100dvh - 32px) !important; }
+    .ar-visitors-kiosk .ar-visit-fields { grid-template-columns: minmax(0, 1fr); }
+    .ar-visitors-kiosk .ar-visit-actions button { flex: 1 1 180px; min-height: 44px; }
+    .ar-visitors-kiosk .ar-person-summary small { overflow-wrap: anywhere; }
+    body.ar_visitor_quiz .o_survey_form { padding-inline: 12px; }
+    .ar_quiz_feedback .ar_quiz_image_answers img { max-height: none; height: clamp(100px, 32dvh, 280px); }
+}
+@media (max-width: 380px) {
+    .ar_face_panel { padding-inline: 4px; }
+    .ar_face_language_button { padding-inline: 8px; gap: 5px; }
+    .ar_face_identity_card, .ar_face_consent_card { padding: 16px; }
+    .ar_face_identity_card > img { max-width: 100%; }
+    .ar_face_screen .ar_face_camera_guide { inset-inline: 4px; padding: 8px; font-size: 14px; }
+    .ar_completion_overlay { padding: 12px; }
+}
+// Let short viewports scroll instead of squeezing text and signatures away.
+@media (max-height: 600px) and (min-width: 768px) {
+    .ar_face_screen { container-type: normal; overflow-y: auto; align-items: start; }
+    .ar_face_screen .ar_face_panel { min-height: 360px; }
+    .ar_face_screen .ar_face_camera_area { min-height: 280px; }
+    .ar_face_screen .ar_hse_carousel { min-height: 320px; }
+    .ar_face_screen .ar_hse_intro_themes { position: static; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .ar_face_screen .ar_hse_intro_theme { position: static; padding: 10px; }
+}
+@media (max-height: 450px) {
+    .ar_face_identity_overlay, .ar_face_consent_overlay { align-items: start; }
+    .ar_face_safety_card { overflow-y: auto; }
+    .ar_face_safety_card .ar_safety_list { flex: none; overflow: visible; }
+    .ar_face_safety_card .ar_safety_slide { min-height: 240px; }
+    .ar_quiz_feedback .ar_quiz_image_answers img { max-height: none; height: 140px; }
+}

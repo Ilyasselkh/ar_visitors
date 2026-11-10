@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_invitation_individual" model="ir.actions.act_window">
+        <field name="name">Invitation individuelle par e-mail</field>
+        <field name="res_model">ar.visitor.invitation</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_is_shared': False}</field>
+    </record>
+    <record id="action_invitation_shared" model="ir.actions.act_window">
+        <field name="name">Invitation par lien partagé</field>
+        <field name="res_model">ar.visitor.invitation</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_is_shared': True}</field>
+    </record>
+    <record id="view_visitor_invitation_list" model="ir.ui.view">
+        <field name="name">ar.visitor.invitation.list</field><field name="model">ar.visitor.invitation</field>
+        <field name="arch" type="xml"><list js_class="ar_invitation_list" class="ar_visitor_admin" create="false" decoration-success="state == 'ready'" decoration-muted="state in ['expired', 'cancelled']"><header><button name="%(action_invitation_individual)d" type="action" string="Inviter par e-mail" display="always" class="btn-primary"/><button name="%(action_invitation_shared)d" type="action" string="Créer un lien partagé" display="always"/></header><field name="display_name" string="Invitation / visiteur"/><field name="parent_id" column_invisible="True"/><field name="is_shared" string="Type d’invitation" widget="ar_invitation_type"/><field name="email" optional="hide"/><field name="planned_date"/><field name="language"/><field name="first_name"/><field name="last_name"/><field name="state"/><field name="company_id" groups="base.group_multi_company"/></list></field>
+    </record>
+    <record id="view_visitor_invitation_form" model="ir.ui.view">
+        <field name="name">ar.visitor.invitation.form</field><field name="model">ar.visitor.invitation</field>
+        <field name="arch" type="xml"><form string="Invitation visiteur" class="ar_visitor_admin">
+            <header><button name="action_send" type="object" string="Générer le lien partagé" class="btn-primary" invisible="not is_shared or state != 'draft'"/><button name="action_send" type="object" string="Envoyer / renvoyer par e-mail" class="btn-primary" invisible="is_shared or parent_id or state not in ['draft', 'sent', 'quiz_pending', 'ready']"/><button name="action_cancel" type="object" string="Annuler" invisible="state in ['arrived', 'cancelled'] or visit_id"/><field name="state" widget="statusbar" statusbar_visible="draft,sent,quiz_pending,ready,on_site,arrived"/></header>
+            <sheet><group><field name="is_shared" readonly="state != 'draft'"/><field name="parent_id" invisible="not parent_id"/><field name="share_url" widget="CopyClipboardChar" invisible="not is_shared or not share_url"/><field name="email" readonly="state != 'draft'" invisible="is_shared" required="not is_shared and not parent_id"/><field name="planned_date" readonly="state != 'draft'"/><field name="language" readonly="state != 'draft'"/><field name="company_id" groups="base.group_multi_company" readonly="id"/><field name="expires_at"/><field name="quiz_completed_at" invisible="is_shared"/><field name="visit_id" invisible="is_shared"/></group>
+                <p invisible="not is_shared">Copiez ce lien et partagez-le avec plusieurs personnes. Chaque inscription possède son propre parcours, sans code d’accès. Le lien reste identique jusqu’à son expiration ou son annulation. Aucun e-mail individuel n’est envoyé.</p>
+                <p invisible="is_shared">Le lien personnel donne directement accès au pré-enregistrement. La dernière étape à distance est le quiz. L’entrée et la notification du contact ont lieu uniquement à l’accueil.</p>
+                <p>Pour reporter une visite : annuler l’invitation, la dupliquer et modifier la date avant de générer le nouveau lien.</p>
+                <field name="registration_ids" invisible="not is_shared"><list create="false" delete="false" class="ar_visitor_admin"><field name="first_name"/><field name="last_name"/><field name="cin"/><field name="state"/><field name="quiz_completed_at"/></list></field>
+                <group string="Identité déclarée" invisible="is_shared"><field name="first_name"/><field name="last_name"/><field name="cin"/><field name="phone"/><field name="visitor_company"/><field name="nationality_id"/><field name="consent_at"/><field name="safety_understanding"/><field name="safety_acknowledged_at"/><field name="photo" widget="image"/></group>
+            </sheet>
+        </form></field>
+    </record>
+    <record id="view_visitor_invitation_kanban" model="ir.ui.view">
+        <field name="name">ar.visitor.invitation.kanban</field>
+        <field name="model">ar.visitor.invitation</field>
+        <field name="arch" type="xml">
+            <kanban js_class="ar_invitation_kanban" create="false" records_draggable="false" class="ar_visitor_admin o_kanban_small_column">
+                <field name="is_shared"/>
+                <field name="parent_id"/>
+                <header>
+                    <button name="%(action_invitation_individual)d" type="action" string="Inviter par e-mail" display="always" class="btn-primary"/>
+                    <button name="%(action_invitation_shared)d" type="action" string="Créer un lien partagé" display="always"/>
+                </header>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="rounded-circle bg-primary-subtle text-primary p-3">
+                                <i t-att-class="record.is_shared.raw_value ? 'fa fa-link' : 'fa fa-user-o'" aria-hidden="true"/>
+                            </span>
+                            <div class="flex-grow-1 text-break">
+                                <strong class="fs-5"><field name="display_name"/></strong>
+                                <div class="mt-2"><field name="is_shared" widget="ar_invitation_type"/></div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center border-top pt-3 mb-3">
+                            <div><div class="text-muted small">Arrivée prévue</div><strong><field name="planned_date"/></strong></div>
+                            <field name="language"/>
+                        </div>
+                        <footer>
+                            <field name="state" widget="badge" decoration-success="state in ['ready', 'arrived']" decoration-info="state in ['sent', 'quiz_pending', 'on_site']" decoration-danger="state == 'cancelled'" decoration-muted="state in ['draft', 'expired']"/>
+                        </footer>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="action_visitor_invitation" model="ir.actions.act_window">
+        <field name="name">Invitations en cours</field>
+        <field name="res_model">ar.visitor.invitation</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('state', 'in', ['draft', 'sent', 'quiz_pending', 'ready', 'on_site'])]</field>
+        <field name="context">{'default_is_shared': True}</field>
+    </record>
+    <record id="action_visitor_invitation_archive" model="ir.actions.act_window">
+        <field name="name">Archive des Invitations</field>
+        <field name="res_model">ar.visitor.invitation</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('state', 'in', ['cancelled', 'expired', 'arrived'])]</field>
+    </record>
+</odoo>

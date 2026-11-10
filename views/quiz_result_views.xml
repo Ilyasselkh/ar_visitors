@@ -21,7 +21,7 @@
         <field name="name">ar.visitor.quiz.result.list</field>
         <field name="model">ar.visitor.quiz.result</field>
         <field name="arch" type="xml">
-            <list string="Résultats des quiz" create="0" edit="0" delete="0" default_order="quiz_completed_at desc">
+            <list string="Résultats des quiz" create="0" edit="0" delete="0" default_order="quiz_completed_at desc" class="ar_visitor_admin">
                 <field name="quiz_completed_at" string="Date de passation"/>
                 <field name="name" string="Visite"/>
                 <field name="last_name"/><field name="first_name"/><field name="cin"/>
@@ -39,7 +39,7 @@
         <field name="name">ar.visitor.quiz.result.form</field>
         <field name="model">ar.visitor.quiz.result</field>
         <field name="arch" type="xml">
-            <form string="Résultat du quiz" create="0" edit="0" delete="0">
+            <form string="Résultat du quiz" create="0" edit="0" delete="0" class="ar_visitor_admin">
                 <header><field name="result_state" widget="statusbar"/></header>
                 <sheet>
                     <field name="scored" invisible="1"/><field name="passed" invisible="1"/>

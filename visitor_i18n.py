@@ -8,6 +8,8 @@ LANG_CODES = {"fr": "fr_FR", "en": "en_US", "es": "es_ES", "ar": "ar_001"}
 
 # Source: English, Spanish, Arabic.
 MESSAGES = {
+    "Veuillez confirmer la compréhension des consignes avant d’enregistrer l’entrée.": ("Please confirm that you understand the safety instructions before checking in.", "Confirme que comprende las instrucciones de seguridad antes de registrar la entrada.", "يرجى تأكيد فهم تعليمات السلامة قبل تسجيل الدخول."),
+    "Veuillez remplir tous les champs avant de continuer.": ("Please fill in all fields before continuing.", "Complete todos los campos antes de continuar.", "يرجى ملء جميع الحقول قبل المتابعة."),
     "Langue": ("Language", "Idioma", "اللغة"),
     "État": ("Status", "Estado", "الحالة"),
     "Département": ("Department", "Departamento", "القسم"),

@@ -3,7 +3,7 @@
         <field name="name">ar.visitor.identify.wizard.form</field>
         <field name="model">ar.visitor.identify.wizard</field>
         <field name="arch" type="xml">
-            <form string="Identifier le visiteur" class="ar_identify_form">
+            <form string="Identifier le visiteur" class="ar_visitor_admin ar_identify_form">
                 <field name="captured_photo" invisible="1"/><field name="step" invisible="1"/><field name="language" invisible="1"/>
                 <div invisible="step != 'cin'">
                 <div class="ar_identify_banner">

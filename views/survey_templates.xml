@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <odoo>
+    <template id="visitor_survey_safety_intro" inherit_id="survey.survey_fill_form_start">
+        <xpath expr="//div[@t-field='survey.description']" position="after">
+            <t t-set="visitor_safety" t-value="answer._visitor_safety_instructions()"/>
+            <section t-if="visitor_safety" class="ar_survey_safety">
+                <h2><i class="fa fa-shield" aria-hidden="true"/> <t t-out="{'fr': 'Consignes de sécurité', 'en': 'Safety instructions', 'es': 'Instrucciones de seguridad', 'ar': 'تعليمات السلامة'}[answer._visitor_safety_language()]"/></h2>
+                <article t-foreach="visitor_safety" t-as="instruction">
+                    <div class="ar_survey_safety_content">
+                        <span class="ar_survey_safety_emoji" t-out="instruction['emoji']"/>
+                        <p t-out="instruction['name']"/>
+                    </div>
+                    <div t-if="instruction['images']" class="ar_survey_safety_images">
+                        <img t-foreach="instruction['images']" t-as="image" t-att-src="image['url']" t-att-alt="image['name']" loading="lazy"/>
+                    </div>
+                </article>
+            </section>
+        </xpath>
+    </template>
 
     <template id="visitor_survey_done" inherit_id="survey.survey_fill_form_done">
 

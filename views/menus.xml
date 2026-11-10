@@ -3,6 +3,10 @@
     <menuitem id="menu_ar_visitors_root" name="AR Visitors" sequence="13" groups="ar_visitors.group_ar_visitors_user"/>
     <record id="menu_ar_visitors_reception" model="ir.ui.menu"><field name="name">Accueil</field><field name="parent_id" ref="menu_ar_visitors_root"/><field name="active" eval="False"/></record>
     <menuitem id="menu_ar_visitors_visits" name="Visites" parent="menu_ar_visitors_root" sequence="10"/>
+    <menuitem id="menu_ar_visitors_invitations" name="Invitations" parent="menu_ar_visitors_root" sequence="15" groups="-ar_visitors.group_ar_visitors_user,ar_visitors.group_ar_visitors_invitations"/>
+    <record id="menu_ar_visitors_invitations" model="ir.ui.menu"><field name="action" eval="False"/></record>
+    <menuitem id="menu_ar_visitors_invitations_current" name="Invitations en cours" parent="menu_ar_visitors_invitations" action="action_visitor_invitation" sequence="10"/>
+    <menuitem id="menu_ar_visitors_invitations_archive" name="Archive des Invitations" parent="menu_ar_visitors_invitations" action="action_visitor_invitation_archive" sequence="20"/>
     <record id="action_ar_visitor_face" model="ir.actions.client">
         <field name="name">Reconnaissance faciale</field><field name="tag">ar_visitors.face_attendance</field>
     </record>
@@ -20,5 +24,6 @@
     <record id="menu_ar_visitors_analysis" model="ir.ui.menu"><field name="name">Analyse des visites</field><field name="parent_id" ref="menu_ar_visitors_reports"/><field name="active" eval="False"/></record>
     <menuitem id="menu_ar_visitors_configuration" name="Configuration" parent="menu_ar_visitors_root" sequence="90" groups="ar_visitors.group_ar_visitors_admin"/>
     <menuitem id="menu_ar_visitors_documents" name="Quiz par langue" parent="menu_ar_visitors_configuration" action="action_ar_visitor_document" sequence="10"/>
+    <menuitem id="menu_ar_visitors_safety" name="Consignes de sécurité" parent="menu_ar_visitors_configuration" action="action_safety_instruction" sequence="20"/>
     <menuitem id="menu_ar_visitors_settings" name="Paramètres" parent="menu_ar_visitors_configuration" action="action_ar_visitors_settings" sequence="90"/>
 </odoo>

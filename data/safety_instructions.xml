@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+<record id="safety_instruction_1" model="ar.visitor.safety.instruction"><field name="sequence">10</field><field name="emoji">👤</field><field name="name">Restez tout le temps accompagné par votre interlocuteur ou une personne autorisée.</field></record>
+<record id="safety_instruction_2" model="ar.visitor.safety.instruction"><field name="sequence">20</field><field name="emoji">🦺</field><field name="name">Portez les EPI obligatoires indiqués pour la zone : chaussures de sécurité, gilet haute visibilité, lunettes, protections auditives, etc.</field></record>
+<record id="safety_instruction_3" model="ar.visitor.safety.instruction"><field name="sequence">30</field><field name="emoji">🚶</field><field name="name">Respectez les voies piétonnes et les zones de circulation autorisées.</field></record>
+<record id="safety_instruction_4" model="ar.visitor.safety.instruction"><field name="sequence">40</field><field name="emoji">🚜</field><field name="name">Restez vigilant aux chariots élévateurs et autres engins mobiles. Ne traversez jamais leur trajectoire sans vous assurer d’avoir été vu.</field></record>
+<record id="safety_instruction_5" model="ar.visitor.safety.instruction"><field name="sequence">50</field><field name="emoji">⛔</field><field name="name">N’entrez pas dans les zones interdites ou non autorisées.</field></record>
+<record id="safety_instruction_6" model="ar.visitor.safety.instruction"><field name="sequence">60</field><field name="emoji">📱</field><field name="name">N’utilisez pas votre téléphone en marchant.</field></record>
+<record id="safety_instruction_7" model="ar.visitor.safety.instruction"><field name="sequence">70</field><field name="emoji">🚭</field><field name="name">Respectez l’interdiction de fumer, sauf dans les zones spécifiquement autorisées.</field></record>
+<record id="safety_instruction_8" model="ar.visitor.safety.instruction"><field name="sequence">80</field><field name="emoji">📷</field><field name="name">Photos et vidéos interdites sans autorisation préalable.</field></record>
+<record id="safety_instruction_9" model="ar.visitor.safety.instruction"><field name="sequence">90</field><field name="emoji">⚙️</field><field name="name">Ne touchez pas aux machines, équipements, produits ou commandes sans autorisation.</field></record>
+<record id="safety_instruction_10" model="ar.visitor.safety.instruction"><field name="sequence">100</field><field name="emoji">⚠️</field><field name="name">Signalez immédiatement toute situation dangereuse, incident ou accident à votre accompagnateur.</field></record>
+<record id="safety_instruction_11" model="ar.visitor.safety.instruction"><field name="sequence">110</field><field name="emoji">🚨</field><field name="name">En cas d’alarme ou d’évacuation :
+1. Arrêtez votre activité.
+2. Évacuez calmement en suivant la signalisation et les instructions de votre accompagnateur.
+3. Ne retournez pas chercher vos effets personnels.
+4. Rendez-vous au point de rassemblement le plus proche 📍</field></record>
+<record id="safety_instruction_12" model="ar.visitor.safety.instruction"><field name="sequence">120</field><field name="emoji">🧯</field><field name="name">N’intervenez pas sur une situation d’urgence sauf si vous êtes formé et autorisé à le faire.</field></record>
+<record id="safety_instruction_13" model="ar.visitor.safety.instruction"><field name="sequence">130</field><field name="emoji">☎️</field><field name="name">EN CAS D’URGENCE
+Urgence interne / HSE : ____________________</field></record>
+</odoo>

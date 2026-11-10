@@ -1,0 +1,46 @@
+.ar_completion_overlay {
+    position: fixed; inset: 0; z-index: 2000; display: grid;
+    place-items: center; padding: 24px; background: transparent;
+}
+.ar_completion_result {
+    text-align: center; background: transparent; border: 0; box-shadow: none;
+    color: #0f766e; font-family: Inter, Arial, sans-serif;
+    animation: ar-completion-enter .25s ease-out both;
+    h1 { margin: 24px 0 0; color: #10b981 !important; font-size: clamp(28px, 4vw, 48px); font-weight: 800; letter-spacing: -.03em; line-height: 1.2; text-shadow: 0 1px 2px #064e3b, 0 0 12px rgba(255, 255, 255, .95); }
+}
+.ar_completion_check {
+    width: 112px; height: 112px; fill: none; stroke: #10b981;
+    filter: drop-shadow(0 1px 2px #064e3b) drop-shadow(0 0 6px rgba(255, 255, 255, .95));
+    stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;
+    circle { stroke-opacity: .3; }
+    path { stroke-dasharray: 80; stroke-dashoffset: 80; animation: ar-completion-draw .45s .1s ease-out forwards; }
+}
+body.ar-visitors-kiosk.ar_completion_page { background: transparent; }
+.ar_completion_dialog {
+    .modal, .modal-content, .modal-body { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+    .modal-header, .modal-footer { display: none !important; }
+}
+.ar_quiz_journey_dialog {
+    .modal-dialog { width: 100vw; max-width: none; margin: 0; height: 100dvh; }
+    .modal-content, .modal-body { height: 100%; padding: 0 !important; background: transparent !important; border: 0; box-shadow: none; }
+    .modal-header, .modal-footer { display: none !important; }
+    iframe { height: 100dvh !important; background: transparent; }
+}
+.ar_visit_details_dialog {
+    .modal-dialog { width: 96vw; max-width: 1200px; }
+    .modal-content, .modal-body { padding: 0 !important; background: transparent !important; border: 0 !important; box-shadow: none !important; }
+    .modal-header, .modal-footer { display: none !important; }
+    iframe { background: transparent; }
+    iframe { height: 90dvh !important; }
+}
+.o_dialog:has(iframe.ar_journey_loading) {
+    .modal-content { visibility: hidden; }
+    .modal-dialog { width: 100vw; max-width: none; height: 100dvh; margin: 0; }
+    iframe { height: 100dvh !important; }
+}
+@keyframes ar-completion-enter { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes ar-completion-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+    .ar_completion_result { animation: none; }
+    .ar_completion_check path { animation: none; stroke-dashoffset: 0; }
+}

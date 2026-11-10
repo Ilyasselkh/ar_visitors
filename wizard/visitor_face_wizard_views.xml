@@ -3,7 +3,7 @@
         <field name="name">ar.visitor.face.wizard.form</field>
         <field name="model">ar.visitor.face.wizard</field>
         <field name="arch" type="xml">
-            <form string="Caméra visiteurs">
+            <form string="Caméra visiteurs" class="ar_visitor_admin">
                 <field name="person_id" invisible="1"/>
                 <p>Regardez la caméra et lancez la capture. Attendez la fin des cinq échantillons avant de continuer.</p>
                 <p invisible="person_id">Si le visage n'est pas reconnu, fermez cette fenêtre et saisissez la CIN / passeport.</p>

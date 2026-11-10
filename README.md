@@ -115,3 +115,159 @@ langue du formulaire de sortie, puis actualiser les ressources du navigateur.
 
 Vérifications locales : `node --test tests/face_position_retry.cjs` et
 `python tests/test_visitor_localization.py` (ce dernier requiert lxml).
+
+### Correction immédiate du quiz visiteurs (19.0.1.12.0)
+
+Les participations liées à une visite avec un jeton de borne valide affichent une
+correction après validation lorsqu'une réponse notée est fausse ou incomplète.
+Les bonnes réponses proviennent de Sondages ; aucune réponse enregistrée ni
+aucun point n'est modifié par l'affichage de la correction. La dernière correction
+reste ouverte jusqu'au clic du visiteur, avant le retour au parcours.
+
+Pour un déroulement question par question, configurer le sondage avec **une page
+par question**, activer la notation et renseigner les bonnes réponses. Si plusieurs
+questions sont sur la même page, leurs erreurs sont regroupées après validation
+de cette page. Les questions sans correction configurée et les types non notables
+(par exemple texte libre ou matrice) gardent le fonctionnement standard.
+Les sondages sans lien avec une visite et les sessions en direct ne sont pas modifiés.
+
+Mettre à niveau ar_visitors et redémarrer Odoo pour charger le contrôleur, le
+bundle survey.survey_assets et la nouvelle version du script de borne.
+Validation locale isolée : tests/test_survey_feedback.py et tests/survey_feedback.cjs.
+Une validation sur une base Odoo 19 avec un vrai questionnaire reste nécessaire.
+### Enregistrement sans attente du mail (19.0.1.13.0)
+
+La borne ferme la fenêtre et recharge l'accueil dès le chargement de la réponse
+confirmant l'enregistrement, sans temporisation de trois secondes. Les erreurs
+de validation conservent le formulaire ouvert. L'entrée est enregistrée avant
+la fermeture ; le mail est marqué « À envoyer » puis traité par la tâche
+« AR - Visitors : notifier les contacts en arrière-plan », déclenchée après
+l'enregistrement et planifiée chaque minute. Les états « Envoyée » / « Échec »
+restent mis à jour par le mécanisme existant, avec relance manuelle en cas d'échec.
+L'envoi dépend de l'exécution des tâches planifiées et du serveur de messagerie.
+Mettre à niveau ar_visitors et redémarrer Odoo pour créer la tâche planifiée.
+Tests : tests/kiosk_success.cjs et tests/test_async_notification.py.
+
+### Pré-enregistrement à distance (19.0.1.14.0)
+
+L’affichage du menu Invitations est attribuable séparément dans les droits de
+l’utilisateur : **AR - Visitors - Invitations → Afficher le menu Invitations**.
+Ce groupe contrôle uniquement la visibilité du menu ; les droits métier existants
+sur les invitations restent inchangés. Une mise à niveau du module est nécessaire.
+
+Dans **AR Visitors → Invitations**, saisir l’e-mail, la date prévue et la langue,
+puis envoyer le lien personnel. Le visiteur accède directement au pré-enregistrement grâce au lien personnel reçu
+par e-mail, sans code et sans compte Odoo interne. Il complète son consentement, son identité,
+ses coordonnées, sa photo puis le quiz de sécurité.
+
+Le score de réussite du sondage doit être atteint. La réussite marque le dossier
+« Pré-enregistré — en attente d’arrivée » sans créer de visite ni notifier de
+contact. Le jour prévu, la reconnaissance ou la saisie du CIN reprend ce dossier
+dans la société de l’accueil. Si le quiz est toujours valide et sa configuration
+active inchangée, le visiteur passe au choix du contact, au motif et à la signature.
+L’entrée et la notification ne sont enregistrées qu’après validation sur place.
+
+Mettre à niveau ar_visitors et redémarrer Odoo. Configurer une URL publique HTTPS
+dans le paramètre système **ar_visitors.public_base_url**, la messagerie sortante et ses tâches planifiées, les langues
+Odoo et un quiz noté actif par langue/société, sans connexion Odoo obligatoire
+ni session en direct. Les extensions de Sondages sont contenues dans ar_visitors ;
+aucun fichier du module standard survey n’est modifié.
+
+`ar_visitors.public_base_url` est utilisé uniquement pour les liens d’invitation.
+Il permet de conserver l’adresse interne dans `web.base.url`. Indiquer l’origine
+HTTPS publique de la même base, sans chemin (pas de `/odoo` ou `/web`), sans paramètres.
+Si le paramètre est absent ou vide, le module utilise `web.base.url`, qui doit alors
+être en HTTPS. Un paramètre renseigné mais invalide bloque l’envoi avec un message
+explicite. L’adresse publique doit déjà être accessible depuis l’extérieur ; ce
+réglage ne configure ni le serveur HTTPS ni le réseau.
+
+Les invitations expirent à la fin du jour prévu (UTC). Un renvoi remplace le lien
+précédent. Pour reporter une visite, annuler puis dupliquer l’invitation et changer
+la date. Le lien donne accès au dossier à toute personne qui le possède ; il ne
+doit pas être partagé. Son ouverture crée une session qui protège aussi le quiz.
+La session dure deux heures et protège aussi les anciennes participations au
+quiz. Aucune purge automatique des identités ou résultats n’est introduite.
+
+Chaque invitation déclenche maintenant la tâche standard
+`Mail: Email Queue Manager` dès sa mise en file, sans attendre son intervalle
+habituel. L’envoi intervient après validation de la transaction et prise en charge
+par le serveur de tâches planifiées ; ce n’est pas une garantie de livraison
+instantanée. Cette tâche doit être active et les workers cron doivent fonctionner.
+Redémarrer Odoo après remplacement du fichier `models/visitor_invitation.py`.
+
+Tests : tests/test_preregistration.py et tests/odoo_prereg_smoke.py (base Odoo
+jetable, mails simulés, données de test annulées), ainsi que les tests existants
+de correction du quiz, de langue et de notification.
+
+### Accès direct par invitation
+
+La page distante réutilise désormais la feuille de style de l’accueil borne
+(`face_attendance_bridge.scss`) dans le bundle `ar_visitors.public_reception` :
+même en-tête, colonne d’accueil, étapes, bouton vert, langues avec drapeaux et
+cadre caméra. Le bouton de sortie reste réservé à la borne. Le contrôleur public
+conserve les accès par invitation et ne charge pas les services internes de
+reconnaissance ni les références faciales des autres visiteurs.
+
+Le lien ouvre un accueil public avec logo, langues, étapes et aperçu caméra.
+« Préparer ma visite » affiche le consentement ; l’acceptation capture la photo
+puis ouvre les informations d’identité dans une fenêtre. Le refus ne capture
+aucune photo. Le quiz reste la dernière étape distante. La caméra nécessite
+l’autorisation du navigateur ; aucun accès aux références faciales de la borne
+n’est exposé à cette page publique. Mettre à niveau le module pour charger la vue.
+
+L’étape du code par e-mail est supprimée. Les liens personnels déjà envoyés et
+encore valides ouvrent directement le parcours. Les liens expirés, annulés,
+remplacés ou consommés à l’accueil restent inutilisables. Les anciens formulaires
+de demande/vérification de code ne déclenchent plus aucune opération. Les champs
+et méthodes OTP historiques sont conservés pour compatibilité, sans route active.
+Mettre à niveau ar_visitors et redémarrer Odoo pour charger les vues et contrôleurs.
+
+### Entrée invitation avant sélection de base
+
+La route `/ar-visitors/pre-register/<token>` est disponible sans base sélectionnée
+quand `ar_visitors_entry` est chargé au démarrage. Elle utilise le mécanisme Odoo
+`ensure_db` pour sélectionner exclusivement `1051_PROD`, même si une autre base
+est indiquée dans l’URL ou dans la session. Après une redirection technique avec
+le cookie de session, elle active l’utilisateur public et vérifie l’invitation.
+Un lien valide ouvre directement l’accueil distant, sans connexion ni code.
+Les liens existants conservent leur URL.
+
+Dans la configuration du serveur, conserver les modules de démarrage existants
+et ajouter uniquement `ar_visitors_entry` (retirer `ar_visitors`), par exemple :
+
+```ini
+server_wide_modules = base,rpc,web,ar_visitors_entry
+dbfilter = .*
+db_name =
+```
+
+Copier d'abord le dossier `deployment/ar_visitors_entry` à côté de
+`ar_visitors`, dans un répertoire de l'`addons_path` : il s'agit d'un module
+Odoo distinct, pas d'un sous-module à laisser uniquement dans `ar_visitors`.
+Déployer également cette version de `ar_visitors`, puis arrêter le service,
+mettre à jour `ar_visitors` uniquement dans `1051_PROD` avec la nouvelle
+configuration (`-d 1051_PROD -u ar_visitors --stop-after-init`), et redémarrer
+le service. La dépendance installe `ar_visitors_entry` dans cette base.
+Ne pas installer `ar_visitors` dans les autres bases pour contourner l'erreur.
+Le module doit être installé dans `1051_PROD`, et cette base doit exister.
+Le filtre général permet de continuer à sélectionner manuellement les autres
+bases. Vérifier également qu’aucun argument de lancement `-d`, `--db-filter`
+ou `--load` ne remplace ces réglages. Un seul service Odoo suffit. Redémarrer
+le serveur après modification du code et de la configuration.
+
+Tests sans base : `python -m unittest discover -s tests -p "test_invitation*.py"`.
+
+### Affichage mobile, tablette et ordinateur
+
+La version 19.0.1.29.0 ajoute une couche commune `responsive.scss` aux écrans
+visiteurs : accueil/reconnaissance et HSE, consentement, identité, consignes,
+pré-enregistrement, quiz/correction, signature et confirmation. Les vues
+d'administration portent la classe `ar_visitor_admin` pour limiter les règles
+aux visiteurs. Les tableaux restent consultables par défilement horizontal ;
+les formulaires et boutons s'adaptent aux petites largeurs. Sur téléphone,
+l'accueil et ses actions précèdent le panneau HSE/caméra.
+
+Déployer le module, le mettre à jour dans la base concernée et recharger la page
+avec Ctrl+F5. Aucun changement supplémentaire de `server_wide_modules` n'est
+nécessaire pour cette adaptation. Le compte rendu et les limites de vérification
+figurent dans `tests/responsive_layout_report.md`.
